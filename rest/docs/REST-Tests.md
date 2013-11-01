@@ -28,7 +28,7 @@ which can be used to call the REST resource.
 
 You can see the Resource hierarchy in the diagram here:
 
-![Diagram of Usergrid REST Test classes](/path/to/img.jpg)
+![Diagram of Usergrid REST Test classes](class-diagram.png)
 
 
 
