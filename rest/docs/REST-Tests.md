@@ -1,4 +1,4 @@
-REST Tests
+REST Tests Implementation Overview
 ===
 This is an overview of the Usergrid REST API tests and how they work.
 
