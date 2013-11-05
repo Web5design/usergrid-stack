@@ -31,12 +31,8 @@ public class OrganizationPrincipal extends PrincipalIdentifier {
 		return organization;
 	}
 
-	public UUID getOrganizationId() {
-		return organization.getUuid();
-	}
-
 	@Override
 	public String toString() {
-		return organization.toString();
+		return organization.getUuid().toString();
 	}
 }

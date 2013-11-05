@@ -37,6 +37,6 @@ public class ApplicationGuestPrincipal extends PrincipalIdentifier {
 
 	@Override
 	public String toString() {
-		return application.toString();
+		return application.getId().toString();
 	}
 }

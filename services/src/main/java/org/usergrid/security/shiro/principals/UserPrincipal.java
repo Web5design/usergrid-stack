@@ -54,9 +54,21 @@ public abstract class UserPrincipal extends PrincipalIdentifier {
 		return true;
 	}
 
+  /**
+   * Returns the string identifier in the format of applicationId/userId for cache identification
+   * @return
+   */
+  public String getStringIdentifier(){
+    return String.format("%s/%s", applicationId, user.getUuid());
+  }
+
+  /**
+   * Must always return the id in the format of appid/userid for cache purposes
+   * @return
+   */
 	@Override
 	public String toString() {
-		return user.toString();
+		return getStringIdentifier();
 	}
 
 }

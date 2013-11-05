@@ -25,8 +25,5 @@ public class ApplicationUserPrincipal extends UserPrincipal {
 		super(applicationId, user);
 	}
 
-	@Override
-	public String toString() {
-		return "user[" + user.getApplicationId() + "/" + user.getUuid() + "]";
-	}
+
 }
