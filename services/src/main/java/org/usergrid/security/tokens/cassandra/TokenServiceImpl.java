@@ -63,8 +63,6 @@ public class TokenServiceImpl implements TokenService {
   private static final Logger logger = LoggerFactory.getLogger(TokenServiceImpl.class);
 
   public static final String PROPERTIES_AUTH_TOKEN_SECRET_SALT = "usergrid.auth.token_secret_salt";
-  public static final String PROPERTIES_AUTH_TOKEN_EXPIRES_FROM_LAST_USE = "usergrid.auth.token_expires_from_last_use";
-  public static final String PROPERTIES_AUTH_TOKEN_REFRESH_REUSES_ID = "usergrid.auth.token_refresh_reuses_id";
 
   private static final String TOKEN_UUID = "uuid";
   private static final String TOKEN_TYPE = "type";
@@ -123,10 +121,6 @@ public class TokenServiceImpl implements TokenService {
   Map<TokenCategory, Long> tokenExpirations = hashMap(ACCESS, LONG_TOKEN_AGE).map(REFRESH, LONG_TOKEN_AGE)
       .map(EMAIL, LONG_TOKEN_AGE).map(OFFLINE, LONG_TOKEN_AGE);
 
-  long maxAccessTokenAge = SHORT_TOKEN_AGE;
-  long maxRefreshTokenAge = LONG_TOKEN_AGE;
-  long maxEmailTokenAge = LONG_TOKEN_AGE;
-  long maxOfflineTokenAge = LONG_TOKEN_AGE;
 
   protected CassandraService cassandra;
 
