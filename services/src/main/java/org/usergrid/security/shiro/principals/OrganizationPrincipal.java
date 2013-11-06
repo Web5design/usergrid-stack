@@ -33,6 +33,6 @@ public class OrganizationPrincipal extends PrincipalIdentifier {
 
 	@Override
 	public String toString() {
-		return organization.getUuid().toString();
+		return String.format("org/%s", organization.getUuid().toString());
 	}
 }

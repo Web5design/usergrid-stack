@@ -37,6 +37,6 @@ public class ApplicationPrincipal extends PrincipalIdentifier {
 
 	@Override
 	public String toString() {
-		return application.getId().toString();
+		return String.format("app/%s", application.getId().toString());
 	}
 }
