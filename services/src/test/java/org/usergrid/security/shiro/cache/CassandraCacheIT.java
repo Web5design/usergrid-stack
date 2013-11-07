@@ -295,6 +295,150 @@ public class CassandraCacheIT {
 
 
 
+  @Test
+  public void serviceRevokeUserPrincipal(){
+
+    UserInfo userInfo = new UserInfo(UUIDUtils.newTimeUUID(), UUIDUtils.newTimeUUID(), "test", "test", "test@usergrid.org", true, true, false, null);
+
+    ApplicationUserPrincipal applicationUserPrincipal = new ApplicationUserPrincipal(userInfo.getApplicationId(), userInfo);
+
+    serviceRevokeWrite(applicationUserPrincipal);
+
+
+    CassandraCacheManager manager = setup.getCacheManager();
+
+    manager.invalidateUser(applicationUserPrincipal.getApplicationId(), userInfo);
+
+    serviceRevokeVerify(applicationUserPrincipal);
+
+  }
+
+  @Test
+  public void serviceRevokeAdminPrincipal(){
+
+    UserInfo userInfo = new UserInfo(UUIDUtils.newTimeUUID(), UUIDUtils.newTimeUUID(), "test", "test", "test@usergrid.org", true, true, false, null);
+
+
+    AdminUserPrincipal adminUser = new AdminUserPrincipal(userInfo) ;
+
+    serviceRevokeWrite(adminUser);
+
+
+    CassandraCacheManager manager = setup.getCacheManager();
+
+    manager.invalidateUser(adminUser.getApplicationId(), userInfo);
+
+    serviceRevokeVerify(adminUser);
+  }
+
+
+  @Test
+  public void serviceRevokeGuestPrincipal(){
+
+    ApplicationInfo appInfo = new ApplicationInfo(UUIDUtils.newTimeUUID(), "test");
+    ApplicationGuestPrincipal guest = new ApplicationGuestPrincipal(appInfo);
+
+    serviceRevokeWrite(guest);
+
+    CassandraCacheManager manager = setup.getCacheManager();
+
+    manager.invalidateGuest(appInfo);
+
+    serviceRevokeVerify(guest);
+  }
+
+
+  @Test
+  public void serviceRevokeApplicationPrincipal(){
+
+    ApplicationInfo appInfo = new ApplicationInfo(UUIDUtils.newTimeUUID(), "test");
+    ApplicationPrincipal principal = new ApplicationPrincipal(appInfo);
+
+    serviceRevokeWrite(principal);
+
+    CassandraCacheManager manager = setup.getCacheManager();
+
+    manager.invalidateApplication(appInfo);
+
+    serviceRevokeVerify(principal);
+  }
+
+  @Test
+  public void serviceRevokeOrganizationPrincipal(){
+
+    OrganizationInfo info = new OrganizationInfo(UUIDUtils.newTimeUUID(), "test");
+    OrganizationPrincipal orgPrincipal = new OrganizationPrincipal(info);
+    serviceRevokeWrite(orgPrincipal);
+
+    CassandraCacheManager manager = setup.getCacheManager();
+
+    manager.invalidateOrg(info);
+
+    serviceRevokeVerify(orgPrincipal);
+  }
+
+
+  private void serviceRevokeWrite(PrincipalIdentifier principalIdentifier){
+    String realm = "test";
+    CassandraCacheManager manager = setup.getCacheManager();
+
+
+    SimplePrincipalCollection principal = createSimplePrincipal(principalIdentifier, realm);
+
+
+
+    Cache<SimplePrincipalCollection, SimpleAuthorizationInfo> cache = manager.getCache(realm);
+
+    SimpleAuthorizationInfo authorizationInfo = cache.get(principal);
+
+    assertNull(authorizationInfo);
+
+    //now store it
+
+    SimpleAuthorizationInfo storedAuthInfo = new SimpleAuthorizationInfo();
+    storedAuthInfo.addRole("appuser");
+    storedAuthInfo.addRole("user");
+    storedAuthInfo.addStringPermission("GET,PUT,POST,DELETE:/groups/oss/**");
+    storedAuthInfo.addStringPermission("GET:/groups/**");
+    storedAuthInfo.addStringPermission("GET,PUT,POST,DELETE::/users/me/**");
+
+
+    /**
+     * Store it into the cache
+     */
+    SimpleAuthorizationInfo storedOnCache = cache.put(principal, storedAuthInfo);
+
+    assertEqualsInternal(storedAuthInfo, storedOnCache);
+
+
+    //now get it back from the cache
+    SimpleAuthorizationInfo returnedFromCache = cache.get(principal);
+
+    assertEqualsInternal(storedAuthInfo, returnedFromCache);
+
+
+  }
+
+  private void serviceRevokeVerify(PrincipalIdentifier principalIdentifier){
+
+    String realm = "test";
+    CassandraCacheManager manager = setup.getCacheManager();
+
+
+    SimplePrincipalCollection principal = createSimplePrincipal(principalIdentifier, realm);
+
+
+
+    Cache<SimplePrincipalCollection, SimpleAuthorizationInfo> cache = manager.getCache(realm);
+
+    SimpleAuthorizationInfo returnedFromCache = cache.get(principal);
+
+    assertNull(returnedFromCache);
+  }
+
+
+
+
 
   private SimplePrincipalCollection createSimplePrincipal(PrincipalIdentifier identifier, String realm){
 

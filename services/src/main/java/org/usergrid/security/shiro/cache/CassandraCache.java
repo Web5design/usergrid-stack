@@ -195,9 +195,6 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
       return null;
     }
 
-    /**
-     * Write the data with ttl=0, this means we can set gc_grace = to 0 so we clean data faster when it expires
-     */
 
     String rowKey = getRowKey(key);
 
@@ -205,6 +202,10 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
 
     Mutator<String> m = createMutator(ko, STR_SER);
 
+    /**
+     * Set set our deleted flag to true, and we expire the columns after 1 second.  This will allow us to set a very low
+     * gc_grace, and hence the physical data will be removed on compaction faster.  We can then set gc_grace=0
+     */
     m.addInsertion(rowKey, SHIRO_CACHES, createColumn(ROLES, new DynamicComposite(), 1, STR_SER, DYN_SER ));
 
     m.addInsertion(rowKey, SHIRO_CACHES, createColumn(PERMISSIONS, new DynamicComposite(), 1, STR_SER, DYN_SER ));
