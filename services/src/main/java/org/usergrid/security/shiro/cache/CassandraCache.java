@@ -9,8 +9,6 @@ import me.prettyprint.hector.api.beans.ColumnSlice;
 import me.prettyprint.hector.api.beans.DynamicComposite;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.mutation.Mutator;
-import me.prettyprint.hector.api.query.ColumnQuery;
-import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.SliceQuery;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.cache.Cache;
@@ -20,22 +18,14 @@ import org.usergrid.management.ApplicationInfo;
 import org.usergrid.management.OrganizationInfo;
 import org.usergrid.management.UserInfo;
 import org.usergrid.persistence.cassandra.CassandraService;
-import org.usergrid.security.AuthPrincipalInfo;
 import org.usergrid.security.shiro.principals.*;
-import org.usergrid.utils.JsonUtils;
 
-import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
-import static me.prettyprint.hector.api.factory.HFactory.createColumn;
 import static me.prettyprint.hector.api.factory.HFactory.*;
-import static org.usergrid.persistence.cassandra.CassandraService.*;
-import static org.usergrid.persistence.cassandra.CassandraService.PRINCIPAL_TOKEN_CF;
-import static org.usergrid.persistence.cassandra.CassandraService.TOKENS_CF;
-import static org.usergrid.utils.ConversionUtils.HOLDER;
-import static org.usergrid.utils.ConversionUtils.bytebuffer;
+import static org.usergrid.persistence.cassandra.CassandraService.SHIRO_CACHES;
 
 /**
  *
@@ -210,7 +200,8 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
 
     m.addInsertion(rowKey, SHIRO_CACHES, createColumn(PERMISSIONS, new DynamicComposite(), 1, STR_SER, DYN_SER ));
 
-    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(DELETED, TRUE, 1, STR_SER, BYTE_ARRAY_SER ));
+    //We need to use the same TTL as the write.  Otherwise, we could potentially remove a row and lose it due to compaction if a replica is down
+    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(DELETED, TRUE, ttl, STR_SER, BYTE_ARRAY_SER ));
 
     m.execute();
 
