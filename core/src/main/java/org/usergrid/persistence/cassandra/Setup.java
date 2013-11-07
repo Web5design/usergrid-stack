@@ -18,19 +18,7 @@ package org.usergrid.persistence.cassandra;
 
 import static me.prettyprint.hector.api.factory.HFactory.createColumnFamilyDefinition;
 import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.getCfDefs;
-import static org.usergrid.persistence.cassandra.CassandraService.APPLICATIONS_CF;
-import static org.usergrid.persistence.cassandra.CassandraService.DEFAULT_APPLICATION;
-import static org.usergrid.persistence.cassandra.CassandraService.DEFAULT_APPLICATION_ID;
-import static org.usergrid.persistence.cassandra.CassandraService.DEFAULT_ORGANIZATION;
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION;
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
-import static org.usergrid.persistence.cassandra.CassandraService.PRINCIPAL_TOKEN_CF;
-import static org.usergrid.persistence.cassandra.CassandraService.PROPERTIES_CF;
-import static org.usergrid.persistence.cassandra.CassandraService.STATIC_APPLICATION_KEYSPACE;
-import static org.usergrid.persistence.cassandra.CassandraService.SYSTEM_KEYSPACE;
-import static org.usergrid.persistence.cassandra.CassandraService.TOKENS_CF;
-import static org.usergrid.persistence.cassandra.CassandraService.USE_VIRTUAL_KEYSPACES;
-import static org.usergrid.persistence.cassandra.CassandraService.keyspaceForApplication;
+import static org.usergrid.persistence.cassandra.CassandraService.*;
 
 import java.util.UUID;
 
@@ -122,6 +110,9 @@ public class Setup
 
     cass.createColumnFamily(SYSTEM_KEYSPACE,
         createColumnFamilyDefinition(SYSTEM_KEYSPACE, PRINCIPAL_TOKEN_CF, ComparatorType.UUIDTYPE));
+
+    cass.createColumnFamily(SYSTEM_KEYSPACE,
+        createColumnFamilyDefinition(SYSTEM_KEYSPACE, SHIRO_CACHES, ComparatorType.UTF8TYPE));
 
     logger.info("System keyspace initialized");
   }

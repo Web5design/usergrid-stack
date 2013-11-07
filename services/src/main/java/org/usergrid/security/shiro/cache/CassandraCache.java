@@ -1,5 +1,6 @@
 package org.usergrid.security.shiro.cache;
 
+import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.DynamicCompositeSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.hector.api.Keyspace;
@@ -46,9 +47,15 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
 
   private static final StringSerializer STR_SER = StringSerializer.get();
   private static final DynamicCompositeSerializer DYN_SER = DynamicCompositeSerializer.get();
+  private static final BytesArraySerializer BYTE_ARRAY_SER = BytesArraySerializer.get();
+
+
+  private static final byte[] TRUE = {1};
+  private static final byte[] FALSE = {0};
 
   private static final String ROLES = "roles";
   private static final String PERMISSIONS = "permissions";
+  private static final String DELETED = "deleted";
 
   private static final int ONE_DAY = 60*60*24;
 
@@ -79,18 +86,28 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
 
     query.setKey(rowKey);
     query.setColumnFamily(SHIRO_CACHES);
-    query.setColumnNames(ROLES, PERMISSIONS);
+    query.setColumnNames(ROLES, PERMISSIONS, DELETED);
 
     ColumnSlice<String, DynamicComposite> results = query.execute().get();
 
 
     final HColumn<String, DynamicComposite> roleColumn =  results.getColumnByName(ROLES);
     final HColumn<String, DynamicComposite> permissionsColumn = results.getColumnByName(PERMISSIONS);
+    final HColumn<String, DynamicComposite> deletedColumn = results.getColumnByName(DELETED);
 
     /**
      * We have incomplete data, return nothing
      */
-    if(roleColumn == null || permissionsColumn == null){
+    if(roleColumn == null || permissionsColumn == null || deletedColumn == null){
+      return null;
+    }
+
+    /**
+     * This entry has been marked as deleted, it just hasn't timed out yet, discard it
+     */
+    byte[] deleted = BYTE_ARRAY_SER.fromByteBuffer(deletedColumn.getValueBytes());
+
+    if(deleted[0] == TRUE[0]){
       return null;
     }
 
@@ -100,14 +117,18 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
 
 
     for(AbstractComposite.Component c: storedRoles.getComponents()){
-      authInfo.addRole((String) c.getValue(STR_SER));
+      final String value = (String)c.getValue(STR_SER);
+
+      authInfo.addRole(value);
     }
 
 
     final DynamicComposite storedPermissions = permissionsColumn.getValue();
 
     for(AbstractComposite.Component c: storedPermissions.getComponents()){
-      authInfo.addStringPermission((String) c.getValue(STR_SER));
+      final String value = (String)c.getValue(STR_SER);
+
+      authInfo.addStringPermission(value);
     }
 
     return authInfo;
@@ -147,6 +168,8 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
 
     m.addInsertion(rowKey, SHIRO_CACHES, createColumn(PERMISSIONS, permissions, ttl, STR_SER, DYN_SER ));
 
+    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(DELETED, FALSE, ttl, STR_SER, BYTE_ARRAY_SER));
+
     m.execute();
 
     return info;
@@ -158,7 +181,7 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
    * @return
    */
   private String getRowKey(SimplePrincipalCollection key){
-    return key.toString();
+    return String.format("%s/%s", realmName, key.toString());
   }
 
 
@@ -182,9 +205,11 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
 
     Mutator<String> m = createMutator(ko, STR_SER);
 
-    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(ROLES, new DynamicComposite(), 0, STR_SER, DYN_SER ));
+    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(ROLES, new DynamicComposite(DELETED), 1, STR_SER, DYN_SER ));
 
-    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(PERMISSIONS, new DynamicComposite(), 0, STR_SER, DYN_SER ));
+    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(PERMISSIONS, new DynamicComposite(DELETED), 1, STR_SER, DYN_SER ));
+
+    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(DELETED, TRUE, 1, STR_SER, BYTE_ARRAY_SER ));
 
     m.execute();
 

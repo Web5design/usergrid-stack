@@ -11,6 +11,7 @@ import org.usergrid.management.ApplicationCreator;
 import org.usergrid.management.ManagementService;
 import org.usergrid.persistence.cassandra.CassandraService;
 import org.usergrid.security.providers.SignInProviderFactory;
+import org.usergrid.security.shiro.cache.CassandraCacheManager;
 import org.usergrid.security.tokens.TokenService;
 import org.usergrid.services.ServiceManagerFactory;
 
@@ -31,6 +32,7 @@ public class ServiceITSetupImpl extends CoreITSetupImpl implements ServiceITSetu
     private TokenService tokenService;
     private SignInProviderFactory providerFactory;
     private Properties properties;
+    private CassandraCacheManager cacheManager;
 
 
     public ServiceITSetupImpl( CassandraResource cassandraResource )
@@ -55,6 +57,7 @@ public class ServiceITSetupImpl extends CoreITSetupImpl implements ServiceITSetu
         providerFactory = cassandraResource.getBean( SignInProviderFactory.class );
         properties = cassandraResource.getBean( PropertiesFactoryBean.class ).getObject();
         smf = cassandraResource.getBean( ServiceManagerFactory.class );
+        cacheManager = cassandraResource.getBean(CassandraCacheManager.class);
 
         LOG.info( "Test setup complete..." );
     }
@@ -147,5 +150,9 @@ public class ServiceITSetupImpl extends CoreITSetupImpl implements ServiceITSetu
     public SignInProviderFactory getProviderFactory()
     {
         return providerFactory;
+    }
+
+    public CassandraCacheManager getCacheManager() {
+      return cacheManager;
     }
 }

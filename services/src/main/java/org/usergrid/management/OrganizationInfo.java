@@ -33,8 +33,7 @@ public class OrganizationInfo {
 	private String name;
   private Map<String,Object> properties;
 
-	public OrganizationInfo() {
-	}
+
 	
 	public OrganizationInfo(UUID id, String name) {
 		this.id = id;

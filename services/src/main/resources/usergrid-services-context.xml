@@ -66,4 +66,8 @@
         <property name="managementService" ref="managementService"/>
     </bean>
 
+
+    <bean id="shiroCacheManager" class="org.usergrid.security.shiro.cache.CassandraCacheManager">
+        <property name="cassandraService" ref="cassandraService"/>
+    </bean>
 </beans>

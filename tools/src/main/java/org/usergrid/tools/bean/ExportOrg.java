@@ -28,14 +28,10 @@ import org.usergrid.management.UserInfo;
 public class ExportOrg extends OrganizationInfo {
 
     private List<String> adminUserNames;
-    
-    public ExportOrg() {  
-        adminUserNames = new ArrayList<String>();
-    }
+
     
     public ExportOrg(OrganizationInfo info){
-        setName(info.getName());
-        setUuid(info.getUuid());
+        super(info.getUuid(), info.getName());
         adminUserNames = new ArrayList<String>();
     }
 
