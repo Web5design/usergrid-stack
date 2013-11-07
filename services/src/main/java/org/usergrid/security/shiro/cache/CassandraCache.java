@@ -205,9 +205,9 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
 
     Mutator<String> m = createMutator(ko, STR_SER);
 
-    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(ROLES, new DynamicComposite(DELETED), 1, STR_SER, DYN_SER ));
+    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(ROLES, new DynamicComposite(), 1, STR_SER, DYN_SER ));
 
-    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(PERMISSIONS, new DynamicComposite(DELETED), 1, STR_SER, DYN_SER ));
+    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(PERMISSIONS, new DynamicComposite(), 1, STR_SER, DYN_SER ));
 
     m.addInsertion(rowKey, SHIRO_CACHES, createColumn(DELETED, TRUE, 1, STR_SER, BYTE_ARRAY_SER ));
 
