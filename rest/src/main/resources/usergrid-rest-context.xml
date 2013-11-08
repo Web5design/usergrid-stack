@@ -38,10 +38,11 @@
 	<!-- override the security manager -->
 	<bean id="securityManager" class="org.usergrid.rest.security.shiro.RestSecurityManager">
 		<property name="cacheManager" ref="shiroCacheManager" />
+        <!--<property name="cacheManager" ref="cacheManager" />-->
 		<property name="realm" ref="realm" />
 	</bean>
 
-	<!--<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />-->
+	<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />
 
 
 	<!-- override the task executor -->

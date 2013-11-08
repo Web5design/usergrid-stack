@@ -15,6 +15,7 @@ import org.usergrid.management.ApplicationInfo;
 import org.usergrid.management.OrganizationInfo;
 import org.usergrid.management.UserInfo;
 import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -48,7 +49,7 @@ public class CassandraCacheManager implements CacheManager, CacheInvalidation {
 
 
   @Override
-  public Cache<SimplePrincipalCollection, SimpleAuthorizationInfo> getCache(String name) throws CacheException {
+  public Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> getCache(String name) throws CacheException {
     try {
       return cassandraCache.get(name);
     } catch (ExecutionException e) {

@@ -1279,8 +1279,8 @@ public class UserResourceIT extends AbstractRestIT {
     @Test
     public void queryForUuids() throws Exception {
 
-      {
-        final JsonNode response = resource().path("/test-organization/test-app/users/")
+
+      JsonNode response = resource().path("/test-organization/test-app/users/")
           .queryParam("ql", "select *")               // query for entities
           .queryParam("access_token", access_token)
           .accept(MediaType.APPLICATION_JSON)
@@ -1290,10 +1290,8 @@ public class UserResourceIT extends AbstractRestIT {
         assertTrue("Must be some entities", response.get("entities").size() > 0); 
         assertEquals("Must be users","user", response.get("entities").get(0).get("type").asText()); 
         assertNull("List must not exist", response.get("list"));
-      }
 
-      {
-        final JsonNode response = resource().path("/test-organization/test-app/users/")
+        response = resource().path("/test-organization/test-app/users/")
           .queryParam("ql", "select uuid")            // query for uuid properties 
           .queryParam("access_token", access_token)
           .accept(MediaType.APPLICATION_JSON)
@@ -1302,7 +1300,7 @@ public class UserResourceIT extends AbstractRestIT {
         assertNotNull("List must exist", response.get("list"));
         assertTrue("Must be some list items", response.get("list").size() > 0); 
         assertNull("Entities must not exist", response.get("entries"));
-      }
+
     }
 
 }

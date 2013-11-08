@@ -213,6 +213,7 @@ public class Realm extends AuthorizingRealm {
             PrincipalCollection principals) {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
+      //TODO TN, remove this
         Map<UUID, String> organizationSet = HashBiMap.create();
         Map<UUID, String> applicationSet = HashBiMap.create();
         OrganizationInfo organization = null;

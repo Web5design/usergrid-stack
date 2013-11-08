@@ -13,6 +13,7 @@ import org.usergrid.cassandra.ClearShiroSubject;
 import org.usergrid.management.ApplicationInfo;
 import org.usergrid.management.OrganizationInfo;
 import org.usergrid.management.UserInfo;
+import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 import org.usergrid.security.shiro.principals.*;
 import org.usergrid.utils.UUIDUtils;
 
@@ -101,7 +102,7 @@ public class CassandraCacheIT {
 
 
 
-    Cache<SimplePrincipalCollection, SimpleAuthorizationInfo> cache = manager.getCache(realm);
+    Cache<SimplePrincipalCollection,UsergridAuthorizationInfo> cache = manager.getCache(realm);
 
     SimpleAuthorizationInfo authorizationInfo = cache.get(principal);
 
@@ -109,24 +110,18 @@ public class CassandraCacheIT {
 
     //now store it
 
-    SimpleAuthorizationInfo storedAuthInfo = new SimpleAuthorizationInfo();
-    storedAuthInfo.addRole("appuser");
-    storedAuthInfo.addRole("user");
-    storedAuthInfo.addStringPermission("GET,PUT,POST,DELETE:/groups/oss/**");
-    storedAuthInfo.addStringPermission("GET:/groups/**");
-    storedAuthInfo.addStringPermission("GET,PUT,POST,DELETE::/users/me/**");
-
+    UsergridAuthorizationInfo storedAuthInfo = generateAuthInfo();
 
     /**
      * Store it into the cache
      */
-    SimpleAuthorizationInfo storedOnCache = cache.put(principal, storedAuthInfo);
+    UsergridAuthorizationInfo storedOnCache = cache.put(principal, storedAuthInfo);
 
     assertEqualsInternal(storedAuthInfo, storedOnCache);
 
 
     //now get it back from the cache
-    SimpleAuthorizationInfo returnedFromCache = cache.get(principal);
+    UsergridAuthorizationInfo returnedFromCache = cache.get(principal);
 
     assertEqualsInternal(storedAuthInfo, returnedFromCache);
 
@@ -209,32 +204,27 @@ public class CassandraCacheIT {
 
 
 
-    Cache<SimplePrincipalCollection, SimpleAuthorizationInfo> cache = manager.getCache(realm);
+    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> cache = manager.getCache(realm);
 
-    SimpleAuthorizationInfo authorizationInfo = cache.get(principal);
+    UsergridAuthorizationInfo authorizationInfo = cache.get(principal);
 
     assertNull(authorizationInfo);
 
     //now store it
+    UsergridAuthorizationInfo storedAuthInfo = generateAuthInfo();
 
-    SimpleAuthorizationInfo storedAuthInfo = new SimpleAuthorizationInfo();
-    storedAuthInfo.addRole("appuser");
-    storedAuthInfo.addRole("user");
-    storedAuthInfo.addStringPermission("GET,PUT,POST,DELETE:/groups/oss/**");
-    storedAuthInfo.addStringPermission("GET:/groups/**");
-    storedAuthInfo.addStringPermission("GET,PUT,POST,DELETE::/users/me/**");
 
 
     /**
      * Store it into the cache
      */
-    SimpleAuthorizationInfo storedOnCache = cache.put(principal, storedAuthInfo);
+    UsergridAuthorizationInfo storedOnCache = cache.put(principal, storedAuthInfo);
 
     assertEqualsInternal(storedAuthInfo, storedOnCache);
 
 
     //now get it back from the cache
-    SimpleAuthorizationInfo returnedFromCache = cache.get(principal);
+    UsergridAuthorizationInfo returnedFromCache = cache.get(principal);
 
     assertEqualsInternal(storedAuthInfo, returnedFromCache);
 
@@ -243,7 +233,7 @@ public class CassandraCacheIT {
 
     String otherRealm = "otherrealm";
 
-    Cache<SimplePrincipalCollection, SimpleAuthorizationInfo> otherCache = manager.getCache(otherRealm);
+    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> otherCache = manager.getCache(otherRealm);
 
 
     SimplePrincipalCollection otherPrincipal = createSimplePrincipal(principalIdentifier, otherRealm);
@@ -254,7 +244,7 @@ public class CassandraCacheIT {
     assertNull(otherRealmReturned);
   }
 
-  private void assertEqualsInternal(SimpleAuthorizationInfo expected, SimpleAuthorizationInfo returned){
+  private void assertEqualsInternal(UsergridAuthorizationInfo expected, UsergridAuthorizationInfo returned){
 
     if(expected == null && returned == null){
       return;
@@ -288,6 +278,26 @@ public class CassandraCacheIT {
 
     assertEquals("Not all permissions in expected were in the returned", 0, expectedPermissions.size());
     assertEquals("Not all permissions in returned were in the expected", 0, returnedPermissions.size());
+
+
+    Set<ApplicationInfo> expectedApps = new HashSet<ApplicationInfo>(expected.getApplications());
+    Set<ApplicationInfo> returnedApps = new HashSet<ApplicationInfo>(returned.getApplications());
+
+    expectedApps.removeAll(returned.getApplications());
+    returnedApps.removeAll(expected.getApplications());
+
+    assertEquals("Not all applications in expected were in the returned", 0, expectedApps.size());
+    assertEquals("Not all applications in returned were in the expected", 0, returnedApps.size());
+
+    Set<OrganizationInfo> expectedOrgs = new HashSet<OrganizationInfo>(expected.getOrganizations());
+    Set<OrganizationInfo> returnedOrgs = new HashSet<OrganizationInfo>(returned.getOrganizations());
+
+    expectedOrgs.removeAll(returned.getOrganizations());
+    returnedOrgs.removeAll(expected.getOrganizations());
+
+    assertEquals("Not all organization in expected were in the returned", 0, expectedOrgs.size());
+    assertEquals("Not all organizations in returned were in the expected", 0, returnedOrgs.size());
+
 
 
 
@@ -387,7 +397,7 @@ public class CassandraCacheIT {
 
 
 
-    Cache<SimplePrincipalCollection, SimpleAuthorizationInfo> cache = manager.getCache(realm);
+    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> cache = manager.getCache(realm);
 
     SimpleAuthorizationInfo authorizationInfo = cache.get(principal);
 
@@ -395,24 +405,18 @@ public class CassandraCacheIT {
 
     //now store it
 
-    SimpleAuthorizationInfo storedAuthInfo = new SimpleAuthorizationInfo();
-    storedAuthInfo.addRole("appuser");
-    storedAuthInfo.addRole("user");
-    storedAuthInfo.addStringPermission("GET,PUT,POST,DELETE:/groups/oss/**");
-    storedAuthInfo.addStringPermission("GET:/groups/**");
-    storedAuthInfo.addStringPermission("GET,PUT,POST,DELETE::/users/me/**");
-
+    UsergridAuthorizationInfo storedAuthInfo = generateAuthInfo();
 
     /**
      * Store it into the cache
      */
-    SimpleAuthorizationInfo storedOnCache = cache.put(principal, storedAuthInfo);
+    UsergridAuthorizationInfo storedOnCache = cache.put(principal, storedAuthInfo);
 
     assertEqualsInternal(storedAuthInfo, storedOnCache);
 
 
     //now get it back from the cache
-    SimpleAuthorizationInfo returnedFromCache = cache.get(principal);
+    UsergridAuthorizationInfo returnedFromCache = cache.get(principal);
 
     assertEqualsInternal(storedAuthInfo, returnedFromCache);
 
@@ -429,7 +433,7 @@ public class CassandraCacheIT {
 
 
 
-    Cache<SimplePrincipalCollection, SimpleAuthorizationInfo> cache = manager.getCache(realm);
+    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> cache = manager.getCache(realm);
 
     SimpleAuthorizationInfo returnedFromCache = cache.get(principal);
 
@@ -443,5 +447,30 @@ public class CassandraCacheIT {
   private SimplePrincipalCollection createSimplePrincipal(PrincipalIdentifier identifier, String realm){
 
     return new SimplePrincipalCollection(identifier, realm);
+  }
+
+  private UsergridAuthorizationInfo generateAuthInfo(){
+
+    UsergridAuthorizationInfo storedAuthInfo = new UsergridAuthorizationInfo();
+    storedAuthInfo.addRole("appuser");
+    storedAuthInfo.addRole("user");
+    storedAuthInfo.addStringPermission("GET,PUT,POST,DELETE:/groups/oss/**");
+    storedAuthInfo.addStringPermission("GET:/groups/**");
+    storedAuthInfo.addStringPermission("GET,PUT,POST,DELETE::/users/me/**");
+
+    ApplicationInfo app1 = new ApplicationInfo(UUIDUtils.newTimeUUID(), "testapp1");
+    ApplicationInfo app2 = new ApplicationInfo(UUIDUtils.newTimeUUID(), "testapp2");
+
+    storedAuthInfo.addApplication(app1);
+    storedAuthInfo.addApplication(app2);
+
+
+    OrganizationInfo org1 = new OrganizationInfo(UUIDUtils.newTimeUUID(), "testorg1");
+    OrganizationInfo org2 = new OrganizationInfo(UUIDUtils.newTimeUUID(), "testorg2");
+
+    storedAuthInfo.addOrganizationInfo(org1);
+    storedAuthInfo.addOrganizationInfo(org2);
+
+    return storedAuthInfo;
   }
 }

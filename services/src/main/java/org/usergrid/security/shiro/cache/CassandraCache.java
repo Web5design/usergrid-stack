@@ -3,6 +3,7 @@ package org.usergrid.security.shiro.cache;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.DynamicCompositeSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
+import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.AbstractComposite;
 import me.prettyprint.hector.api.beans.ColumnSlice;
@@ -18,9 +19,11 @@ import org.usergrid.management.ApplicationInfo;
 import org.usergrid.management.OrganizationInfo;
 import org.usergrid.management.UserInfo;
 import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 import org.usergrid.security.shiro.principals.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,12 +35,14 @@ import static org.usergrid.persistence.cassandra.CassandraService.SHIRO_CACHES;
  * @author: tnine
  *
  */
-public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAuthorizationInfo>, CacheInvalidation {
+public class CassandraCache implements Cache<SimplePrincipalCollection, UsergridAuthorizationInfo>, CacheInvalidation {
 
 
+  private static final UUIDSerializer UUID_SER = UUIDSerializer.get();
   private static final StringSerializer STR_SER = StringSerializer.get();
   private static final DynamicCompositeSerializer DYN_SER = DynamicCompositeSerializer.get();
   private static final BytesArraySerializer BYTE_ARRAY_SER = BytesArraySerializer.get();
+
 
 
   private static final byte[] TRUE = {1};
@@ -46,6 +51,8 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
   private static final String ROLES = "roles";
   private static final String PERMISSIONS = "permissions";
   private static final String DELETED = "deleted";
+  private static final String ORGS = "orgs";
+  private static final String APPS = "apps";
 
   private static final int ONE_DAY = 60*60*24;
 
@@ -63,7 +70,7 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
 
 
   @Override
-  public SimpleAuthorizationInfo get(SimplePrincipalCollection key) throws CacheException {
+  public UsergridAuthorizationInfo get(SimplePrincipalCollection key) throws CacheException {
     /**
      * Write the data with ttl=0, this means we can set gc_grace = to 0 so we clean data faster when it expires
      */
@@ -76,19 +83,23 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
 
     query.setKey(rowKey);
     query.setColumnFamily(SHIRO_CACHES);
-    query.setColumnNames(ROLES, PERMISSIONS, DELETED);
+    query.setColumnNames(ROLES, PERMISSIONS, DELETED, ORGS, APPS);
 
     ColumnSlice<String, DynamicComposite> results = query.execute().get();
 
 
     final HColumn<String, DynamicComposite> roleColumn =  results.getColumnByName(ROLES);
     final HColumn<String, DynamicComposite> permissionsColumn = results.getColumnByName(PERMISSIONS);
+    final HColumn<String, DynamicComposite> organizationsColumn = results.getColumnByName(ORGS);
+    final HColumn<String, DynamicComposite> applicationsColumn = results.getColumnByName(APPS);
+
     final HColumn<String, DynamicComposite> deletedColumn = results.getColumnByName(DELETED);
+
 
     /**
      * We have incomplete data, return nothing
      */
-    if(roleColumn == null || permissionsColumn == null || deletedColumn == null){
+    if(roleColumn == null || permissionsColumn == null || deletedColumn == null || organizationsColumn == null || applicationsColumn == null){
       return null;
     }
 
@@ -101,7 +112,7 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
       return null;
     }
 
-    final SimpleAuthorizationInfo authInfo = new SimpleAuthorizationInfo();
+    final UsergridAuthorizationInfo authInfo = new UsergridAuthorizationInfo();
 
     final DynamicComposite storedRoles = roleColumn.getValue();
 
@@ -121,12 +132,42 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
       authInfo.addStringPermission(value);
     }
 
+
+    final DynamicComposite storedOrgs = organizationsColumn.getValue();
+
+    List<AbstractComposite.Component<?>> components = storedOrgs.getComponents();
+    int size  = storedOrgs.getComponents().size();
+
+
+    for(int i = 0; i < size; i=i+ 2){
+      final UUID id = components.get(i).getValue(UUID_SER);
+      final String name   = components.get(i+1).getValue(STR_SER);
+
+      authInfo.addOrganizationInfo(new OrganizationInfo(id, name));
+
+    }
+
+
+    final DynamicComposite storedApps = applicationsColumn.getValue();
+
+    components = storedApps.getComponents();
+    size  = storedApps.getComponents().size();
+
+
+    for(int i = 0; i < size; i=i+ 2){
+      final UUID id = components.get(i).getValue(UUID_SER);
+      final String name   = components.get(i+1).getValue(STR_SER);
+
+      authInfo.addApplication(new ApplicationInfo(id, name));
+
+    }
+
     return authInfo;
 
   }
 
   @Override
-  public SimpleAuthorizationInfo put(SimplePrincipalCollection key, SimpleAuthorizationInfo info) throws CacheException {
+  public UsergridAuthorizationInfo put(SimplePrincipalCollection key, UsergridAuthorizationInfo info) throws CacheException {
     final String rowKey = getRowKey(key);
 
 
@@ -147,6 +188,22 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
     }
 
 
+    final DynamicComposite applications = new DynamicComposite();
+
+    for(ApplicationInfo app: info.getApplications()){
+      applications.add(app.getId());
+      applications.add(app.getName());
+    }
+
+
+    final DynamicComposite organizations = new DynamicComposite();
+
+    for(OrganizationInfo org: info.getOrganizations()){
+      organizations.add(org.getUuid());
+      organizations.add(org.getName());
+    }
+
+
     /**
      * Write the data
      */
@@ -157,6 +214,10 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
     m.addInsertion(rowKey, SHIRO_CACHES, createColumn(ROLES, roles, ttl, STR_SER, DYN_SER ));
 
     m.addInsertion(rowKey, SHIRO_CACHES, createColumn(PERMISSIONS, permissions, ttl, STR_SER, DYN_SER ));
+
+    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(ORGS, organizations, ttl, STR_SER, DYN_SER ));
+
+    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(APPS, applications, ttl, STR_SER, DYN_SER ));
 
     m.addInsertion(rowKey, SHIRO_CACHES, createColumn(DELETED, FALSE, ttl, STR_SER, BYTE_ARRAY_SER));
 
@@ -176,9 +237,9 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
 
 
   @Override
-  public SimpleAuthorizationInfo remove(SimplePrincipalCollection key) throws CacheException {
+  public UsergridAuthorizationInfo remove(SimplePrincipalCollection key) throws CacheException {
 
-    SimpleAuthorizationInfo returned = get(key);
+    UsergridAuthorizationInfo returned = get(key);
 
     //nothing to do, no values
     if(returned == null){
@@ -199,6 +260,10 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
     m.addInsertion(rowKey, SHIRO_CACHES, createColumn(ROLES, new DynamicComposite(), 1, STR_SER, DYN_SER ));
 
     m.addInsertion(rowKey, SHIRO_CACHES, createColumn(PERMISSIONS, new DynamicComposite(), 1, STR_SER, DYN_SER ));
+
+    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(ORGS, new DynamicComposite(), 1, STR_SER, DYN_SER ));
+
+    m.addInsertion(rowKey, SHIRO_CACHES, createColumn(APPS, new DynamicComposite(), 1, STR_SER, DYN_SER ));
 
     //We need to use the same TTL as the write.  Otherwise, we could potentially remove a row and lose it due to compaction if a replica is down
     m.addInsertion(rowKey, SHIRO_CACHES, createColumn(DELETED, TRUE, ttl, STR_SER, BYTE_ARRAY_SER ));
@@ -224,7 +289,7 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, SimpleAu
   }
 
   @Override
-  public Collection<SimpleAuthorizationInfo> values() {
+  public Collection<UsergridAuthorizationInfo> values() {
     throw new UnsupportedOperationException("values is not supported.  It will most likely not load before OOM");
   }
 
