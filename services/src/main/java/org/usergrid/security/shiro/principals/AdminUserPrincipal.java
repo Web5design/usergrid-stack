@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2012 Apigee Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,11 @@ import static org.usergrid.security.shiro.utils.SubjectUtils.getPermissionFromPa
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.usergrid.management.ApplicationInfo;
+import org.usergrid.management.ManagementService;
+import org.usergrid.management.OrganizationInfo;
 import org.usergrid.management.UserInfo;
+import org.usergrid.security.shiro.Realm;
 import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 
 import java.util.Map;
@@ -28,46 +32,47 @@ import java.util.UUID;
 
 public class AdminUserPrincipal extends UserPrincipal {
 
-	public AdminUserPrincipal(UserInfo user) {
-		super(MANAGEMENT_APPLICATION_ID, user);
-	}
+  public AdminUserPrincipal(UserInfo user) {
+    super(MANAGEMENT_APPLICATION_ID, user);
+  }
 
   @Override
-  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info) {
+  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, Realm realm) throws Exception {
     // AdminUserPrincipals are through basic auth and sessions
     // They have access to organizations and organization
     // applications
 
-    UserInfo user = ((AdminUserPrincipal) principal).getUser();
+    UserInfo user = getUser();
+
+    final boolean superUserEnabled = realm.isSuperUserEnabled();
+    final String superUser = realm.getSuperUser();
 
     if (superUserEnabled && (superUser != null)
         && superUser.equals(user.getUsername())) {
       // The system user has access to everything
 
-      role(info, principal, ROLE_SERVICE_ADMIN);
-      role(info, principal, ROLE_ORGANIZATION_ADMIN);
-      role(info, principal, ROLE_APPLICATION_ADMIN);
-      role(info, principal, ROLE_ADMIN_USER);
+      info.addRole(Realm.ROLE_SERVICE_ADMIN);
+      info.addRole(Realm.ROLE_ORGANIZATION_ADMIN);
+      info.addRole(Realm.ROLE_APPLICATION_ADMIN);
+      info.addRole(Realm.ROLE_ADMIN_USER);
 
-      grant(info, principal, "system:access");
+      info.addStringPermission("system:access");
 
-      grant(info, principal,
+      info.addStringPermission(
           "organizations:admin,access,get,put,post,delete:*");
-      grant(info, principal,
+      info.addStringPermission(
           "applications:admin,access,get,put,post,delete:*");
-      grant(info, principal,
+      info.addStringPermission(
           "organizations:admin,access,get,put,post,delete:*:/**");
-      grant(info, principal,
+      info.addStringPermission(
           "applications:admin,access,get,put,post,delete:*:/**");
-      grant(info, principal, "users:access:*");
+      info.addStringPermission("users:access:*");
 
-      grant(info,
-          principal,
+      info.addStringPermission(
           getPermissionFromPath(MANAGEMENT_APPLICATION_ID,
               "access"));
 
-      grant(info,
-          principal,
+      info.addStringPermission(
           getPermissionFromPath(MANAGEMENT_APPLICATION_ID,
               "get,put,post,delete", "/**"));
 
@@ -78,55 +83,58 @@ public class AdminUserPrincipal extends UserPrincipal {
       // An service user can be associated with multiple
       // organizations
 
-      grant(info,
-          principal,
+      info.addStringPermission(
           getPermissionFromPath(MANAGEMENT_APPLICATION_ID,
               "access"));
 
       // admin users cannot access the management app directly
       // so open all permissions
-      grant(info,
-          principal,
+      info.addStringPermission(
           getPermissionFromPath(MANAGEMENT_APPLICATION_ID,
               "get,put,post,delete", "/**"));
 
-      role(info, principal, ROLE_ADMIN_USER);
+      info.addRole(Realm.ROLE_ADMIN_USER);
 
-      try {
+      final ManagementService management = realm.getManagement();
 
-        Map<UUID, String> userOrganizations = management
-            .getOrganizationsForAdminUser(user.getUuid());
 
-        if (userOrganizations != null) {
-          for (UUID id : userOrganizations.keySet()) {
-            grant(info, principal,
-                "organizations:admin,access,get,put,post,delete:"
-                    + id);
-          }
-          organizationSet.putAll(userOrganizations);
+      Map<UUID, String> userOrganizations = management
+          .getOrganizationsForAdminUser(user.getUuid());
 
-          Map<UUID, String> userApplications = management
-              .getApplicationsForOrganizations(userOrganizations
-                  .keySet());
-          if ((userApplications != null)
-              && !userApplications.isEmpty()) {
-            grant(info,
-                principal,
-                "applications:admin,access,get,put,post,delete:"
-                    + StringUtils.join(
-                    userApplications
-                        .keySet(), ','));
-            applicationSet.putAll(userApplications);
-          }
+      if (userOrganizations != null) {
 
-          role(info, principal, ROLE_ORGANIZATION_ADMIN);
-          role(info, principal, ROLE_APPLICATION_ADMIN);
+        for (Map.Entry<UUID, String> entry : userOrganizations.entrySet()) {
+          info.addStringPermission(
+              new StringBuilder("organizations:admin,access,get,put,post,delete:").append(entry.getKey()).toString());
+
+          info.addOrganizationInfo(new OrganizationInfo(entry.getKey(), entry.getValue()));
         }
 
-      } catch (Exception e) {
-        logger.error(
-            "Unable to construct admin user permissions", e);
+
+        Map<UUID, String> userApplications = management
+            .getApplicationsForOrganizations(userOrganizations.keySet());
+
+        if (userApplications != null && !userApplications.isEmpty()) {
+
+          StringBuilder permission = new StringBuilder("applications:admin,access,get,put,post,delete:");
+
+          for (Map.Entry<UUID, String> entry : userApplications.entrySet()) {
+            permission.append(entry.getKey()).append(",");
+
+            info.addApplication(new ApplicationInfo(entry.getKey(), entry.getValue()));
+          }
+
+          //remove the extra comma
+          permission.deleteCharAt(permission.length() - 1);
+
+          info.addStringPermission(permission.toString());
+        }
+
+        info.addRole(Realm.ROLE_ORGANIZATION_ADMIN);
+        info.addRole(Realm.ROLE_APPLICATION_ADMIN);
       }
+
+
     }
   }
 

@@ -17,12 +17,26 @@ package org.usergrid.security.shiro.principals;
 
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.usergrid.management.UserInfo;
+import org.usergrid.persistence.EntityManager;
+import org.usergrid.persistence.entities.Role;
+import org.usergrid.security.shiro.Realm;
 import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 import org.usergrid.security.shiro.credentials.AccessTokenCredentials;
+import org.usergrid.security.tokens.TokenInfo;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.usergrid.utils.StringUtils.stringOrSubstringAfterFirst;
+import static org.usergrid.utils.StringUtils.stringOrSubstringBeforeFirst;
 
 public abstract class PrincipalIdentifier {
 
-	AccessTokenCredentials accessTokenCredentials;
+
+	private AccessTokenCredentials accessTokenCredentials;
 
 	public UserInfo getUser() {
 		return null;
@@ -45,12 +59,71 @@ public abstract class PrincipalIdentifier {
 		this.accessTokenCredentials = accessTokenCredentials;
 	}
 
+
+  /**
+   * Grant all permissions for the role names on this application
+   * @param info
+   * @param em
+   * @param applicationId
+   * @param token
+   * @param rolenames
+   * @throws Exception
+   */
+  protected void grantAppRoles(UsergridAuthorizationInfo info, EntityManager em, UUID applicationId,  TokenInfo token, Set<String> rolenames) throws Exception{
+    Map<String, Role> app_roles = em
+        .getRolesWithTitles(rolenames);
+
+    for (String rolename : rolenames) {
+      if ((app_roles != null) && (token != null)) {
+        Role role = app_roles.get(rolename);
+        if ((role != null)
+            && (role.getInactivity() > 0)
+            && (token.getInactive() > role
+            .getInactivity())) {
+          continue;
+        }
+      }
+      Set<String> permissions = em
+          .getRolePermissions(rolename);
+      grant(info, applicationId, permissions);
+
+      final String role = new StringBuilder("application-role:").append(applicationId).append(":").append(rolename).toString();
+
+      info.addRole(role);
+
+    }
+  }
+
+
+
+  protected void grant(UsergridAuthorizationInfo info,  UUID applicationId,
+                            Set<String> permissions) {
+    if (permissions != null) {
+      for (String permission : permissions) {
+        if (isNotBlank(permission)) {
+          String operations = "*";
+          if (permission.indexOf(':') != -1) {
+            operations = stringOrSubstringBeforeFirst(permission,
+                ':');
+          }
+          if (isBlank(operations)) {
+            operations = "*";
+          }
+          permission = stringOrSubstringAfterFirst(permission, ':');
+          permission =  new StringBuilder("applications:").append(operations).append(":").append(applicationId).append(":").append(permission).toString();
+          info.addStringPermission(permission);
+        }
+      }
+    }
+  }
   /**
    * Generate the authorization info for this principal
    *
    * @param info The information object that should be populated
+   * @param realm The realm requesting the populate operation
+   *
    * @return
    */
-  public abstract void populateAuthorizatioInfo(UsergridAuthorizationInfo info);
+  public abstract void populateAuthorizatioInfo(UsergridAuthorizationInfo info, Realm realm) throws Exception;
 
 }

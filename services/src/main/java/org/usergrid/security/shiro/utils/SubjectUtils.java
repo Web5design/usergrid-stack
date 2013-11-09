@@ -375,15 +375,29 @@ public class SubjectUtils {
 		if (currentUser == null) {
 			return false;
 		}
-		return currentUser.isPermitted("users:access:" + userId);
+		return currentUser.isPermitted(new StringBuilder("users:access:").append(userId).toString());
 	}
 
 	public static String getPermissionFromPath(UUID applicationId,
 			String operations, String... paths) {
-		String permission = "applications:" + operations + ":" + applicationId;
-		String p = StringUtils.join(paths, ',');
-		permission += (isNotBlank(p) ? ":" + p : "");
-		return permission;
+    StringBuilder permission = new StringBuilder("applications:").append(operations).append(":").append(applicationId);
+
+    int size = paths.length;
+
+    if(size > 0){
+      permission.append(":");
+    }
+
+    for(int i = 0; i < size; i ++){
+      permission.append(paths[i]).append(",");
+    }
+
+    //we had paths, remove the last comma
+    if(size > 0){
+      permission.deleteCharAt(permission.length()-1);
+    }
+
+    return permission.toString();
 	}
 
 	public static Subject getSubject() {

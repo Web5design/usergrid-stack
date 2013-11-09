@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2012 Apigee Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,6 +28,7 @@ import org.usergrid.persistence.Results;
 import org.usergrid.persistence.SimpleEntityRef;
 import org.usergrid.persistence.entities.Group;
 import org.usergrid.persistence.entities.User;
+import org.usergrid.security.shiro.Realm;
 import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 import org.usergrid.security.shiro.credentials.AccessTokenCredentials;
 import org.usergrid.security.tokens.TokenInfo;
@@ -36,34 +37,21 @@ import static org.usergrid.security.shiro.utils.SubjectUtils.getPermissionFromPa
 
 public class ApplicationUserPrincipal extends UserPrincipal {
 
-	public ApplicationUserPrincipal(UUID applicationId, UserInfo user) {
-		super(applicationId, user);
-	}
+  public ApplicationUserPrincipal(UUID applicationId, UserInfo user) {
+    super(applicationId, user);
+  }
 
 
   @Override
-  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info) {
+  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, Realm realm) throws Exception {
 
-    role(info, principal, ROLE_APPLICATION_USER);
+    info.addRole(Realm.ROLE_APPLICATION_USER);
 
-    UUID applicationId = ((ApplicationUserPrincipal) principal)
-        .getApplicationId();
+//
+//    TODO T.N. I don't think we need this anymore.  A token should already be present to get this far
 
-    AccessTokenCredentials tokenCredentials = ((ApplicationUserPrincipal) principal)
-        .getAccessTokenCredentials();
-    TokenInfo token = null;
-    if (tokenCredentials != null) {
-      try {
-        token = tokens
-            .getTokenInfo(tokenCredentials.getToken());
-      } catch (Exception e) {
-        logger.error("Unable to retrieve token info", e);
-      }
-      logger.debug("Token: {}", token);
-    }
 
-    grant(info, principal,
-        getPermissionFromPath(applicationId, "access"));
+    info.addStringPermission(getPermissionFromPath(applicationId, "access"));
 
                 /*
                  * grant(info, principal, getPermissionFromPath(applicationId,
@@ -73,69 +61,66 @@ public class ApplicationUserPrincipal extends UserPrincipal {
                  * "/users/${user}/following/user/*"));
                  */
 
-    EntityManager em = emf.getEntityManager(applicationId);
-    try {
-      String appName = (String) em.getProperty(
-          em.getApplicationRef(), "name");
-      applicationSet.put(applicationId, appName);
-      application = new ApplicationInfo(applicationId, appName);
-    } catch (Exception e) {
+//    TODO T.N. not sure if this is obscelete
+//    EntityManager em = emf.getEntityManager(applicationId);
+//    try {
+//      String appName = (String) em.getProperty(
+//          em.getApplicationRef(), "name");
+//      applicationSet.put(applicationId, appName);
+//      application = new ApplicationInfo(applicationId, appName);
+//    } catch (Exception e) {
+//    }
+
+
+    final EntityManager em = realm.getEmf().getEntityManager(applicationId);
+
+
+    final Set<String> permissions = em.getRolePermissions("default");
+
+    grant(info, applicationId, permissions);
+
+
+    final Set<String> userPermissions = em.getUserPermissions(user.getUuid());
+
+    grant(info, applicationId, userPermissions);
+
+
+    final AccessTokenCredentials tokenCredentials = getAccessTokenCredentials();
+
+    TokenInfo token = null;
+
+    if (tokenCredentials != null) {
+
+      token = realm.getTokens().getTokenInfo(tokenCredentials.getToken());
     }
 
-    try {
-      Set<String> permissions = em.getRolePermissions("default");
-      grant(info, principal, applicationId, permissions);
-    } catch (Exception e) {
-      logger.error("Unable to get user default role permissions",
-          e);
-    }
+    final Set<String> userRoleNames = em.getUserRoles(user.getUuid());
+    grantAppRoles(info, em, applicationId, token, userRoleNames);
 
-    UserInfo user = ((ApplicationUserPrincipal) principal)
-        .getUser();
-    try {
-      Set<String> permissions = em.getUserPermissions(user
-          .getUuid());
-      grant(info, principal, applicationId, permissions);
-    } catch (Exception e) {
-      logger.error("Unable to get user permissions", e);
-    }
 
-    try {
-      Set<String> rolenames = em.getUserRoles(user.getUuid());
-      grantAppRoles(info, em, applicationId, token, principal, rolenames);
-    } catch (Exception e) {
-      logger.error("Unable to get user role permissions", e);
-    }
+    Results r = em.getCollection(new SimpleEntityRef(
+        User.ENTITY_TYPE, user.getUuid()), "groups", null,
+        1000, Results.Level.IDS, false);
+    if (r != null) {
 
-    try {
-      //TODO TN.  This is woefully inefficient, but temporary.  Introduce cassandra backed shiro caching so this only ever happens once.
-      //See USERGRID-779 for details
-      Results r = em.getCollection(new SimpleEntityRef(
-          User.ENTITY_TYPE, user.getUuid()), "groups", null,
-          1000, Results.Level.IDS, false);
-      if (r != null) {
+      final Set<String> rolenames = new HashSet<String>();
 
-        Set<String> rolenames = new HashSet<String>();
+      for (UUID groupId : r.getIds()) {
 
-        for (UUID groupId : r.getIds()) {
+        Results roleResults = em.getCollection(new SimpleEntityRef(
+            Group.ENTITY_TYPE, groupId), "roles", null,
+            1000, Results.Level.CORE_PROPERTIES, false);
 
-          Results roleResults = em.getCollection(new SimpleEntityRef(
-              Group.ENTITY_TYPE, groupId), "roles", null,
-              1000, Results.Level.CORE_PROPERTIES, false);
-
-          for(Entity entity : roleResults.getEntities()){
-            rolenames.add(entity.getName());
-          }
-
+        for (Entity entity : roleResults.getEntities()) {
+          rolenames.add(entity.getName());
         }
 
-
-        grantAppRoles(info, em, applicationId, token, principal, rolenames);
       }
 
-    } catch (Exception e) {
-      logger.error("Unable to get user group role permissions", e);
+
+      grantAppRoles(info, em, applicationId, token, rolenames);
     }
+
 
   }
 }

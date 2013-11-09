@@ -20,7 +20,9 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.usergrid.management.ApplicationInfo;
 import org.usergrid.management.OrganizationInfo;
+import org.usergrid.security.shiro.Realm;
 import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 
 public class OrganizationPrincipal extends PrincipalIdentifier {
@@ -41,38 +43,34 @@ public class OrganizationPrincipal extends PrincipalIdentifier {
 	}
 
   @Override
-  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info) {
+  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, Realm realm) throws Exception {
     // OrganizationPrincipals are usually only through OAuth
     // They have access to a single organization
 
-    organization = ((OrganizationPrincipal) principal)
-        .getOrganization();
+   info.addRole(Realm.ROLE_ORGANIZATION_ADMIN);
+   info.addRole(Realm.ROLE_APPLICATION_ADMIN);
+   info.addStringPermission(new StringBuilder("organizations:access:").append(organization.getUuid()).toString());
 
-    role(info, principal, ROLE_ORGANIZATION_ADMIN);
-    role(info, principal, ROLE_APPLICATION_ADMIN);
+    info.addOrganizationInfo(organization);
 
-    grant(info, principal,
-        "organizations:access:" + organization.getUuid());
-    organizationSet.put(organization.getUuid(),
-        organization.getName());
 
-    Map<UUID, String> applications = null;
-    try {
-      applications = management
-          .getApplicationsForOrganization(organization
-              .getUuid());
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    final Map<UUID, String> applications = realm.getManagement().getApplicationsForOrganization(organization.getUuid());
+
     if ((applications != null) && !applications.isEmpty()) {
-      grant(info,
-          principal,
-          "applications:admin,access,get,put,post,delete:"
-              + StringUtils.join(applications.keySet(),
-              ','));
 
-      applicationSet.putAll(applications);
+      StringBuilder permissions = new StringBuilder("applications:admin,access,get,put,post,delete:");
+
+      for(Map.Entry<UUID, String> entry: applications.entrySet()){
+        permissions.append(entry.getKey()).append(",");
+
+        info.addApplication(new ApplicationInfo(entry.getKey(), entry.getValue()));
+
+      }
+
+      permissions.deleteCharAt(permissions.length() -1);
+
+      info.addStringPermission(permissions.toString());
+
     }
   }
 }

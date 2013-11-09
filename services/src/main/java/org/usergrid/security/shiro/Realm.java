@@ -63,6 +63,7 @@ import org.usergrid.persistence.SimpleEntityRef;
 import org.usergrid.persistence.entities.Group;
 import org.usergrid.persistence.entities.Role;
 import org.usergrid.persistence.entities.User;
+import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 import org.usergrid.security.shiro.credentials.AccessTokenCredentials;
 import org.usergrid.security.shiro.credentials.AdminUserAccessToken;
 import org.usergrid.security.shiro.credentials.AdminUserPassword;
@@ -140,20 +141,6 @@ public class Realm extends AuthorizingRealm {
         super.setPermissionResolver(permissionResolver);
     }
 
-    @Autowired
-    public void setEntityManagerFactory(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
-
-    @Autowired
-    public void setManagementService(ManagementService management) {
-        this.management = management;
-    }
-
-    @Autowired
-    public void setTokenService(TokenService tokens) {
-        this.tokens = tokens;
-    }
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(
@@ -211,7 +198,7 @@ public class Realm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(
             PrincipalCollection principals) {
-        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        UsergridAuthorizationInfo info = new UsergridAuthorizationInfo();
 
       //TODO TN, remove this
         Map<UUID, String> organizationSet = HashBiMap.create();
@@ -222,7 +209,12 @@ public class Realm extends AuthorizingRealm {
         for (PrincipalIdentifier principal : principals
                 .byType(PrincipalIdentifier.class)) {
 
-          principal.populateAuthorizatioInfo(info);
+          try {
+            principal.populateAuthorizatioInfo(info, this);
+          } catch (Exception e) {
+            logger.error("Unable to populate authorization info");
+            throw new RuntimeException("Unable to populate authorization info", e);
+          }
 
 //            if (principal instanceof OrganizationPrincipal) {
 //
@@ -256,78 +248,45 @@ public class Realm extends AuthorizingRealm {
         return info;
     }
 
-    /**
-     * Grant all permissions for the role names on this application
-     * @param info
-     * @param em
-     * @param applicationId
-     * @param token
-     * @param principal
-     * @param rolenames
-     * @throws Exception
-     */
-    private void grantAppRoles( SimpleAuthorizationInfo info, EntityManager em, UUID applicationId,  TokenInfo token, PrincipalIdentifier principal, Set<String> rolenames) throws Exception{
-        Map<String, Role> app_roles = em
-                .getRolesWithTitles(rolenames);
-
-        for (String rolename : rolenames) {
-            if ((app_roles != null) && (token != null)) {
-                Role role = app_roles.get(rolename);
-                if ((role != null)
-                        && (role.getInactivity() > 0)
-                        && (token.getInactive() > role
-                                .getInactivity())) {
-                    continue;
-                }
-            }
-            Set<String> permissions = em
-                    .getRolePermissions(rolename);
-            grant(info, principal, applicationId, permissions);
-            role(info,
-                    principal,
-                    "application-role:"
-                            .concat(applicationId.toString())
-                            .concat(":").concat(rolename));
-        }
-    }
-    public static void grant(SimpleAuthorizationInfo info,
-            PrincipalIdentifier principal, String permission) {
-        logger.debug("Principal {} granted permission: {}",
-                principal, permission);
-        info.addStringPermission(permission);
-    }
-
-    public static void role(SimpleAuthorizationInfo info,
-            PrincipalIdentifier principal, String role) {
-        logger.debug("Principal {} added to role: {}", principal, role);
-        info.addRole(role);
-    }
-
-    private static void grant(SimpleAuthorizationInfo info,
-            PrincipalIdentifier principal, UUID applicationId,
-            Set<String> permissions) {
-        if (permissions != null) {
-            for (String permission : permissions) {
-                if (isNotBlank(permission)) {
-                    String operations = "*";
-                    if (permission.indexOf(':') != -1) {
-                        operations = stringOrSubstringBeforeFirst(permission,
-                                ':');
-                    }
-                    if (isBlank(operations)) {
-                        operations = "*";
-                    }
-                    permission = stringOrSubstringAfterFirst(permission, ':');
-                    permission = "applications:" + operations + ":"
-                            + applicationId + ":" + permission;
-                    grant(info, principal, permission);
-                }
-            }
-        }
-    }
 
     @Override
     public boolean supports(AuthenticationToken token) {
         return token instanceof PrincipalCredentialsToken;
     }
+
+
+  @Autowired
+  public void setEntityManagerFactory(EntityManagerFactory emf) {
+    this.emf = emf;
+  }
+
+  @Autowired
+  public void setManagementService(ManagementService management) {
+    this.management = management;
+  }
+
+  @Autowired
+  public void setTokenService(TokenService tokens) {
+    this.tokens = tokens;
+  }
+
+  public EntityManagerFactory getEmf() {
+    return emf;
+  }
+
+  public ManagementService getManagement() {
+    return management;
+  }
+
+  public TokenService getTokens() {
+    return tokens;
+  }
+
+  public boolean isSuperUserEnabled() {
+    return superUserEnabled;
+  }
+
+  public String getSuperUser() {
+    return superUser;
+  }
 }

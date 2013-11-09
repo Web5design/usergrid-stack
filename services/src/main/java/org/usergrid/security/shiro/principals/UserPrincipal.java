@@ -21,8 +21,8 @@ import org.usergrid.management.UserInfo;
 
 public abstract class UserPrincipal extends PrincipalIdentifier {
 
-	final UserInfo user;
-	final UUID applicationId;
+	protected final UserInfo user;
+	protected final UUID applicationId;
 
 	public UserPrincipal(UUID applicationId, UserInfo user) {
 		this.applicationId = applicationId;
