@@ -26,10 +26,6 @@ public class UsergridAuthorizationInfo extends SimpleAuthorizationInfo {
 
 
 
-
-  public BiMap<UUID, String> organizations = HashBiMap.create();
-
-
   /**
    * Get the application by uuid
    * @param applicationId
