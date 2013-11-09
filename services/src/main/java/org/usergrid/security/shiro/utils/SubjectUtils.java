@@ -15,17 +15,16 @@
  ******************************************************************************/
 package org.usergrid.security.shiro.utils;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.usergrid.security.shiro.Realm.ROLE_ADMIN_USER;
 import static org.usergrid.security.shiro.Realm.ROLE_APPLICATION_ADMIN;
 import static org.usergrid.security.shiro.Realm.ROLE_APPLICATION_USER;
 import static org.usergrid.security.shiro.Realm.ROLE_ORGANIZATION_ADMIN;
 import static org.usergrid.security.shiro.Realm.ROLE_SERVICE_ADMIN;
 
+import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.session.Session;
@@ -37,6 +36,8 @@ import org.usergrid.management.OrganizationInfo;
 import org.usergrid.management.UserInfo;
 import org.usergrid.persistence.Identifier;
 import org.usergrid.security.shiro.PrincipalCredentialsToken;
+import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
+import org.usergrid.security.shiro.principals.PrincipalIdentifier;
 import org.usergrid.security.shiro.principals.UserPrincipal;
 
 import com.google.common.collect.BiMap;
@@ -68,17 +69,7 @@ public class SubjectUtils {
 		return currentUser.hasRole(ROLE_ORGANIZATION_ADMIN);
 	}
 
-	public static BiMap<UUID, String> getOrganizations() {
-		Subject currentUser = getSubject();
-		if (!isOrganizationAdmin()) {
-			return null;
-		}
-		Session session = currentUser.getSession();
-		@SuppressWarnings("unchecked")
-		BiMap<UUID, String> organizations = (BiMap<UUID, String>) session
-				.getAttribute("organizations");
-		return organizations;
-	}
+
 
 	public static boolean isPermittedAccessToOrganization(Identifier identifier) {
 		if (isServiceAdmin()) {
@@ -100,22 +91,20 @@ public class SubjectUtils {
 		if (identifier == null) {
 			return null;
 		}
-		UUID organizationId = null;
-		String organizationName = null;
-		BiMap<UUID, String> organizations = getOrganizations();
-		if (organizations == null) {
+
+		UsergridAuthorizationInfo authInfo = getAuthorizationInfo();
+
+    if (authInfo == null) {
 			return null;
 		}
+
 		if (identifier.isName()) {
-			organizationName = identifier.getName().toLowerCase();
-			organizationId = organizations.inverse().get(organizationName);
+			return authInfo.getOrganization(identifier.getName());
 		} else if (identifier.isUUID()) {
-			organizationId = identifier.getUUID();
-			organizationName = organizations.get(organizationId);
+			return authInfo.getOrganization(identifier.getUUID());
 		}
-		if ((organizationId != null) && (organizationName != null)) {
-			return new OrganizationInfo(organizationId, organizationName);
-		}
+
+
 		return null;
 	}
 
@@ -150,37 +139,7 @@ public class SubjectUtils {
 		return organization.getName();
 	}
 
-	public static UUID getOrganizationId() {
-		Subject currentUser = getSubject();
-		if (currentUser == null) {
-			return null;
-		}
-		if (!currentUser.hasRole(ROLE_ORGANIZATION_ADMIN)) {
-			return null;
-		}
-		Session session = currentUser.getSession();
-		OrganizationInfo organization = (OrganizationInfo) session
-				.getAttribute("organization");
-		if (organization == null) {
-			return null;
-		}
-		return organization.getUuid();
-	}
 
-	public static Set<String> getOrganizationNames() {
-		Subject currentUser = getSubject();
-		if (currentUser == null) {
-			return null;
-		}
-		if (!currentUser.hasRole(ROLE_ORGANIZATION_ADMIN)) {
-			return null;
-		}
-		BiMap<UUID, String> organizations = getOrganizations();
-		if (organizations == null) {
-			return null;
-		}
-		return organizations.inverse().keySet();
-	}
 
 	public static boolean isApplicationAdmin() {
 		if (isServiceAdmin()) {
@@ -233,42 +192,52 @@ public class SubjectUtils {
 		if (!isApplicationAdmin() && !isApplicationUser()) {
 			return null;
 		}
-		String applicationName = null;
-		UUID applicationId = null;
-		BiMap<UUID, String> applications = getApplications();
-		if (applications == null) {
+		UsergridAuthorizationInfo info = getAuthorizationInfo();
+		if (info == null) {
 			return null;
 		}
 		if (identifier.isName()) {
-			applicationName = identifier.getName().toLowerCase();
-			applicationId = applications.inverse().get(applicationName);
-			if (applicationId == null) {
-				applicationId = applications.inverse()
-						.get(identifier.getName());
-			}
+			final String applicationName = identifier.getName().toLowerCase();
+			return info.getApplication(applicationName);
 		} else if (identifier.isUUID()) {
-			applicationId = identifier.getUUID();
-			applicationName = applications.get(identifier.getUUID());
+			final UUID applicationId = identifier.getUUID();
+      return info.getApplication(applicationId);
 		}
-		if ((applicationId != null) && (applicationName != null)) {
-			return new ApplicationInfo(applicationId, applicationName);
-		}
-		return null;
+
+    return null;
+
 	}
 
-	@SuppressWarnings("unchecked")
-	public static BiMap<UUID, String> getApplications() {
+
+  /**
+   *
+   * @return
+   */
+	public static UsergridAuthorizationInfo getAuthorizationInfo() {
+
+
+
 		Subject currentUser = getSubject();
 		if (currentUser == null) {
 			return null;
 		}
-		if (!currentUser.hasRole(ROLE_APPLICATION_ADMIN)
-				&& !currentUser.hasRole(ROLE_APPLICATION_USER)) {
-			return null;
-		}
-		Session session = currentUser.getSession();
-		return (BiMap<UUID, String>) session.getAttribute("applications");
+
+	  Iterator<PrincipalIdentifier> principals = currentUser.getPrincipals().byType(PrincipalIdentifier.class).iterator();
+
+    if(!principals.hasNext()){
+      return null;
+    }
+
+    //TODO T.N. Finish this. USERGRID-2443
+
+    SecurityUtils.getSecurityManager().authenticate();
+
+//    UsergridAuthorizationInfo authorizationInfo =   SecurityUtils.getSecurityManager().authenticate(principals.next().getUser().);
+
+    return null;
 	}
+
+
 
 	public static boolean isServiceAdmin() {
 		Subject currentUser = getSubject();

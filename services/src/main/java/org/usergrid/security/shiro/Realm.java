@@ -200,11 +200,6 @@ public class Realm extends AuthorizingRealm {
             PrincipalCollection principals) {
         UsergridAuthorizationInfo info = new UsergridAuthorizationInfo();
 
-      //TODO TN, remove this
-        Map<UUID, String> organizationSet = HashBiMap.create();
-        Map<UUID, String> applicationSet = HashBiMap.create();
-        OrganizationInfo organization = null;
-        ApplicationInfo application = null;
 
         for (PrincipalIdentifier principal : principals
                 .byType(PrincipalIdentifier.class)) {
@@ -216,34 +211,7 @@ public class Realm extends AuthorizingRealm {
             throw new RuntimeException("Unable to populate authorization info", e);
           }
 
-//            if (principal instanceof OrganizationPrincipal) {
-//
-//
-//            } else if (principal instanceof ApplicationPrincipal) {
-//
-//
-//            } else if (principal instanceof AdminUserPrincipal) {
-//
-//            } else if (principal instanceof ApplicationUserPrincipal) {
-//
-//            } else if (principal instanceof ApplicationGuestPrincipal) {
-//
-//            }
         }
-//
-//        // Store additional information in the request session to speed up
-//        // looking up organization info
-//
-//        Subject currentUser = SecurityUtils.getSubject();
-//        Session session = currentUser.getSession();
-//        session.setAttribute("applications", applicationSet);
-//        session.setAttribute("organizations", organizationSet);
-//        if (organization != null) {
-//            session.setAttribute("organization", organization);
-//        }
-//        if (application != null) {
-//            session.setAttribute("application", application);
-//        }
 
         return info;
     }

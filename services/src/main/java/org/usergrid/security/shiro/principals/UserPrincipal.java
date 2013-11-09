@@ -61,7 +61,7 @@ public abstract class UserPrincipal extends PrincipalIdentifier {
    */
 	@Override
 	public String toString() {
-		return String.format("appuser/%s/%s", applicationId, user.getUuid());
+    return new StringBuilder("appuser/").append(applicationId).append("/").append(user.getUuid()).toString();
 	}
 
 }

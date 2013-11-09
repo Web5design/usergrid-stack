@@ -31,11 +31,11 @@ public class UsergridAuthorizationInfo extends SimpleAuthorizationInfo {
 
 
   /**
-   * Get the application by name
+   * Get the application by uuid
    * @param applicationId
    * @return
    */
-  public ApplicationInfo getApplicationName(UUID applicationId){
+  public ApplicationInfo getApplication(UUID applicationId){
     return applicationUUID.get(applicationId);
   }
 
@@ -44,7 +44,7 @@ public class UsergridAuthorizationInfo extends SimpleAuthorizationInfo {
    * @param applicationName
    * @return
    */
-  public ApplicationInfo getApplicationUUID(String applicationName){
+  public ApplicationInfo getApplication(String applicationName){
     return applicationString.get(applicationName);
   }
 
@@ -67,20 +67,20 @@ public class UsergridAuthorizationInfo extends SimpleAuthorizationInfo {
   }
 
   /**
-   * Get organization by name
+   * Get organization by uuid
    * @param organizationid
    * @return
    */
-  public OrganizationInfo getOrganizationName(UUID organizationid){
+  public OrganizationInfo getOrganization(UUID organizationid){
       return organizationUUID.get(organizationid);
   }
 
   /**
-   * Get the organization by uuid
+   * Get the organization by name
    * @param organizationName
    * @return
    */
-  public OrganizationInfo getOrganizationUUID(String organizationName){
+  public OrganizationInfo getOrganization(String organizationName){
     return organizationString.get(organizationName);
   }
 

@@ -17,13 +17,11 @@ package org.usergrid.mongo.commands;
 
 import static org.usergrid.utils.MapUtils.map;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
+import org.usergrid.management.ApplicationInfo;
 import org.usergrid.mongo.MongoChannelHandler;
 import org.usergrid.mongo.protocol.OpQuery;
 import org.usergrid.mongo.protocol.OpReply;
@@ -37,11 +35,11 @@ public class ListDatabases extends MongoCommand {
 	@Override
 	public OpReply execute(MongoChannelHandler handler,
 			ChannelHandlerContext ctx, MessageEvent e, OpQuery opQuery) {
-		Set<String> applications = SubjectUtils.getApplications().inverse()
-				.keySet();
+		Iterator<ApplicationInfo> applications = SubjectUtils.getAuthorizationInfo().getApplications().iterator();
 		List<Map<String, Object>> dbs = new ArrayList<Map<String, Object>>();
-		for (String ns : applications) {
-			dbs.add((Map<String, Object>) map("name", ns, "sizeOnDisk",
+
+		while(applications.hasNext()) {
+			dbs.add((Map<String, Object>) map("name", applications.next().getName(), "sizeOnDisk",
 					DEFAULT_SIZE, "empty", false));
 		}
 		OpReply reply = new OpReply(opQuery);

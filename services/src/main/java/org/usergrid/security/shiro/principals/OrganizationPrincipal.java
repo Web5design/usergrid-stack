@@ -25,6 +25,9 @@ import org.usergrid.management.OrganizationInfo;
 import org.usergrid.security.shiro.Realm;
 import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 
+/**
+ * OrganizationPrincipals are usually only through OAuth They have access to a single organization
+ */
 public class OrganizationPrincipal extends PrincipalIdentifier {
 
 	final OrganizationInfo organization;
@@ -39,13 +42,11 @@ public class OrganizationPrincipal extends PrincipalIdentifier {
 
 	@Override
 	public String toString() {
-		return String.format("org/%s", organization.getUuid().toString());
+    return new StringBuilder("org/").append(organization.getUuid().toString()).toString();
 	}
 
   @Override
   public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, Realm realm) throws Exception {
-    // OrganizationPrincipals are usually only through OAuth
-    // They have access to a single organization
 
    info.addRole(Realm.ROLE_ORGANIZATION_ADMIN);
    info.addRole(Realm.ROLE_APPLICATION_ADMIN);

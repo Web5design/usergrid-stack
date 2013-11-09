@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.usergrid.rest.management.users.organizations;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -42,6 +43,7 @@ import org.usergrid.rest.AbstractContextResource;
 import org.usergrid.rest.ApiResponse;
 import org.usergrid.rest.security.annotations.RequireAdminUserAccess;
 import org.usergrid.rest.security.annotations.RequireOrganizationAccess;
+import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 import org.usergrid.security.shiro.utils.SubjectUtils;
 
 import com.google.common.collect.BiMap;
@@ -73,8 +75,16 @@ public class OrganizationsResource extends AbstractContextResource {
 		ApiResponse response = createApiResponse();
 		response.setAction("get user management");
 
-		BiMap<UUID, String> userOrganizations = SubjectUtils.getOrganizations();
-		response.setData(userOrganizations.inverse());
+		UsergridAuthorizationInfo userAuthInfo = SubjectUtils.getAuthorizationInfo();
+
+    Map<String, UUID> orgs = new LinkedHashMap<String, UUID>();
+
+    for(OrganizationInfo info: userAuthInfo.getOrganizations()){
+      orgs.put(info.getName(), info.getUuid());
+    }
+
+    response.setData(orgs);
+
 
 		return new JSONWithPadding(response, callback);
 	}

@@ -44,7 +44,7 @@ public class ApplicationGuestPrincipal extends PrincipalIdentifier {
 
   @Override
   public String toString() {
-    return String.format("guestuser/%s", application.getId().toString());
+    return new StringBuilder("guestuser/").append(application.getId()).toString();
   }
 
   @Override
