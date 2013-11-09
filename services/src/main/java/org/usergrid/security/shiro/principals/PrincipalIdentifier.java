@@ -15,7 +15,9 @@
  ******************************************************************************/
 package org.usergrid.security.shiro.principals;
 
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.usergrid.management.UserInfo;
+import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 import org.usergrid.security.shiro.credentials.AccessTokenCredentials;
 
 public abstract class PrincipalIdentifier {
@@ -42,5 +44,13 @@ public abstract class PrincipalIdentifier {
 			AccessTokenCredentials accessTokenCredentials) {
 		this.accessTokenCredentials = accessTokenCredentials;
 	}
+
+  /**
+   * Generate the authorization info for this principal
+   *
+   * @param info The information object that should be populated
+   * @return
+   */
+  public abstract void populateAuthorizatioInfo(UsergridAuthorizationInfo info);
 
 }

@@ -15,9 +15,15 @@
  ******************************************************************************/
 package org.usergrid.security.shiro.principals;
 
+import java.util.Set;
 import java.util.UUID;
 
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.usergrid.management.ApplicationInfo;
+import org.usergrid.persistence.EntityManager;
+import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
+
+import static org.usergrid.security.shiro.utils.SubjectUtils.getPermissionFromPath;
 
 public class ApplicationGuestPrincipal extends PrincipalIdentifier {
 
@@ -39,4 +45,32 @@ public class ApplicationGuestPrincipal extends PrincipalIdentifier {
 	public String toString() {
 		return String.format("guestuser/%s", application.getId().toString());
 	}
+
+  @Override
+  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info) {
+    role(info, principal, ROLE_APPLICATION_USER);
+
+    UUID applicationId = ((ApplicationGuestPrincipal) principal)
+        .getApplicationId();
+
+    EntityManager em = emf.getEntityManager(applicationId);
+    try {
+      String appName = (String) em.getProperty(
+          em.getApplicationRef(), "name");
+      applicationSet.put(applicationId, appName);
+      application = new ApplicationInfo(applicationId, appName);
+    } catch (Exception e) {
+    }
+
+    grant(info, principal,
+        getPermissionFromPath(applicationId, "access"));
+
+    try {
+      Set<String> permissions = em.getRolePermissions("guest");
+      grant(info, principal, applicationId, permissions);
+    } catch (Exception e) {
+      logger.error("Unable to get user default role permissions",
+          e);
+    }
+  }
 }

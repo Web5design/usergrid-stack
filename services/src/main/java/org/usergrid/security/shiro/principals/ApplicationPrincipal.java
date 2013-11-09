@@ -17,7 +17,9 @@ package org.usergrid.security.shiro.principals;
 
 import java.util.UUID;
 
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.usergrid.management.ApplicationInfo;
+import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 
 public class ApplicationPrincipal extends PrincipalIdentifier {
 
@@ -39,4 +41,19 @@ public class ApplicationPrincipal extends PrincipalIdentifier {
 	public String toString() {
 		return String.format("app/%s", application.getId().toString());
 	}
+
+  @Override
+  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info) {
+    // ApplicationPrincipal are usually only through OAuth
+    // They have access to a single application
+
+    role(info, principal, ROLE_APPLICATION_ADMIN);
+
+    application = ((ApplicationPrincipal) principal)
+        .getApplication();
+    grant(info, principal,
+        "applications:admin,access,get,put,post,delete:"
+            + application.getId());
+    applicationSet.put(application.getId(), application.getName());
+  }
 }

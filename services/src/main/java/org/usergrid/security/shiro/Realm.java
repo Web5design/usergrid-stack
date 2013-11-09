@@ -222,284 +222,36 @@ public class Realm extends AuthorizingRealm {
         for (PrincipalIdentifier principal : principals
                 .byType(PrincipalIdentifier.class)) {
 
-            if (principal instanceof OrganizationPrincipal) {
-                // OrganizationPrincipals are usually only through OAuth
-                // They have access to a single organization
+          principal.populateAuthorizatioInfo(info);
 
-                organization = ((OrganizationPrincipal) principal)
-                        .getOrganization();
-
-                role(info, principal, ROLE_ORGANIZATION_ADMIN);
-                role(info, principal, ROLE_APPLICATION_ADMIN);
-
-                grant(info, principal,
-                        "organizations:access:" + organization.getUuid());
-                organizationSet.put(organization.getUuid(),
-                        organization.getName());
-
-                Map<UUID, String> applications = null;
-                try {
-                    applications = management
-                            .getApplicationsForOrganization(organization
-                                    .getUuid());
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                if ((applications != null) && !applications.isEmpty()) {
-                    grant(info,
-                            principal,
-                            "applications:admin,access,get,put,post,delete:"
-                                    + StringUtils.join(applications.keySet(),
-                                            ','));
-
-                    applicationSet.putAll(applications);
-                }
-
-            } else if (principal instanceof ApplicationPrincipal) {
-                // ApplicationPrincipal are usually only through OAuth
-                // They have access to a single application
-
-                role(info, principal, ROLE_APPLICATION_ADMIN);
-
-                application = ((ApplicationPrincipal) principal)
-                        .getApplication();
-                grant(info, principal,
-                        "applications:admin,access,get,put,post,delete:"
-                                + application.getId());
-                applicationSet.put(application.getId(), application.getName());
-
-            } else if (principal instanceof AdminUserPrincipal) {
-                // AdminUserPrincipals are through basic auth and sessions
-                // They have access to organizations and organization
-                // applications
-
-                UserInfo user = ((AdminUserPrincipal) principal).getUser();
-
-                if (superUserEnabled && (superUser != null)
-                        && superUser.equals(user.getUsername())) {
-                    // The system user has access to everything
-
-                    role(info, principal, ROLE_SERVICE_ADMIN);
-                    role(info, principal, ROLE_ORGANIZATION_ADMIN);
-                    role(info, principal, ROLE_APPLICATION_ADMIN);
-                    role(info, principal, ROLE_ADMIN_USER);
-
-                    grant(info, principal, "system:access");
-
-                    grant(info, principal,
-                            "organizations:admin,access,get,put,post,delete:*");
-                    grant(info, principal,
-                            "applications:admin,access,get,put,post,delete:*");
-                    grant(info, principal,
-                            "organizations:admin,access,get,put,post,delete:*:/**");
-                    grant(info, principal,
-                            "applications:admin,access,get,put,post,delete:*:/**");
-                    grant(info, principal, "users:access:*");
-
-                    grant(info,
-                            principal,
-                            getPermissionFromPath(MANAGEMENT_APPLICATION_ID,
-                                    "access"));
-
-                    grant(info,
-                            principal,
-                            getPermissionFromPath(MANAGEMENT_APPLICATION_ID,
-                                    "get,put,post,delete", "/**"));
-
-                } else {
-
-                    // For regular service users, we find what organizations
-                    // they're associated with
-                    // An service user can be associated with multiple
-                    // organizations
-
-                    grant(info,
-                            principal,
-                            getPermissionFromPath(MANAGEMENT_APPLICATION_ID,
-                                    "access"));
-
-                    // admin users cannot access the management app directly
-                    // so open all permissions
-                    grant(info,
-                            principal,
-                            getPermissionFromPath(MANAGEMENT_APPLICATION_ID,
-                                    "get,put,post,delete", "/**"));
-
-                    role(info, principal, ROLE_ADMIN_USER);
-
-                    try {
-
-                        Map<UUID, String> userOrganizations = management
-                                .getOrganizationsForAdminUser(user.getUuid());
-
-                        if (userOrganizations != null) {
-                            for (UUID id : userOrganizations.keySet()) {
-                                grant(info, principal,
-                                        "organizations:admin,access,get,put,post,delete:"
-                                                + id);
-                            }
-                            organizationSet.putAll(userOrganizations);
-
-                            Map<UUID, String> userApplications = management
-                                    .getApplicationsForOrganizations(userOrganizations
-                                            .keySet());
-                            if ((userApplications != null)
-                                    && !userApplications.isEmpty()) {
-                                grant(info,
-                                        principal,
-                                        "applications:admin,access,get,put,post,delete:"
-                                                + StringUtils.join(
-                                                        userApplications
-                                                                .keySet(), ','));
-                                applicationSet.putAll(userApplications);
-                            }
-
-                            role(info, principal, ROLE_ORGANIZATION_ADMIN);
-                            role(info, principal, ROLE_APPLICATION_ADMIN);
-                        }
-
-                    } catch (Exception e) {
-                        logger.error(
-                                "Unable to construct admin user permissions", e);
-                    }
-                }
-            } else if (principal instanceof ApplicationUserPrincipal) {
-
-                role(info, principal, ROLE_APPLICATION_USER);
-
-                UUID applicationId = ((ApplicationUserPrincipal) principal)
-                        .getApplicationId();
-
-                AccessTokenCredentials tokenCredentials = ((ApplicationUserPrincipal) principal)
-                        .getAccessTokenCredentials();
-                TokenInfo token = null;
-                if (tokenCredentials != null) {
-                    try {
-                        token = tokens
-                                .getTokenInfo(tokenCredentials.getToken());
-                    } catch (Exception e) {
-                        logger.error("Unable to retrieve token info", e);
-                    }
-                    logger.debug("Token: {}", token);
-                }
-
-                grant(info, principal,
-                        getPermissionFromPath(applicationId, "access"));
-
-                /*
-                 * grant(info, principal, getPermissionFromPath(applicationId,
-                 * "get,put,post,delete", "/users/${user}",
-                 * "/users/${user}/feed", "/users/${user}/activities",
-                 * "/users/${user}/groups", "/users/${user}/following/*",
-                 * "/users/${user}/following/user/*"));
-                 */
-
-                EntityManager em = emf.getEntityManager(applicationId);
-                try {
-                    String appName = (String) em.getProperty(
-                            em.getApplicationRef(), "name");
-                    applicationSet.put(applicationId, appName);
-                    application = new ApplicationInfo(applicationId, appName);
-                } catch (Exception e) {
-                }
-
-                try {
-                    Set<String> permissions = em.getRolePermissions("default");
-                    grant(info, principal, applicationId, permissions);
-                } catch (Exception e) {
-                    logger.error("Unable to get user default role permissions",
-                            e);
-                }
-
-                UserInfo user = ((ApplicationUserPrincipal) principal)
-                        .getUser();
-                try {
-                    Set<String> permissions = em.getUserPermissions(user
-                            .getUuid());
-                    grant(info, principal, applicationId, permissions);
-                } catch (Exception e) {
-                    logger.error("Unable to get user permissions", e);
-                }
-
-                try {
-                    Set<String> rolenames = em.getUserRoles(user.getUuid());
-                    grantAppRoles(info, em, applicationId, token, principal, rolenames);
-                } catch (Exception e) {
-                    logger.error("Unable to get user role permissions", e);
-                }
-
-                try {
-                    //TODO TN.  This is woefully inefficient, but temporary.  Introduce cassandra backed shiro caching so this only ever happens once.
-                    //See USERGRID-779 for details
-                    Results r = em.getCollection(new SimpleEntityRef(
-                            User.ENTITY_TYPE, user.getUuid()), "groups", null,
-                            1000, Level.IDS, false);
-                    if (r != null) {
-                        
-                        Set<String> rolenames = new HashSet<String>();
-                        
-                        for (UUID groupId : r.getIds()) {
-                          
-                            Results roleResults = em.getCollection(new SimpleEntityRef(
-                                    Group.ENTITY_TYPE, groupId), "roles", null,
-                                    1000, Level.CORE_PROPERTIES, false);
-                            
-                            for(Entity entity : roleResults.getEntities()){
-                                rolenames.add(entity.getName());
-                            }
-
-                        }
-                        
-                        
-                        grantAppRoles(info, em, applicationId, token, principal, rolenames);
-                    }
-
-                } catch (Exception e) {
-                    logger.error("Unable to get user group role permissions", e);
-                }
-
-            } else if (principal instanceof ApplicationGuestPrincipal) {
-                role(info, principal, ROLE_APPLICATION_USER);
-
-                UUID applicationId = ((ApplicationGuestPrincipal) principal)
-                        .getApplicationId();
-
-                EntityManager em = emf.getEntityManager(applicationId);
-                try {
-                    String appName = (String) em.getProperty(
-                            em.getApplicationRef(), "name");
-                    applicationSet.put(applicationId, appName);
-                    application = new ApplicationInfo(applicationId, appName);
-                } catch (Exception e) {
-                }
-
-                grant(info, principal,
-                        getPermissionFromPath(applicationId, "access"));
-
-                try {
-                    Set<String> permissions = em.getRolePermissions("guest");
-                    grant(info, principal, applicationId, permissions);
-                } catch (Exception e) {
-                    logger.error("Unable to get user default role permissions",
-                            e);
-                }
-            }
+//            if (principal instanceof OrganizationPrincipal) {
+//
+//
+//            } else if (principal instanceof ApplicationPrincipal) {
+//
+//
+//            } else if (principal instanceof AdminUserPrincipal) {
+//
+//            } else if (principal instanceof ApplicationUserPrincipal) {
+//
+//            } else if (principal instanceof ApplicationGuestPrincipal) {
+//
+//            }
         }
-
-        // Store additional information in the request session to speed up
-        // looking up organization info
-
-        Subject currentUser = SecurityUtils.getSubject();
-        Session session = currentUser.getSession();
-        session.setAttribute("applications", applicationSet);
-        session.setAttribute("organizations", organizationSet);
-        if (organization != null) {
-            session.setAttribute("organization", organization);
-        }
-        if (application != null) {
-            session.setAttribute("application", application);
-        }
+//
+//        // Store additional information in the request session to speed up
+//        // looking up organization info
+//
+//        Subject currentUser = SecurityUtils.getSubject();
+//        Session session = currentUser.getSession();
+//        session.setAttribute("applications", applicationSet);
+//        session.setAttribute("organizations", organizationSet);
+//        if (organization != null) {
+//            session.setAttribute("organization", organization);
+//        }
+//        if (application != null) {
+//            session.setAttribute("application", application);
+//        }
 
         return info;
     }
