@@ -22,7 +22,13 @@ import java.util.concurrent.ExecutionException;
 
 /**
  *
- * Cache manager to return and maintain pointer to all cache managers for clearing
+ * Cache manager to return and maintain pointer to all cache managers for clearing.
+ *
+ * Creates an in memory cache, that will then delegate to cassandra for pre calculated values
+ * Reading the pre-calculated values from cassandra and caching locally is significantly more efficient
+ * than re calculating effective permissions.  Service logic that affects permissions should invoke the CacheInvalidation
+ * interface to remove calculated permissions from the caches
+ *
  * @author: tnine
  *
  */
@@ -36,14 +42,16 @@ public class CassandraCacheManager implements CacheManager, CacheInvalidation {
   /**
    * Cache of all realm cassandra caches.  This way we can invalidate the cache for each realm when permissions are updated
    */
-  private LoadingCache<String, CassandraCache > cassandraCache = CacheBuilder.newBuilder()
+  private LoadingCache<String, DelegatingMemoryCache > cassandraCache = CacheBuilder.newBuilder()
       .maximumSize(1000)
       .build(
-          new CacheLoader<String, CassandraCache>() {
+          new CacheLoader<String, DelegatingMemoryCache>() {
 
             @Override
-            public CassandraCache load(String name) throws Exception {
-              return new CassandraCache(cassandraService, name);
+            public DelegatingMemoryCache load(String name) throws Exception {
+              CassandraCache cassCache = new CassandraCache(cassandraService, name);
+              DelegatingMemoryCache cache = new DelegatingMemoryCache(1000, 120,cassCache, cassCache );
+              return cache;
             }
           });
 
@@ -64,7 +72,7 @@ public class CassandraCacheManager implements CacheManager, CacheInvalidation {
     runOnCache(new CacheOperation(){
 
       @Override
-      public void doInCache(CassandraCache cache) {
+      public void doInCache(DelegatingMemoryCache cache) {
         cache.invalidateOrg(organizationInfo);
       }
     });
@@ -77,7 +85,7 @@ public class CassandraCacheManager implements CacheManager, CacheInvalidation {
     runOnCache(new CacheOperation(){
 
       @Override
-      public void doInCache(CassandraCache cache) {
+      public void doInCache(DelegatingMemoryCache cache) {
         cache.invalidateApplication(applicationInfo);
       }
     });
@@ -88,7 +96,7 @@ public class CassandraCacheManager implements CacheManager, CacheInvalidation {
     runOnCache(new CacheOperation(){
 
       @Override
-      public void doInCache(CassandraCache cache) {
+      public void doInCache(DelegatingMemoryCache cache) {
         cache.invalidateGuest(application);
       }
     });
@@ -99,7 +107,7 @@ public class CassandraCacheManager implements CacheManager, CacheInvalidation {
     runOnCache(new CacheOperation(){
 
       @Override
-      public void doInCache(CassandraCache cache) {
+      public void doInCache(DelegatingMemoryCache cache) {
         cache.invalidateUser(application, user);
       }
     });
@@ -132,7 +140,7 @@ public class CassandraCacheManager implements CacheManager, CacheInvalidation {
      * Perform the operation in the cache
      * @param cache
      */
-    public void doInCache(CassandraCache cache);
+    public void doInCache(DelegatingMemoryCache cache);
 
   }
 

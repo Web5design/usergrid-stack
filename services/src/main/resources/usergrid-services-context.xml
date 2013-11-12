@@ -67,7 +67,7 @@
     </bean>
 
 
-    <bean id="shiroCacheManager" class="org.usergrid.security.shiro.cache.CassandraCacheManager">
+    <bean id="cassandraCacheManager" class="org.usergrid.security.shiro.cache.CassandraCacheManager">
         <property name="cassandraService" ref="cassandraService"/>
     </bean>
 </beans>
