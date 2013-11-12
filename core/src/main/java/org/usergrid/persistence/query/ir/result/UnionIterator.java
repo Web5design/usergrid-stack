@@ -16,7 +16,7 @@
 package org.usergrid.persistence.query.ir.result;
 
 import com.google.common.collect.Sets;
-import org.usergrid.persistence.cassandra.CursorCache;
+import org.usergrid.persistence.CursorCache;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -121,7 +121,7 @@ public class UnionIterator extends MultiIterator {
    * 
    * @see
    * org.usergrid.persistence.query.ir.result.ResultIterator#finalizeCursor(
-   * org.usergrid.persistence.cassandra.CursorCache)
+   * org.usergrid.persistence.CursorCache)
    */
   @Override
   public void finalizeCursor(CursorCache cache, UUID lastLoaded) {

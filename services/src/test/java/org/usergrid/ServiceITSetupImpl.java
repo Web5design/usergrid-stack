@@ -9,13 +9,12 @@ import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.usergrid.cassandra.CassandraResource;
 import org.usergrid.management.ApplicationCreator;
 import org.usergrid.management.ManagementService;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 import org.usergrid.security.providers.SignInProviderFactory;
 import org.usergrid.security.tokens.TokenService;
 import org.usergrid.services.ServiceManagerFactory;
 
 import java.util.Properties;
-import org.usergrid.management.AccountCreationProps;
 
 
 /**

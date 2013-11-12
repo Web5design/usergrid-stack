@@ -21,10 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.persistence.Entity;
 import org.usergrid.persistence.EntityManager;
-import org.usergrid.persistence.cassandra.EntityPropertyComparator;
+import org.usergrid.persistence.EntityPropertyComparator;
 import org.usergrid.persistence.Query;
 import org.usergrid.persistence.Query.SortPredicate;
-import org.usergrid.persistence.cassandra.CursorCache;
+import org.usergrid.persistence.CursorCache;
 import org.usergrid.persistence.query.ir.QuerySlice;
 
 import java.nio.ByteBuffer;

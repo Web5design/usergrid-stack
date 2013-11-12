@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra.index;
+package org.usergrid.persistence.index;
 
 import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableSet;
 import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.cassandra.config.ConfigurationException;
 import org.apache.cassandra.db.marshal.AbstractType;
 import org.apache.cassandra.db.marshal.TypeParser;
-import org.apache.cassandra.thrift.CassandraServer;
-import org.usergrid.persistence.cassandra.ApplicationCF;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.ApplicationCF;
+import org.usergrid.persistence.CassandraService;
 
-import me.prettyprint.hector.api.beans.DynamicComposite;
 import me.prettyprint.hector.api.beans.HColumn;
 
 /**

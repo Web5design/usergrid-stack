@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.usergrid.persistence.cassandra.GeoIndexManager;
 import org.usergrid.persistence.entities.Application;
 import org.usergrid.persistence.entities.Role;
 

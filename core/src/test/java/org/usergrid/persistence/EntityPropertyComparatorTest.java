@@ -1,7 +1,6 @@
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import org.junit.Test;
-import org.usergrid.persistence.DynamicEntity;
 
 import static org.junit.Assert.assertEquals;
 

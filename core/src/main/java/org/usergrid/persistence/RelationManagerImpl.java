@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import com.yammer.metrics.annotation.Metered;
 import me.prettyprint.cassandra.serializers.ByteBufferSerializer;
@@ -26,14 +26,13 @@ import me.prettyprint.hector.api.mutation.Mutator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
-import org.usergrid.persistence.*;
 import org.usergrid.persistence.IndexBucketLocator.IndexType;
 import org.usergrid.persistence.Results.Level;
-import org.usergrid.persistence.cassandra.IndexUpdate.*;
-import org.usergrid.persistence.cassandra.index.ConnectedIndexScanner;
-import org.usergrid.persistence.cassandra.index.IndexBucketScanner;
-import org.usergrid.persistence.cassandra.index.IndexScanner;
-import org.usergrid.persistence.cassandra.index.NoOpIndexScanner;
+import org.usergrid.persistence.IndexUpdate.*;
+import org.usergrid.persistence.index.ConnectedIndexScanner;
+import org.usergrid.persistence.index.IndexBucketScanner;
+import org.usergrid.persistence.index.IndexScanner;
+import org.usergrid.persistence.index.NoOpIndexScanner;
 import org.usergrid.persistence.entities.Group;
 import org.usergrid.persistence.geo.CollectionGeoSearch;
 import org.usergrid.persistence.geo.ConnectionGeoSearch;
@@ -53,12 +52,12 @@ import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static java.util.Arrays.asList;
 import static me.prettyprint.hector.api.factory.HFactory.createMutator;
 import static org.usergrid.persistence.Schema.*;
-import static org.usergrid.persistence.cassandra.ApplicationCF.*;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.*;
-import static org.usergrid.persistence.cassandra.CassandraService.INDEX_ENTRY_LIST_COUNT;
-import static org.usergrid.persistence.cassandra.ConnectionRefImpl.CONNECTION_ENTITY_CONNECTION_TYPE;
-import static org.usergrid.persistence.cassandra.GeoIndexManager.*;
-import static org.usergrid.persistence.cassandra.IndexUpdate.*;
+import static org.usergrid.persistence.ApplicationCF.*;
+import static org.usergrid.persistence.CassandraPersistenceUtils.*;
+import static org.usergrid.persistence.CassandraService.INDEX_ENTRY_LIST_COUNT;
+import static org.usergrid.persistence.ConnectionRefImpl.CONNECTION_ENTITY_CONNECTION_TYPE;
+import static org.usergrid.persistence.GeoIndexManager.*;
+import static org.usergrid.persistence.IndexUpdate.*;
 import static org.usergrid.utils.ClassUtils.cast;
 import static org.usergrid.utils.CompositeUtils.setGreaterThanEqualityFlag;
 import static org.usergrid.utils.ConversionUtils.string;

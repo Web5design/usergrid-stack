@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.usergrid.rest;
 
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
+import static org.usergrid.persistence.CassandraService.MANAGEMENT_APPLICATION_ID;
 
 import java.io.IOException;
 import java.net.URI;

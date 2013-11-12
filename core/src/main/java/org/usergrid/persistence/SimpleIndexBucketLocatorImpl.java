@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import static org.apache.commons.codec.digest.DigestUtils.md5;
 import static org.usergrid.utils.ConversionUtils.bytes;

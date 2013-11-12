@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.persistence.EntityRef;
 import org.usergrid.persistence.Query;
-import org.usergrid.persistence.cassandra.SimpleRoleRef;
+import org.usergrid.persistence.SimpleRoleRef;
 import org.usergrid.persistence.entities.Group;
 import org.usergrid.services.AbstractCollectionService;
 import org.usergrid.services.ServiceContext;

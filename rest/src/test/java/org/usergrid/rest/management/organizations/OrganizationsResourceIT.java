@@ -23,7 +23,7 @@ import org.usergrid.management.ApplicationInfo;
 import org.usergrid.management.OrganizationInfo;
 import org.usergrid.management.UserInfo;
 import org.usergrid.persistence.EntityManager;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 import org.usergrid.persistence.entities.User;
 import org.usergrid.rest.AbstractRestIT;
 

@@ -38,7 +38,7 @@ import org.usergrid.persistence.EntityManager;
 import org.usergrid.persistence.Query;
 import org.usergrid.persistence.Results;
 import org.usergrid.persistence.Results.Level;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 import org.usergrid.tools.bean.ExportOrg;
 import org.usergrid.utils.JsonUtils;
 

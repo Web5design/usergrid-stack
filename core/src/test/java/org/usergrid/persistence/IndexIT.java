@@ -36,10 +36,7 @@ import org.slf4j.LoggerFactory;
 import org.usergrid.AbstractCoreIT;
 import org.usergrid.CoreITSuite;
 import org.usergrid.cassandra.Concurrent;
-import org.usergrid.persistence.cassandra.CassandraService;
-import org.usergrid.persistence.cassandra.IndexUpdate;
-import org.usergrid.persistence.cassandra.RelationManagerImpl;
-import org.usergrid.persistence.cassandra.IndexUpdate.IndexEntry;
+import org.usergrid.persistence.IndexUpdate.IndexEntry;
 import org.usergrid.utils.JsonUtils;
 import org.usergrid.utils.UUIDUtils;
 

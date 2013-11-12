@@ -19,7 +19,7 @@ import org.junit.rules.TestRule;
 import org.usergrid.mq.QueueManagerFactory;
 import org.usergrid.persistence.EntityManagerFactory;
 import org.usergrid.persistence.IndexBucketLocator;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 
 import java.util.UUID;
 

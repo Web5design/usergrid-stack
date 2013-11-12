@@ -48,7 +48,7 @@ import org.jvnet.mock_javamail.Mailbox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.management.UserInfo;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 import org.usergrid.rest.AbstractRestIT;
 
 import com.sun.jersey.api.client.ClientResponse;

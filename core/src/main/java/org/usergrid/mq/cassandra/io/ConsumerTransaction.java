@@ -42,7 +42,7 @@ import org.usergrid.locking.exception.UGLockException;
 import org.usergrid.mq.Message;
 import org.usergrid.mq.QueueQuery;
 import org.usergrid.mq.QueueResults;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 import org.usergrid.persistence.exceptions.QueueException;
 import org.usergrid.persistence.exceptions.TransactionNotFoundException;
 import org.usergrid.utils.UUIDUtils;

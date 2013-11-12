@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.usergrid.security.shiro.principals;
 
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
+import static org.usergrid.persistence.CassandraService.MANAGEMENT_APPLICATION_ID;
 
 import org.usergrid.management.UserInfo;
 

@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 
 import static me.prettyprint.hector.api.factory.HFactory.createColumnFamilyDefinition;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.getCfDefs;
-import static org.usergrid.persistence.cassandra.CassandraService.APPLICATIONS_CF;
-import static org.usergrid.persistence.cassandra.CassandraService.DEFAULT_APPLICATION;
-import static org.usergrid.persistence.cassandra.CassandraService.DEFAULT_APPLICATION_ID;
-import static org.usergrid.persistence.cassandra.CassandraService.DEFAULT_ORGANIZATION;
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION;
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
-import static org.usergrid.persistence.cassandra.CassandraService.PRINCIPAL_TOKEN_CF;
-import static org.usergrid.persistence.cassandra.CassandraService.PROPERTIES_CF;
-import static org.usergrid.persistence.cassandra.CassandraService.STATIC_APPLICATION_KEYSPACE;
-import static org.usergrid.persistence.cassandra.CassandraService.SYSTEM_KEYSPACE;
-import static org.usergrid.persistence.cassandra.CassandraService.TOKENS_CF;
-import static org.usergrid.persistence.cassandra.CassandraService.USE_VIRTUAL_KEYSPACES;
-import static org.usergrid.persistence.cassandra.CassandraService.keyspaceForApplication;
+import static org.usergrid.persistence.CassandraPersistenceUtils.getCfDefs;
+import static org.usergrid.persistence.CassandraService.APPLICATIONS_CF;
+import static org.usergrid.persistence.CassandraService.DEFAULT_APPLICATION;
+import static org.usergrid.persistence.CassandraService.DEFAULT_APPLICATION_ID;
+import static org.usergrid.persistence.CassandraService.DEFAULT_ORGANIZATION;
+import static org.usergrid.persistence.CassandraService.MANAGEMENT_APPLICATION;
+import static org.usergrid.persistence.CassandraService.MANAGEMENT_APPLICATION_ID;
+import static org.usergrid.persistence.CassandraService.PRINCIPAL_TOKEN_CF;
+import static org.usergrid.persistence.CassandraService.PROPERTIES_CF;
+import static org.usergrid.persistence.CassandraService.STATIC_APPLICATION_KEYSPACE;
+import static org.usergrid.persistence.CassandraService.SYSTEM_KEYSPACE;
+import static org.usergrid.persistence.CassandraService.TOKENS_CF;
+import static org.usergrid.persistence.CassandraService.USE_VIRTUAL_KEYSPACES;
+import static org.usergrid.persistence.CassandraService.keyspaceForApplication;
 
 import java.util.UUID;
 

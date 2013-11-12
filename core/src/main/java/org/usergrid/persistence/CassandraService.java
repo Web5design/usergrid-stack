@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import static me.prettyprint.cassandra.service.FailoverPolicy.ON_FAIL_TRY_ALL_AVAILABLE;
 import static me.prettyprint.hector.api.factory.HFactory.createColumn;
@@ -24,9 +24,9 @@ import static me.prettyprint.hector.api.factory.HFactory.createSliceQuery;
 import static me.prettyprint.hector.api.factory.HFactory.createVirtualKeyspace;
 import static org.apache.commons.collections.MapUtils.getIntValue;
 import static org.apache.commons.collections.MapUtils.getString;
-import static org.usergrid.persistence.cassandra.ApplicationCF.ENTITY_ID_SETS;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.batchExecute;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.buildSetIdListMutator;
+import static org.usergrid.persistence.ApplicationCF.ENTITY_ID_SETS;
+import static org.usergrid.persistence.CassandraPersistenceUtils.batchExecute;
+import static org.usergrid.persistence.CassandraPersistenceUtils.buildSetIdListMutator;
 import static org.usergrid.utils.ConversionUtils.bytebuffer;
 import static org.usergrid.utils.ConversionUtils.bytebuffers;
 import static org.usergrid.utils.JsonUtils.mapToFormattedJsonString;
@@ -83,10 +83,9 @@ import me.prettyprint.hector.api.query.SliceQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.locking.LockManager;
-import org.usergrid.persistence.IndexBucketLocator;
 import org.usergrid.persistence.IndexBucketLocator.IndexType;
-import org.usergrid.persistence.cassandra.index.IndexBucketScanner;
-import org.usergrid.persistence.cassandra.index.IndexScanner;
+import org.usergrid.persistence.index.IndexBucketScanner;
+import org.usergrid.persistence.index.IndexScanner;
 
 public class CassandraService {
 

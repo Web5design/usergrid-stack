@@ -9,7 +9,7 @@ import org.usergrid.cassandra.CassandraResource;
 import org.usergrid.mq.QueueManagerFactory;
 import org.usergrid.persistence.EntityManagerFactory;
 import org.usergrid.persistence.IndexBucketLocator;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 import org.usergrid.utils.JsonUtils;
 
 import java.util.UUID;

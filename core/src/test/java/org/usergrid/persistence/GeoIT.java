@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.AbstractCoreIT;
 import org.usergrid.cassandra.Concurrent;
-import org.usergrid.persistence.cassandra.GeoIndexManager;
 import org.usergrid.persistence.geo.CollectionGeoSearch;
 import org.usergrid.persistence.geo.EntityLocationRef;
 import org.usergrid.persistence.geo.model.Point;

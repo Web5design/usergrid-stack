@@ -1,29 +1,18 @@
 package org.usergrid.tools;
 
-import au.com.bytecode.opencsv.CSVWriter;
 import me.prettyprint.cassandra.serializers.ByteBufferSerializer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-import org.apache.commons.io.FileUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.management.ApplicationInfo;
-import org.usergrid.management.UserInfo;
 import org.usergrid.persistence.*;
-import org.usergrid.persistence.cassandra.CassandraService;
-import org.usergrid.persistence.entities.Application;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
-import java.util.UUID;
-
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
 
 /**
  * Tools class which takes a json file as an input.  Each property in the input is then set into each entity that is returned from the query.

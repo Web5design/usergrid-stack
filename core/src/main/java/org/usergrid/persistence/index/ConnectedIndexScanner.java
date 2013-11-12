@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra.index;
+package org.usergrid.persistence.index;
 
 import com.yammer.metrics.annotation.Metered;
 import me.prettyprint.hector.api.beans.HColumn;
 import org.springframework.util.Assert;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 
 import java.nio.ByteBuffer;
 import java.util.*;
 
-import static org.usergrid.persistence.cassandra.ApplicationCF.ENTITY_COMPOSITE_DICTIONARIES;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.key;
+import static org.usergrid.persistence.ApplicationCF.ENTITY_COMPOSITE_DICTIONARIES;
+import static org.usergrid.persistence.CassandraPersistenceUtils.key;
 
 /** @author tnine */
 public class ConnectedIndexScanner implements IndexScanner {
@@ -77,7 +77,7 @@ public class ConnectedIndexScanner implements IndexScanner {
   /*
    * (non-Javadoc)
    * 
-   * @see org.usergrid.persistence.cassandra.index.IndexScanner#reset()
+   * @see org.usergrid.persistence.index.IndexScanner#reset()
    */
   @Override
   public void reset() {
@@ -209,7 +209,7 @@ public class ConnectedIndexScanner implements IndexScanner {
   /*
    * (non-Javadoc)
    * 
-   * @see org.usergrid.persistence.cassandra.index.IndexScanner#getPageSize()
+   * @see org.usergrid.persistence.index.IndexScanner#getPageSize()
    */
   @Override
   public int getPageSize() {

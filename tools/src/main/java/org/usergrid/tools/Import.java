@@ -17,7 +17,7 @@ package org.usergrid.tools;
 
 import static org.usergrid.persistence.Schema.PROPERTY_TYPE;
 import static org.usergrid.persistence.Schema.PROPERTY_UUID;
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
+import static org.usergrid.persistence.CassandraService.MANAGEMENT_APPLICATION_ID;
 
 import java.io.File;
 import java.util.HashMap;
@@ -25,7 +25,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.cli.CommandLine;
@@ -45,7 +44,6 @@ import org.usergrid.management.UserInfo;
 import org.usergrid.persistence.Entity;
 import org.usergrid.persistence.EntityManager;
 import org.usergrid.persistence.EntityRef;
-import org.usergrid.persistence.Schema;
 import org.usergrid.persistence.entities.Application;
 import org.usergrid.persistence.exceptions.ApplicationAlreadyExistsException;
 import org.usergrid.persistence.exceptions.DuplicateUniquePropertyExistsException;

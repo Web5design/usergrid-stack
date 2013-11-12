@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 import org.usergrid.locking.LockManager;
 import org.usergrid.mq.QueueManager;
 import org.usergrid.mq.QueueManagerFactory;
-import org.usergrid.persistence.cassandra.CassandraService;
-import org.usergrid.persistence.cassandra.CounterUtils;
+import org.usergrid.persistence.CassandraService;
+import org.usergrid.persistence.CounterUtils;
 
 public class QueueManagerFactoryImpl implements QueueManagerFactory {
 

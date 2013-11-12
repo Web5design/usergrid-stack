@@ -35,7 +35,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-import org.usergrid.persistence.cassandra.QueryProcessor;
 import org.usergrid.persistence.query.ir.SearchVisitor;
 import org.usergrid.utils.MapUtils;
 import org.usergrid.utils.StringUtils;

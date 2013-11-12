@@ -17,9 +17,9 @@ package org.usergrid.tools;
 
 import static me.prettyprint.hector.api.factory.HFactory.createMutator;
 import static org.usergrid.persistence.Schema.DICTIONARY_COLLECTIONS;
-import static org.usergrid.persistence.cassandra.ApplicationCF.ENTITY_ID_SETS;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.addDeleteToMutator;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.key;
+import static org.usergrid.persistence.ApplicationCF.ENTITY_ID_SETS;
+import static org.usergrid.persistence.CassandraPersistenceUtils.addDeleteToMutator;
+import static org.usergrid.persistence.CassandraPersistenceUtils.key;
 import static org.usergrid.utils.UUIDUtils.getTimestampInMicros;
 import static org.usergrid.utils.UUIDUtils.newTimeUUID;
 
@@ -44,9 +44,9 @@ import org.usergrid.persistence.IndexBucketLocator;
 import org.usergrid.persistence.IndexBucketLocator.IndexType;
 import org.usergrid.persistence.Results;
 import org.usergrid.persistence.Schema;
-import org.usergrid.persistence.cassandra.CassandraService;
-import org.usergrid.persistence.cassandra.EntityManagerImpl;
-import org.usergrid.persistence.cassandra.index.IndexScanner;
+import org.usergrid.persistence.CassandraService;
+import org.usergrid.persistence.EntityManagerImpl;
+import org.usergrid.persistence.index.IndexScanner;
 import org.usergrid.persistence.query.ir.result.ScanColumn;
 import org.usergrid.persistence.query.ir.result.ScanColumnTransformer;
 import org.usergrid.persistence.query.ir.result.SliceIterator;

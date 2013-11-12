@@ -1,7 +1,7 @@
 package org.usergrid.persistence.geo;
 
 import static org.usergrid.persistence.Schema.INDEX_CONNECTIONS;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.key;
+import static org.usergrid.persistence.CassandraPersistenceUtils.key;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -12,7 +12,7 @@ import me.prettyprint.hector.api.beans.HColumn;
 
 import org.usergrid.persistence.EntityManager;
 import org.usergrid.persistence.IndexBucketLocator;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 import org.usergrid.persistence.geo.model.Point;
 
 /**

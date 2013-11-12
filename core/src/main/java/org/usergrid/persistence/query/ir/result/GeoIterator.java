@@ -16,7 +16,7 @@
 package org.usergrid.persistence.query.ir.result;
 
 import me.prettyprint.cassandra.serializers.StringSerializer;
-import org.usergrid.persistence.cassandra.CursorCache;
+import org.usergrid.persistence.CursorCache;
 import org.usergrid.persistence.geo.EntityLocationRef;
 import org.usergrid.persistence.geo.GeoIndexSearcher;
 import org.usergrid.persistence.geo.GeoIndexSearcher.SearchResults;
@@ -207,7 +207,7 @@ public class GeoIterator implements ResultIterator {
    * 
    * @see
    * org.usergrid.persistence.query.ir.result.ResultIterator#finalizeCursor(
-   * org.usergrid.persistence.cassandra.CursorCache, java.util.UUID)
+   * org.usergrid.persistence.CursorCache, java.util.UUID)
    */
   @Override
   public void finalizeCursor(CursorCache cache, UUID uuid) {

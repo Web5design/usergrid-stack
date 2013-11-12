@@ -17,7 +17,7 @@ package org.usergrid.persistence;
 
 
 import static org.junit.Assert.*;
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
+import static org.usergrid.persistence.CassandraService.MANAGEMENT_APPLICATION_ID;
 
 import java.util.*;
 import java.util.Map.Entry;

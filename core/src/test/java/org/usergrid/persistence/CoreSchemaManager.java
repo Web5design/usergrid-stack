@@ -6,8 +6,6 @@ import org.junit.Ignore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.cassandra.SchemaManager;
-import org.usergrid.persistence.cassandra.CassandraService;
-import org.usergrid.persistence.cassandra.Setup;
 
 
 /**

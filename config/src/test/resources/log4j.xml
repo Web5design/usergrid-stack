@@ -10,7 +10,7 @@
         <level value="error"/>
         <appender-ref ref="stdout"/>
     </logger>
-    <logger name="org.usergrid.persistence.cassandra.CounterUtils">
+    <logger name="org.usergrid.persistence.CounterUtils">
         <level value="warn"/>
     </logger>
      <logger name="org.usergrid.mq.cassandra.io" additivity="false">

@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.usergrid.persistence.cassandra.EntityManagerFactoryImpl;
+import org.usergrid.persistence.EntityManagerFactoryImpl;
 import org.usergrid.services.ServiceManagerFactory;
 
 import com.mongodb.DB;

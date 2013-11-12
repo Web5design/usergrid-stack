@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import static me.prettyprint.hector.api.factory.HFactory.createColumn;
 import static me.prettyprint.hector.api.factory.HFactory.createCounterColumn;
 import static org.usergrid.persistence.Schema.DICTIONARY_COUNTERS;
-import static org.usergrid.persistence.cassandra.ApplicationCF.APPLICATION_AGGREGATE_COUNTERS;
-import static org.usergrid.persistence.cassandra.ApplicationCF.ENTITY_COUNTERS;
-import static org.usergrid.persistence.cassandra.ApplicationCF.ENTITY_DICTIONARIES;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.addInsertToMutator;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.key;
+import static org.usergrid.persistence.ApplicationCF.APPLICATION_AGGREGATE_COUNTERS;
+import static org.usergrid.persistence.ApplicationCF.ENTITY_COUNTERS;
+import static org.usergrid.persistence.ApplicationCF.ENTITY_DICTIONARIES;
+import static org.usergrid.persistence.CassandraPersistenceUtils.addInsertToMutator;
+import static org.usergrid.persistence.CassandraPersistenceUtils.key;
 import static org.usergrid.utils.ConversionUtils.bytebuffer;
 
 import java.nio.ByteBuffer;
@@ -46,7 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.mq.Message;
 import org.usergrid.mq.cassandra.QueuesCF;
-import org.usergrid.persistence.CounterResolution;
 import org.usergrid.persistence.entities.Event;
 
 import com.usergrid.count.Batcher;

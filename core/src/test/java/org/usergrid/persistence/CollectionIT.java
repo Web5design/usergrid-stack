@@ -38,7 +38,6 @@ import org.usergrid.AbstractCoreIT;
 import org.usergrid.CoreApplication;
 import org.usergrid.cassandra.Concurrent;
 import org.usergrid.persistence.Results.Level;
-import org.usergrid.persistence.cassandra.SimpleCollectionRef;
 import org.usergrid.persistence.entities.User;
 import org.usergrid.persistence.exceptions.DuplicateUniquePropertyExistsException;
 import org.usergrid.persistence.exceptions.NoIndexException;

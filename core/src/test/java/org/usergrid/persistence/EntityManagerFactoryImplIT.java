@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 
 import static org.junit.Assert.assertEquals;
@@ -33,10 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.usergrid.AbstractCoreIT;
 import org.usergrid.CoreITSuite;
 import org.usergrid.cassandra.Concurrent;
-import org.usergrid.persistence.Entity;
-import org.usergrid.persistence.EntityManager;
-import org.usergrid.persistence.EntityManagerFactory;
-import org.usergrid.persistence.Results;
 import org.usergrid.persistence.cassandra.util.TraceTag;
 import org.usergrid.persistence.cassandra.util.TraceTagManager;
 import org.usergrid.persistence.cassandra.util.TraceTagReporter;

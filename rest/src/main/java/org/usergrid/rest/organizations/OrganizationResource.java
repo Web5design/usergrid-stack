@@ -1,6 +1,6 @@
 package org.usergrid.rest.organizations;
 
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
+import static org.usergrid.persistence.CassandraService.MANAGEMENT_APPLICATION_ID;
 
 import java.util.UUID;
 

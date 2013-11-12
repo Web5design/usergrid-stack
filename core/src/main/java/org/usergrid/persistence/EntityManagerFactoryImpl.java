@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static me.prettyprint.hector.api.factory.HFactory.createMutator;
@@ -21,12 +21,12 @@ import static me.prettyprint.hector.api.factory.HFactory.createRangeSlicesQuery;
 import static org.usergrid.persistence.Schema.PROPERTY_NAME;
 import static org.usergrid.persistence.Schema.PROPERTY_UUID;
 import static org.usergrid.persistence.Schema.TYPE_APPLICATION;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.addInsertToMutator;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.asMap;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.batchExecute;
-import static org.usergrid.persistence.cassandra.CassandraService.APPLICATIONS_CF;
-import static org.usergrid.persistence.cassandra.CassandraService.PROPERTIES_CF;
-import static org.usergrid.persistence.cassandra.CassandraService.RETRY_COUNT;
+import static org.usergrid.persistence.CassandraPersistenceUtils.addInsertToMutator;
+import static org.usergrid.persistence.CassandraPersistenceUtils.asMap;
+import static org.usergrid.persistence.CassandraPersistenceUtils.batchExecute;
+import static org.usergrid.persistence.CassandraService.APPLICATIONS_CF;
+import static org.usergrid.persistence.CassandraService.PROPERTIES_CF;
+import static org.usergrid.persistence.CassandraService.RETRY_COUNT;
 import static org.usergrid.utils.ConversionUtils.uuid;
 
 import java.nio.ByteBuffer;
@@ -56,9 +56,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.usergrid.persistence.DynamicEntity;
-import org.usergrid.persistence.EntityManager;
-import org.usergrid.persistence.EntityManagerFactory;
 import org.usergrid.persistence.entities.Application;
 import org.usergrid.persistence.exceptions.ApplicationAlreadyExistsException;
 import org.usergrid.utils.UUIDUtils;

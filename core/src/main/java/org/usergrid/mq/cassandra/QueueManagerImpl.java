@@ -44,10 +44,10 @@ import static org.usergrid.mq.cassandra.QueuesCF.QUEUE_PROPERTIES;
 import static org.usergrid.mq.cassandra.QueuesCF.QUEUE_SUBSCRIBERS;
 import static org.usergrid.mq.cassandra.QueuesCF.QUEUE_SUBSCRIPTIONS;
 import static org.usergrid.persistence.Schema.DICTIONARY_COUNTERS;
-import static org.usergrid.persistence.cassandra.ApplicationCF.APPLICATION_AGGREGATE_COUNTERS;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.batchExecute;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.key;
-import static org.usergrid.persistence.cassandra.CassandraService.RETRY_COUNT;
+import static org.usergrid.persistence.ApplicationCF.APPLICATION_AGGREGATE_COUNTERS;
+import static org.usergrid.persistence.CassandraPersistenceUtils.batchExecute;
+import static org.usergrid.persistence.CassandraPersistenceUtils.key;
+import static org.usergrid.persistence.CassandraService.RETRY_COUNT;
 import static org.usergrid.utils.CompositeUtils.setEqualityFlag;
 import static org.usergrid.utils.CompositeUtils.setGreaterThanEqualityFlag;
 import static org.usergrid.utils.ConversionUtils.bytebuffer;
@@ -104,10 +104,10 @@ import org.usergrid.persistence.AggregateCounter;
 import org.usergrid.persistence.AggregateCounterSet;
 import org.usergrid.persistence.CounterResolution;
 import org.usergrid.persistence.Results;
-import org.usergrid.persistence.cassandra.CassandraPersistenceUtils;
-import org.usergrid.persistence.cassandra.CassandraService;
-import org.usergrid.persistence.cassandra.CounterUtils;
-import org.usergrid.persistence.cassandra.CounterUtils.AggregateCounterSelection;
+import org.usergrid.persistence.CassandraPersistenceUtils;
+import org.usergrid.persistence.CassandraService;
+import org.usergrid.persistence.CounterUtils;
+import org.usergrid.persistence.CounterUtils.AggregateCounterSelection;
 import org.usergrid.persistence.exceptions.TransactionNotFoundException;
 
 import com.fasterxml.uuid.UUIDComparator;
@@ -743,7 +743,7 @@ public class QueueManagerImpl implements QueueManager {
     if (filters == null) {
       return null;
     }
-    Map<String, org.usergrid.persistence.cassandra.CounterUtils.AggregateCounterSelection> selections = new HashMap<String, AggregateCounterSelection>();
+    Map<String, CounterUtils.AggregateCounterSelection> selections = new HashMap<String, AggregateCounterSelection>();
     Keyspace ko = cass.getApplicationKeyspace(applicationId);
 
     for (CounterFilterPredicate filter : filters) {

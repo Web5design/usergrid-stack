@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import static me.prettyprint.hector.api.factory.HFactory.createColumn;
 import static me.prettyprint.hector.api.factory.HFactory.createMutator;
 import static org.usergrid.persistence.Schema.DICTIONARY_GEOCELL;
 import static org.usergrid.persistence.Schema.INDEX_CONNECTIONS;
-import static org.usergrid.persistence.cassandra.ApplicationCF.ENTITY_INDEX;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.addInsertToMutator;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.batchExecute;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.key;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.logBatchOperation;
+import static org.usergrid.persistence.ApplicationCF.ENTITY_INDEX;
+import static org.usergrid.persistence.CassandraPersistenceUtils.addInsertToMutator;
+import static org.usergrid.persistence.CassandraPersistenceUtils.batchExecute;
+import static org.usergrid.persistence.CassandraPersistenceUtils.key;
+import static org.usergrid.persistence.CassandraPersistenceUtils.logBatchOperation;
 import static org.usergrid.utils.ConversionUtils.bytebuffer;
 
 import java.nio.ByteBuffer;
@@ -38,8 +38,6 @@ import me.prettyprint.hector.api.mutation.Mutator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.usergrid.persistence.EntityRef;
-import org.usergrid.persistence.IndexBucketLocator;
 import org.usergrid.persistence.IndexBucketLocator.IndexType;
 import org.usergrid.persistence.geo.EntityLocationRef;
 import org.usergrid.persistence.geo.GeocellManager;

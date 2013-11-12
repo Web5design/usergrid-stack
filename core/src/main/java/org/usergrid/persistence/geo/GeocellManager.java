@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.usergrid.persistence.cassandra.GeoIndexManager;
+import org.usergrid.persistence.GeoIndexManager;
 import org.usergrid.persistence.geo.model.BoundingBox;
 import org.usergrid.persistence.geo.model.CostFunction;
 import org.usergrid.persistence.geo.model.DefaultCostFunction;

@@ -13,14 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import java.util.UUID;
-
-import org.usergrid.persistence.CollectionRef;
-import org.usergrid.persistence.EntityRef;
-import org.usergrid.persistence.SimpleEntityRef;
-import org.usergrid.persistence.cassandra.CassandraPersistenceUtils;
 
 public class SimpleCollectionRef implements CollectionRef {
 

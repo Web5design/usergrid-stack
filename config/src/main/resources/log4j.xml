@@ -27,7 +27,7 @@
         <level value="warn"/>
         <appender-ref ref="stdout"/>
     </logger>
-    <logger name="org.usergrid.persistence.cassandra.ConnectionRefImpl">
+    <logger name="org.usergrid.persistence.ConnectionRefImpl">
         <level value="warn"/>
         <appender-ref ref="stdout"/>
     </logger>
@@ -39,11 +39,11 @@
         <level value="warn"/>
         <appender-ref ref="stdout"/>
     </logger>
-    <logger name="org.usergrid.persistence.cassandra.EntityManagerFactoryImpl">
+    <logger name="org.usergrid.persistence.EntityManagerFactoryImpl">
         <level value="warn"/>
         <appender-ref ref="stdout"/>
     </logger>
-    <logger name="org.usergrid.persistence.cassandra.EntityManagerImpl">
+    <logger name="org.usergrid.persistence.EntityManagerImpl">
         <level value="warn"/>
         <appender-ref ref="stdout"/>
     </logger>

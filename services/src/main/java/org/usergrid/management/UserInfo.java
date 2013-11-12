@@ -23,7 +23,7 @@ import static org.usergrid.persistence.Schema.PROPERTY_EMAIL;
 import static org.usergrid.persistence.Schema.PROPERTY_NAME;
 import static org.usergrid.persistence.Schema.PROPERTY_USERNAME;
 import static org.usergrid.persistence.Schema.PROPERTY_UUID;
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
+import static org.usergrid.persistence.CassandraService.MANAGEMENT_APPLICATION_ID;
 import static org.usergrid.utils.ConversionUtils.getBoolean;
 import static org.usergrid.utils.ConversionUtils.string;
 import static org.usergrid.utils.ConversionUtils.uuid;

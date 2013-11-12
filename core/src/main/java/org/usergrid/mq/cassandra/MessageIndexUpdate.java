@@ -23,7 +23,7 @@ import static org.usergrid.mq.cassandra.QueueIndexUpdate.validIndexableValueOrJs
 import static org.usergrid.mq.cassandra.QueueManagerImpl.DICTIONARY_MESSAGE_INDEXES;
 import static org.usergrid.mq.cassandra.QueuesCF.PROPERTY_INDEX;
 import static org.usergrid.mq.cassandra.QueuesCF.QUEUE_DICTIONARIES;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.key;
+import static org.usergrid.persistence.CassandraPersistenceUtils.key;
 import static org.usergrid.utils.ConversionUtils.bytebuffer;
 import static org.usergrid.utils.IndexUtils.getKeyValueList;
 

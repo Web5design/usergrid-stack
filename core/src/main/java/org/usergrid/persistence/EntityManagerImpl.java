@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -37,11 +37,10 @@ import org.usergrid.locking.Lock;
 import org.usergrid.mq.Message;
 import org.usergrid.mq.QueueManager;
 import org.usergrid.mq.cassandra.QueueManagerFactoryImpl;
-import org.usergrid.persistence.*;
 import org.usergrid.persistence.IndexBucketLocator.IndexType;
 import org.usergrid.persistence.Query.CounterFilterPredicate;
 import org.usergrid.persistence.Results.Level;
-import org.usergrid.persistence.cassandra.CounterUtils.AggregateCounterSelection;
+import org.usergrid.persistence.CounterUtils.AggregateCounterSelection;
 import org.usergrid.persistence.cassandra.util.TraceParticipant;
 import org.usergrid.persistence.entities.*;
 import org.usergrid.persistence.exceptions.DuplicateUniquePropertyExistsException;
@@ -69,11 +68,9 @@ import static org.usergrid.persistence.Results.fromEntities;
 import static org.usergrid.persistence.Schema.*;
 import static org.usergrid.persistence.SimpleEntityRef.getUuid;
 import static org.usergrid.persistence.SimpleEntityRef.ref;
-import static org.usergrid.persistence.cassandra.SimpleRoleRef.getIdForGroupIdAndRoleName;
-import static org.usergrid.persistence.cassandra.SimpleRoleRef.getIdForRoleName;
-import static org.usergrid.persistence.cassandra.ApplicationCF.*;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.*;
-import static org.usergrid.persistence.cassandra.CassandraService.ALL_COUNT;
+import static org.usergrid.persistence.ApplicationCF.*;
+import static org.usergrid.persistence.CassandraPersistenceUtils.*;
+import static org.usergrid.persistence.CassandraService.ALL_COUNT;
 import static org.usergrid.utils.ClassUtils.cast;
 import static org.usergrid.utils.ConversionUtils.*;
 import static org.usergrid.utils.InflectionUtils.singularize;
@@ -2207,11 +2204,11 @@ public class EntityManagerImpl implements EntityManager {
 	}
 
 	public Object getRolePermissionsKey(String roleName) {
-		return key(getIdForRoleName(roleName), DICTIONARY_PERMISSIONS);
+		return key(SimpleRoleRef.getIdForRoleName(roleName), DICTIONARY_PERMISSIONS);
 	}
 
 	public Object getRolePermissionsKey(UUID groupId, String roleName) {
-		return key(getIdForGroupIdAndRoleName(groupId, roleName),
+		return key(SimpleRoleRef.getIdForGroupIdAndRoleName(groupId, roleName),
 				DICTIONARY_PERMISSIONS);
 	}
 
@@ -2224,11 +2221,11 @@ public class EntityManagerImpl implements EntityManager {
 	}
 
 	public EntityRef roleRef(String roleName) {
-		return ref(TYPE_ROLE, getIdForRoleName(roleName));
+		return ref(TYPE_ROLE, SimpleRoleRef.getIdForRoleName(roleName));
 	}
 
 	public EntityRef roleRef(UUID groupId, String roleName) {
-		return ref(TYPE_ROLE, getIdForGroupIdAndRoleName(groupId, roleName));
+		return ref(TYPE_ROLE, SimpleRoleRef.getIdForGroupIdAndRoleName(groupId, roleName));
 	}
 
 	@Override
@@ -2430,7 +2427,7 @@ public class EntityManagerImpl implements EntityManager {
 		removeFromDictionary(groupRef(groupId), DICTIONARY_ROLENAMES, roleName);
 		cass.deleteRow(cass.getApplicationKeyspace(applicationId),
 				ApplicationCF.ENTITY_DICTIONARIES,
-				getIdForGroupIdAndRoleName(groupId, roleName));
+				SimpleRoleRef.getIdForGroupIdAndRoleName(groupId, roleName));
 	}
 
 	@Override

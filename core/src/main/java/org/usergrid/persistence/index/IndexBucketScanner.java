@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra.index;
+package org.usergrid.persistence.index;
 
 import com.yammer.metrics.annotation.Metered;
 import me.prettyprint.hector.api.beans.HColumn;
 import org.usergrid.persistence.IndexBucketLocator;
 import org.usergrid.persistence.IndexBucketLocator.IndexType;
-import org.usergrid.persistence.cassandra.ApplicationCF;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.ApplicationCF;
+import org.usergrid.persistence.CassandraService;
 
 import java.nio.ByteBuffer;
 import java.util.*;
 
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.key;
+import static org.usergrid.persistence.CassandraPersistenceUtils.key;
 
 /**
  * A simple class to make working with index buckets easier. Scans all buckets
@@ -88,7 +88,7 @@ public class IndexBucketScanner implements IndexScanner {
   }
 
   /* (non-Javadoc)
-   * @see org.usergrid.persistence.cassandra.index.IndexScanner#reset()
+   * @see org.usergrid.persistence.index.IndexScanner#reset()
    */
   @Override
   public void reset() {
@@ -205,7 +205,7 @@ public class IndexBucketScanner implements IndexScanner {
   }
 
   /* (non-Javadoc)
-   * @see org.usergrid.persistence.cassandra.index.IndexScanner#getPageSize()
+   * @see org.usergrid.persistence.index.IndexScanner#getPageSize()
    */
   @Override
   public int getPageSize() {

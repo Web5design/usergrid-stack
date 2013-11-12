@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
-
-import org.usergrid.persistence.Entity;
-
-import static org.usergrid.persistence.cassandra.IndexUpdate.compareIndexedValues;
+package org.usergrid.persistence;
 
 import java.util.Comparator;
 
@@ -47,7 +43,7 @@ public class EntityPropertyComparator implements Comparator<Entity> {
 			return -1;
 		}
 
-    return compareIndexedValues(e1.getProperty(propertyName), e2.getProperty(propertyName)) * reverse;
+    return IndexUpdate.compareIndexedValues(e1.getProperty(propertyName), e2.getProperty(propertyName)) * reverse;
 
 	}
 

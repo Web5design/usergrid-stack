@@ -1,6 +1,6 @@
 package org.usergrid.persistence.query.ir.result;
 
-import org.usergrid.persistence.cassandra.CursorCache;
+import org.usergrid.persistence.CursorCache;
 
 import java.nio.ByteBuffer;
 import java.util.Collections;

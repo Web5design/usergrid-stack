@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import static java.nio.ByteBuffer.wrap;
 import static java.util.Arrays.asList;
@@ -37,7 +37,6 @@ import me.prettyprint.hector.api.mutation.Mutator;
 import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.usergrid.persistence.Entity;
 
 import com.fasterxml.uuid.UUIDComparator;
 

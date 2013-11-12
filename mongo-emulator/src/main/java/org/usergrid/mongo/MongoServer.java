@@ -40,7 +40,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.usergrid.management.ManagementService;
 import org.usergrid.persistence.EntityManagerFactory;
-import org.usergrid.persistence.cassandra.EntityManagerFactoryImpl;
+import org.usergrid.persistence.EntityManagerFactoryImpl;
 import org.usergrid.services.ServiceManagerFactory;
 
 public class MongoServer {

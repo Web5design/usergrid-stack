@@ -40,7 +40,7 @@ import org.usergrid.persistence.EntityRef;
 import org.usergrid.persistence.Query;
 import org.usergrid.persistence.Results;
 import org.usergrid.persistence.SimpleEntityRef;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

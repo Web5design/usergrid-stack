@@ -1,4 +1,4 @@
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import static java.lang.Integer.parseInt;
 import static org.apache.commons.codec.binary.Base64.decodeBase64;

@@ -4,7 +4,7 @@ import org.usergrid.persistence.ConnectionRef;
 import org.usergrid.persistence.EntityRef;
 import org.usergrid.persistence.Results;
 import org.usergrid.persistence.SimpleEntityRef;
-import org.usergrid.persistence.cassandra.ConnectionRefImpl;
+import org.usergrid.persistence.ConnectionRefImpl;
 
 import java.util.ArrayList;
 import java.util.List;

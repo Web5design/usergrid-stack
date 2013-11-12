@@ -2,7 +2,7 @@ package org.usergrid.persistence.query.ir.result;
 
 import com.google.common.collect.Iterables;
 import org.junit.Ignore;
-import org.usergrid.persistence.cassandra.CursorCache;
+import org.usergrid.persistence.CursorCache;
 
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -96,7 +96,7 @@ public class InOrderIterator implements ResultIterator {
     }
 
     /* (non-Javadoc)
-     * @see org.usergrid.persistence.query.ir.result.ResultIterator#finalizeCursor(org.usergrid.persistence.cassandra.CursorCache)
+     * @see org.usergrid.persistence.query.ir.result.ResultIterator#finalizeCursor(org.usergrid.persistence.CursorCache)
      */
     @Override
     public void finalizeCursor(CursorCache cache, UUID lastLoaded) {

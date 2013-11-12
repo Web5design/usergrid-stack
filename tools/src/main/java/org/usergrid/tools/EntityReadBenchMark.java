@@ -15,12 +15,11 @@
  ******************************************************************************/
 package org.usergrid.tools;
 import static org.apache.commons.codec.digest.DigestUtils.md5;
-import static org.usergrid.persistence.cassandra.ApplicationCF.ENTITY_INDEX;
-import static org.usergrid.persistence.cassandra.ApplicationCF.ENTITY_UNIQUE;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.key;
-import static org.usergrid.persistence.cassandra.IndexUpdate.indexValueCode;
+import static org.usergrid.persistence.ApplicationCF.ENTITY_INDEX;
+import static org.usergrid.persistence.ApplicationCF.ENTITY_UNIQUE;
+import static org.usergrid.persistence.CassandraPersistenceUtils.key;
+import static org.usergrid.persistence.IndexUpdate.indexValueCode;
 import static org.usergrid.utils.ConversionUtils.bytebuffers;
-import static org.usergrid.utils.ConversionUtils.*;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -49,13 +48,12 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 import org.usergrid.persistence.IndexBucketLocator;
 import org.usergrid.persistence.IndexBucketLocator.IndexType;
-import org.usergrid.persistence.cassandra.EntityManagerImpl;
+import org.usergrid.persistence.EntityManagerImpl;
 
 import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.MetricPredicate;

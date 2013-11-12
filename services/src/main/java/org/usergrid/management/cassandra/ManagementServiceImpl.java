@@ -62,7 +62,7 @@ import static org.usergrid.management.AccountCreationProps.PROPERTIES_USER_CONFI
 import static org.usergrid.management.AccountCreationProps.PROPERTIES_USER_RESETPW_URL;
 import static org.usergrid.persistence.CredentialsInfo.getCredentialsSecret;
 import static org.usergrid.persistence.Schema.*;
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
+import static org.usergrid.persistence.CassandraService.MANAGEMENT_APPLICATION_ID;
 import static org.usergrid.persistence.entities.Activity.PROPERTY_ACTOR;
 import static org.usergrid.persistence.entities.Activity.PROPERTY_ACTOR_NAME;
 import static org.usergrid.persistence.entities.Activity.PROPERTY_CATEGORY;

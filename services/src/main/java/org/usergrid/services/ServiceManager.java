@@ -36,7 +36,7 @@ import org.usergrid.mq.QueueManager;
 import org.usergrid.persistence.Entity;
 import org.usergrid.persistence.EntityManager;
 import org.usergrid.persistence.EntityRef;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 import org.usergrid.persistence.entities.Application;
 import org.usergrid.services.ServiceParameter.IdParameter;
 import org.usergrid.services.applications.ApplicationsService;

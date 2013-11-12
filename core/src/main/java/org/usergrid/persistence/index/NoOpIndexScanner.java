@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra.index;
+package org.usergrid.persistence.index;
 
 import java.nio.ByteBuffer;
 import java.util.Iterator;
@@ -52,7 +52,7 @@ public class NoOpIndexScanner implements IndexScanner{
   }
 
   /* (non-Javadoc)
-   * @see org.usergrid.persistence.cassandra.index.IndexScanner#reset()
+   * @see org.usergrid.persistence.index.IndexScanner#reset()
    */
   @Override
   public void reset() {
@@ -76,7 +76,7 @@ public class NoOpIndexScanner implements IndexScanner{
   }
 
   /* (non-Javadoc)
-   * @see org.usergrid.persistence.cassandra.index.IndexScanner#getPageSize()
+   * @see org.usergrid.persistence.index.IndexScanner#getPageSize()
    */
   @Override
   public int getPageSize() {

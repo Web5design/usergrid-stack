@@ -9,7 +9,7 @@ import org.usergrid.cassandra.Concurrent;
 import org.usergrid.locking.cassandra.HectorLockManagerIT;
 import org.usergrid.mq.MessagesIT;
 import org.usergrid.persistence.*;
-import org.usergrid.persistence.cassandra.EntityManagerFactoryImplIT;
+import org.usergrid.persistence.EntityManagerFactoryImplIT;
 import org.usergrid.system.UsergridSystemMonitorIT;
 
 

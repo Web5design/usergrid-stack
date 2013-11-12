@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,7 +28,6 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.TokenRewriteStream;
 import org.junit.Test;
 import org.usergrid.cassandra.Concurrent;
-import org.usergrid.persistence.Query;
 import org.usergrid.persistence.exceptions.PersistenceException;
 import org.usergrid.persistence.query.ir.AndNode;
 import org.usergrid.persistence.query.ir.NotNode;

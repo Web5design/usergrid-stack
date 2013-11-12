@@ -31,13 +31,10 @@ import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.AbstractCoreIT;
-import org.usergrid.ConcurrentCoreITSuite;
-import org.usergrid.CoreITSuite;
 import org.usergrid.cassandra.Concurrent;
 import org.usergrid.locking.Lock;
 import org.usergrid.locking.LockManager;
 import org.usergrid.locking.exception.UGLockException;
-import org.usergrid.persistence.cassandra.CassandraService;
 
 
 @Concurrent()

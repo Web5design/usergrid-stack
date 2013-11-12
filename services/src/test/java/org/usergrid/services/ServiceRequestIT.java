@@ -16,7 +16,7 @@
 package org.usergrid.services;
 
 
-import static org.usergrid.persistence.cassandra.CassandraService.DEFAULT_APPLICATION_ID;
+import static org.usergrid.persistence.CassandraService.DEFAULT_APPLICATION_ID;
 import static org.usergrid.services.ServiceParameter.filter;
 import static org.usergrid.services.ServiceParameter.parameters;
 

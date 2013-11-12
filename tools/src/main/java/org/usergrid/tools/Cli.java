@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.usergrid.tools;
 
-import static org.usergrid.persistence.cassandra.CassandraService.DEFAULT_APPLICATION_ID;
+import static org.usergrid.persistence.CassandraService.DEFAULT_APPLICATION_ID;
 
 import java.io.BufferedReader;
 import java.io.IOException;

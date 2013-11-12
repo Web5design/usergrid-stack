@@ -90,7 +90,7 @@
 	<bean name="lockManager" class="org.usergrid.locking.zookeeper.NoOpLockManagerImpl" />
 
 	<bean id="cassandraService"
-		class="org.usergrid.persistence.cassandra.CassandraService" init-method="init">
+		class="org.usergrid.persistence.CassandraService" init-method="init">
 		<constructor-arg ref="properties" />
 		<constructor-arg ref="cassandraCluster" />
 		<constructor-arg ref="cassandraHostConfigurator" />
@@ -98,7 +98,7 @@
 	</bean>
 
 	<bean id="entityManagerFactory"
-		class="org.usergrid.persistence.cassandra.EntityManagerFactoryImpl">
+		class="org.usergrid.persistence.EntityManagerFactoryImpl">
 		<constructor-arg ref="cassandraService" />
 	</bean>
 

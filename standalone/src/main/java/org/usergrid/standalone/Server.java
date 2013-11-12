@@ -56,8 +56,6 @@ import org.usergrid.management.ManagementService;
 import org.usergrid.management.UserInfo;
 import org.usergrid.mq.QueueManagerFactory;
 import org.usergrid.persistence.EntityManagerFactory;
-import org.usergrid.persistence.cassandra.EntityManagerFactoryImpl;
-import org.usergrid.persistence.cassandra.Setup;
 import org.usergrid.rest.SwaggerServlet;
 import org.usergrid.rest.filters.ContentTypeFilter;
 import org.usergrid.services.ServiceManagerFactory;

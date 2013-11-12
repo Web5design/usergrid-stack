@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import static me.prettyprint.hector.api.ddl.ComparatorType.COUNTERTYPE;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.getIndexMetadata;
 
 import java.util.List;
 
@@ -151,7 +150,7 @@ public enum ApplicationCF implements CFEnum {
 
 	@Override
 	public List<ColumnDefinition> getMetadata() {
-		return getIndexMetadata(indexes);
+		return CassandraPersistenceUtils.getIndexMetadata(indexes);
 	}
 
 	@Override

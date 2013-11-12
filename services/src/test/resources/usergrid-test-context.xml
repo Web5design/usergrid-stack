@@ -22,7 +22,7 @@
 
 	<import resource="classpath:/usergrid-services-context.xml" />
 
-    <bean id="setup" class="org.usergrid.persistence.cassandra.Setup">
+    <bean id="setup" class="org.usergrid.persistence.Setup">
         <constructor-arg ref="entityManagerFactory"/>
         <constructor-arg ref="cassandraService"/>
     </bean>

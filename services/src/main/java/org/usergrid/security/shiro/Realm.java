@@ -18,7 +18,7 @@ package org.usergrid.security.shiro;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.usergrid.management.AccountCreationProps.PROPERTIES_SYSADMIN_LOGIN_ALLOWED;
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
+import static org.usergrid.persistence.CassandraService.MANAGEMENT_APPLICATION_ID;
 import static org.usergrid.security.shiro.utils.SubjectUtils.getPermissionFromPath;
 import static org.usergrid.utils.StringUtils.stringOrSubstringAfterFirst;
 import static org.usergrid.utils.StringUtils.stringOrSubstringBeforeFirst;

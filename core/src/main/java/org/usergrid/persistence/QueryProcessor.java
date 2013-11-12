@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.cassandra;
+package org.usergrid.persistence;
 
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
-import org.usergrid.persistence.*;
 import org.usergrid.persistence.Query.SortDirection;
 import org.usergrid.persistence.Query.SortPredicate;
 import org.usergrid.persistence.entities.User;

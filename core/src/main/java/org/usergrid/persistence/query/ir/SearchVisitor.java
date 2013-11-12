@@ -4,9 +4,9 @@ import java.util.Stack;
 
 import org.usergrid.persistence.EntityManager;
 import org.usergrid.persistence.Query;
-import org.usergrid.persistence.cassandra.QueryProcessor;
-import org.usergrid.persistence.cassandra.index.IndexScanner;
-import org.usergrid.persistence.cassandra.index.NoOpIndexScanner;
+import org.usergrid.persistence.QueryProcessor;
+import org.usergrid.persistence.index.IndexScanner;
+import org.usergrid.persistence.index.NoOpIndexScanner;
 import org.usergrid.persistence.EntityRef;
 import org.usergrid.persistence.query.ir.result.*;
 

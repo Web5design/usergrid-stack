@@ -16,7 +16,7 @@
 package org.usergrid.persistence.query.ir.result;
 
 import com.google.common.collect.Sets;
-import org.usergrid.persistence.cassandra.CursorCache;
+import org.usergrid.persistence.CursorCache;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -94,7 +94,7 @@ public class SubtractionIterator extends MergeIterator {
   }
 
   /* (non-Javadoc)
-   * @see org.usergrid.persistence.query.ir.result.ResultIterator#finalizeCursor(org.usergrid.persistence.cassandra.CursorCache)
+   * @see org.usergrid.persistence.query.ir.result.ResultIterator#finalizeCursor(org.usergrid.persistence.CursorCache)
    */
   @Override
   public void finalizeCursor(CursorCache cache,UUID lastLoaded) {

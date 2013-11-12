@@ -3,15 +3,15 @@ package org.usergrid.persistence.query.ir.result;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.hector.api.beans.HColumn;
 import org.usergrid.persistence.Schema;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 
 import java.nio.ByteBuffer;
 import java.util.*;
 
 import static org.usergrid.persistence.Schema.DICTIONARY_CONNECTED_TYPES;
 import static org.usergrid.persistence.Schema.DICTIONARY_CONNECTING_TYPES;
-import static org.usergrid.persistence.cassandra.ApplicationCF.ENTITY_DICTIONARIES;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.key;
+import static org.usergrid.persistence.ApplicationCF.ENTITY_DICTIONARIES;
+import static org.usergrid.persistence.CassandraPersistenceUtils.key;
 
 /**
  *  Iterator to iterate all types of connections the entity participates in

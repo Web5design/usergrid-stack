@@ -64,7 +64,6 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.usergrid.persistence.annotations.EntityCollection;
 import org.usergrid.persistence.annotations.EntityDictionary;
 import org.usergrid.persistence.annotations.EntityProperty;
-import org.usergrid.persistence.cassandra.CassandraPersistenceUtils;
 import org.usergrid.persistence.entities.Application;
 import org.usergrid.persistence.exceptions.PropertyTypeConversionException;
 import org.usergrid.persistence.schema.CollectionInfo;

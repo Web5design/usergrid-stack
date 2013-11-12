@@ -21,7 +21,7 @@ import static org.usergrid.mq.cassandra.CassandraMQUtils.getConsumerId;
 import static org.usergrid.mq.cassandra.QueueManagerImpl.DEFAULT_SEARCH_COUNT;
 import static org.usergrid.mq.cassandra.QueueManagerImpl.QUEUE_SHARD_INTERVAL;
 import static org.usergrid.mq.cassandra.QueuesCF.PROPERTY_INDEX;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.key;
+import static org.usergrid.persistence.CassandraPersistenceUtils.key;
 import static org.usergrid.utils.CompositeUtils.setEqualityFlag;
 import static org.usergrid.utils.ConversionUtils.bytebuffer;
 import static org.usergrid.utils.NumberUtils.roundLong;
@@ -46,7 +46,6 @@ import org.usergrid.mq.QueryProcessor;
 import org.usergrid.mq.QueryProcessor.QuerySlice;
 import org.usergrid.mq.QueueQuery;
 import org.usergrid.mq.QueueResults;
-import org.usergrid.persistence.cassandra.CassandraService;
 
 import com.fasterxml.uuid.UUIDComparator;
 

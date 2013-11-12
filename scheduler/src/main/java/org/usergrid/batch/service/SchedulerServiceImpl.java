@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.usergrid.batch.service;
 
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
+import static org.usergrid.persistence.CassandraService.MANAGEMENT_APPLICATION_ID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ import org.usergrid.persistence.EntityManagerFactory;
 import org.usergrid.persistence.Query;
 import org.usergrid.persistence.Results;
 import org.usergrid.persistence.SimpleEntityRef;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 import org.usergrid.persistence.entities.JobData;
 import org.usergrid.persistence.entities.JobStat;
 import org.usergrid.persistence.exceptions.TransactionNotFoundException;

@@ -34,7 +34,7 @@ import org.usergrid.persistence.EntityManager;
 import org.usergrid.persistence.Query;
 import org.usergrid.persistence.Results;
 import org.usergrid.persistence.SimpleEntityRef;
-import org.usergrid.persistence.cassandra.CassandraService;
+import org.usergrid.persistence.CassandraService;
 import org.usergrid.persistence.entities.Application;
 import org.usergrid.utils.JsonUtils;
 

@@ -31,7 +31,7 @@
 
     <bean id="binaryStore" class="org.usergrid.services.assets.data.LocalFileBinaryStore"/>
 
-    <bean id="setup" class="org.usergrid.persistence.cassandra.Setup">
+    <bean id="setup" class="org.usergrid.persistence.Setup">
         <constructor-arg ref="entityManagerFactory"/>
         <constructor-arg ref="cassandraService"/>
     </bean>

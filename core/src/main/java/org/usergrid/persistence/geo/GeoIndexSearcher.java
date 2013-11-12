@@ -1,8 +1,8 @@
 package org.usergrid.persistence.geo;
 
 import static org.usergrid.persistence.Schema.DICTIONARY_GEOCELL;
-import static org.usergrid.persistence.cassandra.ApplicationCF.ENTITY_INDEX;
-import static org.usergrid.persistence.cassandra.CassandraPersistenceUtils.key;
+import static org.usergrid.persistence.ApplicationCF.ENTITY_INDEX;
+import static org.usergrid.persistence.CassandraPersistenceUtils.key;
 import static org.usergrid.utils.CompositeUtils.setEqualityFlag;
 
 import java.nio.ByteBuffer;
@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 import org.usergrid.persistence.EntityManager;
 import org.usergrid.persistence.IndexBucketLocator;
 import org.usergrid.persistence.IndexBucketLocator.IndexType;
-import org.usergrid.persistence.cassandra.CassandraService;
-import org.usergrid.persistence.cassandra.GeoIndexManager;
-import org.usergrid.persistence.cassandra.index.IndexMultiBucketSetLoader;
+import org.usergrid.persistence.CassandraService;
+import org.usergrid.persistence.GeoIndexManager;
+import org.usergrid.persistence.index.IndexMultiBucketSetLoader;
 import org.usergrid.persistence.geo.model.Point;
 import org.usergrid.persistence.geo.model.Tuple;
 
