@@ -29,6 +29,7 @@ import org.usergrid.persistence.SimpleEntityRef;
 import org.usergrid.persistence.entities.Group;
 import org.usergrid.persistence.entities.User;
 import org.usergrid.security.shiro.Realm;
+import org.usergrid.security.shiro.UsergridRealm;
 import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 import org.usergrid.security.shiro.credentials.AccessTokenCredentials;
 import org.usergrid.security.tokens.TokenInfo;
@@ -43,7 +44,7 @@ public class ApplicationUserPrincipal extends UserPrincipal {
 
 
   @Override
-  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, Realm realm) throws Exception {
+  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, UsergridRealm realm) throws Exception {
 
     info.addRole(Realm.ROLE_APPLICATION_USER);
 
@@ -61,18 +62,12 @@ public class ApplicationUserPrincipal extends UserPrincipal {
                  * "/users/${user}/following/user/*"));
                  */
 
-//    TODO T.N. not sure if this is obscelete
-//    EntityManager em = emf.getEntityManager(applicationId);
-//    try {
-//      String appName = (String) em.getProperty(
-//          em.getApplicationRef(), "name");
-//      applicationSet.put(applicationId, appName);
-//      application = new ApplicationInfo(applicationId, appName);
-//    } catch (Exception e) {
-//    }
-
-
     final EntityManager em = realm.getEmf().getEntityManager(applicationId);
+
+
+    final String appName = (String) em.getProperty(em.getApplicationRef(), "name");
+
+    info.addApplication(new ApplicationInfo(applicationId, appName));
 
 
     final Set<String> permissions = em.getRolePermissions("default");

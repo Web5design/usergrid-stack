@@ -79,7 +79,7 @@ public class OAuth2AccessTokenSecurityFilter extends SecurityFilter {
           return request;
         }
 
-        AuthPrincipalInfo principal = null;
+        AuthPrincipalInfo principal;
         try {
           TokenInfo tokenInfo = tokens.getTokenInfo(accessToken);
           principal = tokenInfo.getPrincipal();

@@ -55,6 +55,8 @@ public abstract class UserPrincipal extends PrincipalIdentifier {
 	}
 
 
+
+
   /**
    * Must always return the id in the format of appid/userid for cache purposes
    * @return

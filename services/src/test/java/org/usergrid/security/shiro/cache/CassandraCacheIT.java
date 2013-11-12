@@ -458,8 +458,8 @@ public class CassandraCacheIT {
     storedAuthInfo.addStringPermission("GET:/groups/**");
     storedAuthInfo.addStringPermission("GET,PUT,POST,DELETE::/users/me/**");
 
-    ApplicationInfo app1 = new ApplicationInfo(UUIDUtils.newTimeUUID(), "testapp1");
-    ApplicationInfo app2 = new ApplicationInfo(UUIDUtils.newTimeUUID(), "testapp2");
+    ApplicationInfo app1 = new ApplicationInfo(UUIDUtils.newTimeUUID(), "testorg1/testapp1");
+    ApplicationInfo app2 = new ApplicationInfo(UUIDUtils.newTimeUUID(), "testorg2/testapp2");
 
     storedAuthInfo.addApplication(app1);
     storedAuthInfo.addApplication(app2);

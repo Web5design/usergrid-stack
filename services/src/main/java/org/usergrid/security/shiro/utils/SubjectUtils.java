@@ -99,7 +99,7 @@ public class SubjectUtils {
 		}
 
 		if (identifier.isName()) {
-			return authInfo.getOrganization(identifier.getName());
+			return authInfo.getOrganization(identifier.getName().toLowerCase());
 		} else if (identifier.isUUID()) {
 			return authInfo.getOrganization(identifier.getUUID());
 		}
@@ -218,7 +218,8 @@ public class SubjectUtils {
 
 
 		Subject currentUser = getSubject();
-		if (currentUser == null) {
+
+    if (currentUser == null) {
 			return null;
 		}
 
@@ -228,13 +229,8 @@ public class SubjectUtils {
       return null;
     }
 
-    //TODO T.N. Finish this. USERGRID-2443
 
-    SecurityUtils.getSecurityManager().authenticate();
-
-//    UsergridAuthorizationInfo authorizationInfo =   SecurityUtils.getSecurityManager().authenticate(principals.next().getUser().);
-
-    return null;
+    return principals.next().getAuthorizationInfo();
 	}
 
 

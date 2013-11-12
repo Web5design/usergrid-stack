@@ -20,6 +20,7 @@ import org.usergrid.management.UserInfo;
 import org.usergrid.persistence.EntityManager;
 import org.usergrid.persistence.entities.Role;
 import org.usergrid.security.shiro.Realm;
+import org.usergrid.security.shiro.UsergridRealm;
 import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 import org.usergrid.security.shiro.credentials.AccessTokenCredentials;
 import org.usergrid.security.tokens.TokenInfo;
@@ -37,6 +38,7 @@ public abstract class PrincipalIdentifier {
 
 
 	private AccessTokenCredentials accessTokenCredentials;
+  private UsergridAuthorizationInfo authorizationInfo;
 
 	public UserInfo getUser() {
 		return null;
@@ -59,6 +61,13 @@ public abstract class PrincipalIdentifier {
 		this.accessTokenCredentials = accessTokenCredentials;
 	}
 
+  public UsergridAuthorizationInfo getAuthorizationInfo() {
+    return authorizationInfo;
+  }
+
+  public void setAuthorizationInfo(UsergridAuthorizationInfo authorizationInfo) {
+    this.authorizationInfo = authorizationInfo;
+  }
 
   /**
    * Grant all permissions for the role names on this application
@@ -124,6 +133,6 @@ public abstract class PrincipalIdentifier {
    *
    * @return
    */
-  public abstract void populateAuthorizatioInfo(UsergridAuthorizationInfo info, Realm realm) throws Exception;
+  public abstract void populateAuthorizatioInfo(UsergridAuthorizationInfo info, UsergridRealm realm) throws Exception;
 
 }

@@ -59,7 +59,7 @@ public class UsergridAuthorizationInfo extends SimpleAuthorizationInfo {
    */
   public void addApplication(ApplicationInfo info){
     applicationUUID.put(info.getId(), info);
-    applicationString.put(info.getName(), info);
+    applicationString.put(info.getName().toLowerCase(), info);
   }
 
   /**
@@ -95,7 +95,7 @@ public class UsergridAuthorizationInfo extends SimpleAuthorizationInfo {
    */
   public void addOrganizationInfo(OrganizationInfo info){
     organizationUUID.put(info.getUuid(), info);
-    organizationString.put(info.getName(), info);
+    organizationString.put(info.getName().toLowerCase(), info);
   }
 
 

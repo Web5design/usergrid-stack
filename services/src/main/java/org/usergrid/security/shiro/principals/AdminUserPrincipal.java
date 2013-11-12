@@ -25,6 +25,7 @@ import org.usergrid.management.ManagementService;
 import org.usergrid.management.OrganizationInfo;
 import org.usergrid.management.UserInfo;
 import org.usergrid.security.shiro.Realm;
+import org.usergrid.security.shiro.UsergridRealm;
 import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 
 import java.util.Map;
@@ -37,7 +38,7 @@ public class AdminUserPrincipal extends UserPrincipal {
   }
 
   @Override
-  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, Realm realm) throws Exception {
+  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, UsergridRealm realm) throws Exception {
     // AdminUserPrincipals are through basic auth and sessions
     // They have access to organizations and organization
     // applications

@@ -83,7 +83,7 @@ import org.usergrid.security.tokens.TokenService;
 
 import com.google.common.collect.HashBiMap;
 
-public class Realm extends AuthorizingRealm {
+public class Realm extends AuthorizingRealm implements UsergridRealm {
     private static final Logger logger = LoggerFactory.getLogger(Realm.class);
 
     public final static String ROLE_SERVICE_ADMIN = "service-admin";
@@ -192,6 +192,8 @@ public class Realm extends AuthorizingRealm {
 
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(
                 pcToken.getPrincipal(), pcToken.getCredentials(), getName());
+
+
         return info;
     }
 
@@ -206,6 +208,7 @@ public class Realm extends AuthorizingRealm {
 
           try {
             principal.populateAuthorizatioInfo(info, this);
+
           } catch (Exception e) {
             logger.error("Unable to populate authorization info");
             throw new RuntimeException("Unable to populate authorization info", e);
@@ -213,8 +216,11 @@ public class Realm extends AuthorizingRealm {
 
         }
 
+
+
         return info;
     }
+
 
 
     @Override
@@ -256,5 +262,28 @@ public class Realm extends AuthorizingRealm {
 
   public String getSuperUser() {
     return superUser;
+  }
+
+
+  /**
+   * Get the Usergrid authorization info for this principal collection. Will check the cache first
+   * before re-creating
+   * @param collection
+   * @return
+   */
+  public UsergridAuthorizationInfo getAuthorizationInfo(PrincipalCollection collection){
+
+    UsergridAuthorizationInfo authInfo = (UsergridAuthorizationInfo) super.getAuthorizationInfo(collection);
+
+    //now set the info into our Session.  This is a bit of a hack, but there's no way around this with the current
+    //Shiro Implementations
+
+
+    for (PrincipalIdentifier principal : collection
+        .byType(PrincipalIdentifier.class)) {
+      principal.setAuthorizationInfo(authInfo);
+    }
+
+    return authInfo;
   }
 }

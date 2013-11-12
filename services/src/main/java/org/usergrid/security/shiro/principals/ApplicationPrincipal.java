@@ -20,6 +20,7 @@ import java.util.UUID;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.usergrid.management.ApplicationInfo;
 import org.usergrid.security.shiro.Realm;
+import org.usergrid.security.shiro.UsergridRealm;
 import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 
 public class ApplicationPrincipal extends PrincipalIdentifier {
@@ -44,7 +45,7 @@ public class ApplicationPrincipal extends PrincipalIdentifier {
 	}
 
   @Override
-  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, Realm realm) {
+  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, UsergridRealm realm) {
     // ApplicationPrincipal are usually only through OAuth
     // They have access to a single application
 

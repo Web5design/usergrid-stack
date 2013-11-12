@@ -22,6 +22,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.usergrid.management.ApplicationInfo;
 import org.usergrid.persistence.EntityManager;
 import org.usergrid.security.shiro.Realm;
+import org.usergrid.security.shiro.UsergridRealm;
 import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 
 import static org.usergrid.security.shiro.utils.SubjectUtils.getPermissionFromPath;
@@ -48,7 +49,7 @@ public class ApplicationGuestPrincipal extends PrincipalIdentifier {
   }
 
   @Override
-  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, Realm realm) throws Exception {
+  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, UsergridRealm realm) throws Exception {
 
     info.addRole(Realm.ROLE_APPLICATION_USER);
 
