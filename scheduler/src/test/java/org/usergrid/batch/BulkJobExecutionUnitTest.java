@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.junit.Test;
 import org.usergrid.batch.JobExecution.Status;
-import org.usergrid.batch.repository.JobDescriptor;
 import org.usergrid.cassandra.Concurrent;
 import org.usergrid.persistence.entities.JobData;
 import org.usergrid.persistence.entities.JobStat;

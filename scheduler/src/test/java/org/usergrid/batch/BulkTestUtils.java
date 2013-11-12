@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Ignore;
-import org.usergrid.batch.repository.JobDescriptor;
 
 /**
  * @author zznate
@@ -20,7 +19,7 @@ public class BulkTestUtils {
 
   private static class MyBulkJobFactory implements JobFactory {
     /* (non-Javadoc)
-     * @see org.usergrid.batch.JobFactory#jobsFrom(org.usergrid.batch.repository.JobDescriptor)
+     * @see org.usergrid.batch.JobFactory#jobsFrom(org.usergrid.batch.JobDescriptor)
      */
     @Override
     public List<Job> jobsFrom(JobDescriptor descriptor) {

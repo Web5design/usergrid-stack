@@ -27,12 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
-import org.usergrid.batch.JobExecution;
+import org.usergrid.batch.*;
 import org.usergrid.batch.JobExecution.Status;
-import org.usergrid.batch.JobRuntime;
-import org.usergrid.batch.JobRuntimeException;
 import org.usergrid.batch.repository.JobAccessor;
-import org.usergrid.batch.repository.JobDescriptor;
 import org.usergrid.persistence.mq.Message;
 import org.usergrid.persistence.mq.QueueManager;
 import org.usergrid.persistence.mq.QueueManagerFactory;
@@ -244,7 +241,7 @@ public class SchedulerServiceImpl implements SchedulerService, JobAccessor, JobR
   }
 
   /* (non-Javadoc)
-   * @see org.usergrid.batch.service.JobRuntimeService#heartbeat(org.usergrid.batch.JobRuntime)
+   * @see org.usergrid.batch.JobRuntimeService#heartbeat(org.usergrid.batch.JobRuntime)
    */
   @Override
   public void heartbeat(JobRuntime execution) {

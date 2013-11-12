@@ -2,8 +2,6 @@ package org.usergrid.batch;
 
 import java.util.UUID;
 
-import org.usergrid.batch.repository.JobDescriptor;
-import org.usergrid.batch.service.JobRuntimeService;
 import org.usergrid.persistence.entities.JobData;
 import org.usergrid.persistence.entities.JobStat;
 

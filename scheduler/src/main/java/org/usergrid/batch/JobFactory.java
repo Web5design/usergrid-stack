@@ -2,8 +2,6 @@ package org.usergrid.batch;
 
 import java.util.List;
 
-import org.usergrid.batch.repository.JobDescriptor;
-
 /**
  * It is up to the implementation how many BulkJob instances to return,
  * but this should be controled by the BulkJobsBuilder

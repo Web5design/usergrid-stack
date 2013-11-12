@@ -1,11 +1,9 @@
-package org.usergrid.batch.repository;
+package org.usergrid.batch;
 
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.Assert;
 
-import org.usergrid.batch.service.JobRuntimeService;
-import org.usergrid.batch.service.SchedulerService;
 import org.usergrid.persistence.TypedEntity;
 import org.usergrid.persistence.entities.JobData;
 import org.usergrid.persistence.entities.JobStat;

@@ -2,6 +2,7 @@ package org.usergrid.batch.repository;
 
 import java.util.List;
 
+import org.usergrid.batch.JobDescriptor;
 import org.usergrid.batch.JobExecution;
 
 /**

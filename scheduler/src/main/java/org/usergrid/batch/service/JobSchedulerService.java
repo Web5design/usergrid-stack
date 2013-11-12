@@ -17,7 +17,7 @@ import org.usergrid.batch.JobExecutionImpl;
 import org.usergrid.batch.JobFactory;
 import org.usergrid.batch.JobNotFoundException;
 import org.usergrid.batch.repository.JobAccessor;
-import org.usergrid.batch.repository.JobDescriptor;
+import org.usergrid.batch.JobDescriptor;
 
 import com.google.common.util.concurrent.AbstractScheduledService;
 import com.google.common.util.concurrent.FutureCallback;
