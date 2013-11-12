@@ -25,7 +25,7 @@ import org.usergrid.mq.Query.FilterOperator;
 import org.usergrid.mq.Query.FilterPredicate;
 import org.usergrid.mq.Query.SortPredicate;
 import org.usergrid.persistence.Entity;
-import org.usergrid.persistence.EntityPropertyComparator;
+import org.usergrid.persistence.cassandra.EntityPropertyComparator;
 import org.usergrid.utils.ListUtils;
 import org.usergrid.utils.NumberUtils;
 import org.usergrid.utils.StringUtils;

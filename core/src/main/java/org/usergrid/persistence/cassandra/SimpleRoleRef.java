@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence;
+package org.usergrid.persistence.cassandra;
 
 import java.util.UUID;
 
 import org.springframework.util.Assert;
-import org.usergrid.persistence.cassandra.CassandraPersistenceUtils;
+import org.usergrid.persistence.Entity;
+import org.usergrid.persistence.EntityRef;
+import org.usergrid.persistence.RoleRef;
+import org.usergrid.persistence.SimpleEntityRef;
 import org.usergrid.persistence.entities.Group;
 import org.usergrid.utils.StringUtils;
 import org.usergrid.utils.UUIDUtils;

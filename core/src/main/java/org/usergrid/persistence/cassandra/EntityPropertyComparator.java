@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence;
+package org.usergrid.persistence.cassandra;
+
+import org.usergrid.persistence.Entity;
 
 import static org.usergrid.persistence.cassandra.IndexUpdate.compareIndexedValues;
 
