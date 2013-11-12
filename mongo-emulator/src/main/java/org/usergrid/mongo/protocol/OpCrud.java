@@ -17,7 +17,6 @@ package org.usergrid.mongo.protocol;
 
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
-import org.usergrid.mongo.MongoChannelHandler;
 
 public abstract class OpCrud extends Message {
 

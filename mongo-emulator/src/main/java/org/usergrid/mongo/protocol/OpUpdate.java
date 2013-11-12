@@ -18,7 +18,6 @@ package org.usergrid.mongo.protocol;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
-import java.util.UUID;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
@@ -29,16 +28,13 @@ import org.jboss.netty.channel.MessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.management.ApplicationInfo;
-import org.usergrid.mongo.MongoChannelHandler;
 import org.usergrid.mongo.query.MongoQueryParser;
 import org.usergrid.mongo.utils.BSONUtils;
 import org.usergrid.persistence.Entity;
 import org.usergrid.persistence.EntityManager;
-import org.usergrid.persistence.EntityRef;
 import org.usergrid.persistence.Identifier;
 import org.usergrid.persistence.Query;
 import org.usergrid.persistence.Results;
-import org.usergrid.persistence.Results.Level;
 import org.usergrid.security.shiro.utils.SubjectUtils;
 
 public class OpUpdate extends OpCrud {

@@ -22,8 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import org.springframework.util.StringUtils;
-import org.usergrid.mongo.MongoChannelHandler;
-import org.usergrid.mongo.protocol.OpQuery;
+import org.usergrid.mongo.protocol.MongoChannelHandler;
 import org.usergrid.mongo.protocol.OpReply;
 
 public abstract class MongoCommand {

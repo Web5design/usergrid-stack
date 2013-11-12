@@ -29,7 +29,6 @@ import org.jboss.netty.channel.MessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.management.ApplicationInfo;
-import org.usergrid.mongo.MongoChannelHandler;
 import org.usergrid.mongo.query.MongoQueryParser;
 import org.usergrid.mongo.utils.BSONUtils;
 import org.usergrid.persistence.EntityManager;

@@ -24,8 +24,7 @@ import java.util.Set;
 
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
-import org.usergrid.mongo.MongoChannelHandler;
-import org.usergrid.mongo.protocol.OpQuery;
+import org.usergrid.mongo.protocol.MongoChannelHandler;
 import org.usergrid.mongo.protocol.OpReply;
 import org.usergrid.security.shiro.utils.SubjectUtils;
 

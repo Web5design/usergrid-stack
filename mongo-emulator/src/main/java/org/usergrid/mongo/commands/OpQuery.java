@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.mongo.protocol;
+package org.usergrid.mongo.commands;
 
 import static org.apache.commons.collections.MapUtils.getIntValue;
 import static org.usergrid.utils.JsonUtils.toJsonMap;
@@ -27,14 +27,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.Stack;
 
-import org.antlr.runtime.ClassicToken;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.subject.Subject;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
-import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBufferInputStream;
@@ -44,8 +41,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.management.ApplicationInfo;
 import org.usergrid.management.UserInfo;
-import org.usergrid.mongo.MongoChannelHandler;
-import org.usergrid.mongo.commands.MongoCommand;
+import org.usergrid.mongo.protocol.MongoChannelHandler;
+import org.usergrid.mongo.protocol.OpCrud;
+import org.usergrid.mongo.protocol.OpReply;
 import org.usergrid.mongo.query.MongoQueryParser;
 import org.usergrid.mongo.utils.BSONUtils;
 import org.usergrid.persistence.Entity;
@@ -54,15 +52,6 @@ import org.usergrid.persistence.Identifier;
 import org.usergrid.persistence.Query;
 import org.usergrid.persistence.Results;
 import org.usergrid.persistence.Schema;
-import org.usergrid.persistence.Query.SortDirection;
-import org.usergrid.persistence.query.tree.AndOperand;
-import org.usergrid.persistence.query.tree.Equal;
-import org.usergrid.persistence.query.tree.GreaterThan;
-import org.usergrid.persistence.query.tree.GreaterThanEqual;
-import org.usergrid.persistence.query.tree.LessThan;
-import org.usergrid.persistence.query.tree.LessThanEqual;
-import org.usergrid.persistence.query.tree.Operand;
-import org.usergrid.persistence.query.tree.OrOperand;
 import org.usergrid.security.shiro.PrincipalCredentialsToken;
 import org.usergrid.security.shiro.utils.SubjectUtils;
 import org.usergrid.utils.MapUtils;

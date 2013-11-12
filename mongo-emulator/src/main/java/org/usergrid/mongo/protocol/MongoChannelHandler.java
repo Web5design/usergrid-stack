@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.mongo;
+package org.usergrid.mongo.protocol;
 
 import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.subject.Subject;
@@ -26,9 +26,6 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.management.ManagementService;
-import org.usergrid.mongo.protocol.Message;
-import org.usergrid.mongo.protocol.OpCrud;
-import org.usergrid.mongo.protocol.OpReply;
 import org.usergrid.persistence.EntityManagerFactory;
 import org.usergrid.services.ServiceManagerFactory;
 

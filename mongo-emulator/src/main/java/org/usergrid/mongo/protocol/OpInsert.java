@@ -31,7 +31,6 @@ import org.jboss.netty.channel.MessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.management.ApplicationInfo;
-import org.usergrid.mongo.MongoChannelHandler;
 import org.usergrid.mongo.utils.BSONUtils;
 import org.usergrid.persistence.EntityManager;
 import org.usergrid.persistence.Identifier;
@@ -118,7 +117,7 @@ public class OpInsert extends OpCrud {
 
 
     /* (non-Javadoc)
-     * @see org.usergrid.mongo.protocol.OpCrud#doOp(org.usergrid.mongo.MongoChannelHandler, org.jboss.netty.channel.ChannelHandlerContext, org.jboss.netty.channel.MessageEvent)
+     * @see org.usergrid.mongo.protocol.OpCrud#doOp(org.usergrid.mongo.protocol.MongoChannelHandler, org.jboss.netty.channel.ChannelHandlerContext, org.jboss.netty.channel.MessageEvent)
      */
     @SuppressWarnings("unchecked")
     @Override

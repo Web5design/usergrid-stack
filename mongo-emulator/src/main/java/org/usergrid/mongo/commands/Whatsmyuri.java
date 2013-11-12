@@ -22,8 +22,7 @@ import java.net.InetSocketAddress;
 
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
-import org.usergrid.mongo.MongoChannelHandler;
-import org.usergrid.mongo.protocol.OpQuery;
+import org.usergrid.mongo.protocol.MongoChannelHandler;
 import org.usergrid.mongo.protocol.OpReply;
 
 public class Whatsmyuri extends MongoCommand {

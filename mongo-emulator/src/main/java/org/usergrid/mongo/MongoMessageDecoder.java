@@ -27,7 +27,7 @@ import org.usergrid.mongo.protocol.OpGetMore;
 import org.usergrid.mongo.protocol.OpInsert;
 import org.usergrid.mongo.protocol.OpKillCursors;
 import org.usergrid.mongo.protocol.OpMsg;
-import org.usergrid.mongo.protocol.OpQuery;
+import org.usergrid.mongo.commands.OpQuery;
 import org.usergrid.mongo.protocol.OpReply;
 import org.usergrid.mongo.protocol.OpUpdate;
 
