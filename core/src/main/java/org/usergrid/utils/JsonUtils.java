@@ -15,31 +15,23 @@
  ******************************************************************************/
 package org.usergrid.utils;
 
-import static org.apache.commons.lang.StringUtils.substringAfter;
-import static org.usergrid.utils.StringUtils.stringOrSubstringBeforeFirst;
-
 import java.io.File;
 import java.math.BigInteger;
-import java.net.URL;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.io.JsonStringEncoder;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
-import org.codehaus.jackson.schema.JsonSchema;
 import org.codehaus.jackson.smile.SmileFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.exception.JsonReadException;
 import org.usergrid.exception.JsonWriteException;
-import org.usergrid.persistence.Entity;
+
 
 /**
  * @author edanuff
@@ -47,7 +39,7 @@ import org.usergrid.persistence.Entity;
  */
 public class JsonUtils {
 
-	private static final Logger logger = LoggerFactory
+	private static final Logger LOG = LoggerFactory
 			.getLogger(JsonUtils.class);
 
 	static ObjectMapper mapper = new ObjectMapper();
@@ -70,7 +62,7 @@ public class JsonUtils {
 		try {
 			return mapper.writeValueAsString(obj);
 		} catch (Throwable t) {
-      logger.debug("Error generating JSON", t);
+      LOG.debug("Error generating JSON", t);
       throw new JsonWriteException("Error generating JSON", t);
  	  }
 	}
@@ -82,22 +74,9 @@ public class JsonUtils {
 		try {
 			return indentObjectMapper.writeValueAsString(obj);
 		} catch (Throwable t) {
-      logger.debug("Error generating JSON", t);
+      LOG.debug("Error generating JSON", t);
       throw new JsonWriteException("Error generating JSON", t);
  	  }
-	}
-
-	public static String schemaToFormattedJsonString(JsonSchema schema) {
-		return mapToFormattedJsonString(schema.getSchemaNode());
-	}
-
-	public static JsonSchema getJsonSchema(Class<?> cls) {
-		JsonSchema jsonSchema = null;
-		try {
-			jsonSchema = mapper.generateJsonSchema(cls);
-		} catch (JsonMappingException e) {
-		}
-		return jsonSchema;
 	}
 
   /**
@@ -107,18 +86,9 @@ public class JsonUtils {
 		try {
 			return mapper.readValue(json, Object.class);
 		} catch (Throwable t) {
-      logger.debug("Error parsing JSON", t);
+      LOG.debug("Error parsing JSON", t);
       throw new JsonReadException("Error parsing JSON", t);
  	  }
-	}
-
-	public static JsonNode getJsonSchemaNode(Class<?> cls) {
-		JsonNode schemaRootNode = null;
-		JsonSchema jsonSchema = getJsonSchema(cls);
-		if (jsonSchema != null) {
-			schemaRootNode = jsonSchema.getSchemaNode();
-		}
-		return schemaRootNode;
 	}
 
 	public static String quoteString(String s) {
@@ -135,7 +105,7 @@ public class JsonUtils {
 		try {
 			bytes = smileMapper.writeValueAsBytes(obj);
 		} catch (Exception e) {
-			logger.error("Error getting SMILE bytes", e);
+			LOG.error("Error getting SMILE bytes", e);
 		}
 		if (bytes != null) {
 			return ByteBuffer.wrap(bytes);
@@ -160,23 +130,7 @@ public class JsonUtils {
 			obj = smileMapper.readValue(byteBuffer.array(), byteBuffer.arrayOffset()
 					+ byteBuffer.position(), byteBuffer.remaining(), clazz);
 		} catch (Exception e) {
-			logger.error("Error parsing SMILE bytes", e);
-		}
-		return obj;
-	}
-
-	public static JsonNode nodeFromByteBuffer(ByteBuffer byteBuffer) {
-		if ((byteBuffer == null) || !byteBuffer.hasRemaining()) {
-			return null;
-		}
-
-		JsonNode obj = null;
-		try {
-			obj = smileMapper.readValue(byteBuffer.array(), byteBuffer.arrayOffset()
-					+ byteBuffer.position(), byteBuffer.remaining(),
-					JsonNode.class);
-		} catch (Exception e) {
-			logger.error("Error parsing SMILE bytes", e);
+			LOG.error("Error parsing SMILE bytes", e);
 		}
 		return obj;
 	}
@@ -268,127 +222,14 @@ public class JsonUtils {
 		return obj;
 	}
 
-	public static Object select(Object obj, String path) {
-		return select(obj, path, false);
-	}
-
-	public static Object select(Object obj, String path, boolean buildResultTree) {
-
-		if (obj == null) {
-			return null;
-		}
-
-		if (org.apache.commons.lang.StringUtils.isBlank(path)) {
-			return obj;
-		}
-
-		String segment = stringOrSubstringBeforeFirst(path, '.');
-		String remaining = substringAfter(path, ".");
-
-		if (obj instanceof Map) {
-			Map<?, ?> map = (Map<?, ?>) obj;
-			Object child = map.get(segment);
-			Object result = select(child, remaining, buildResultTree);
-			if (result != null) {
-				if (buildResultTree) {
-					Map<Object, Object> results = new LinkedHashMap<Object, Object>();
-					results.put(segment, result);
-					return results;
-				} else {
-					return result;
-				}
-			}
-			return null;
-		}
-		if (obj instanceof List) {
-			List<Object> results = new ArrayList<Object>();
-			List<?> list = (List<?>) obj;
-			for (Object i : list) {
-				Object result = select(i, path, buildResultTree);
-				if (result != null) {
-					results.add(result);
-				}
-			}
-			if (!results.isEmpty()) {
-				return results;
-			}
-			return null;
-		}
-
-    if (obj instanceof Entity) {
-      Object child = ((Entity)obj).getProperty(segment);
-      Object result = select(child, remaining, buildResultTree);
-      if (result != null) {
-        if (buildResultTree) {
-          Map<Object, Object> results = new LinkedHashMap<Object, Object>();
-          results.put(segment, result);
-          return results;
-        } else {
-          return result;
-        }
-      }
-      else {
-          return result;
-      }
-    }
-
-		return obj;
-	}
-
-	public static Object loadFromResourceFile(String file) {
-		Object json = null;
-		try {
-			URL resource = JsonUtils.class.getResource(file);
-			json = mapper.readValue(resource, Object.class);
-		} catch (Exception e) {
-			logger.error("Error loading JSON", e);
-		}
-		return json;
-	}
-
-	public static Object loadFromFilesystem(String filename) {
+    public static Object loadFromFilesystem(String filename) {
 		Object json = null;
 		try {
 			File file = new File(filename);
 			json = mapper.readValue(file, Object.class);
 		} catch (Exception e) {
-			logger.error("Error loading JSON", e);
+			LOG.error("Error loading JSON", e);
 		}
 		return json;
-	}
-
-	public static Object loadFromUrl(String urlStr) {
-		Object json = null;
-		try {
-			URL url = new URL(urlStr);
-			json = mapper.readValue(url, Object.class);
-		} catch (Exception e) {
-			logger.error("Error loading JSON", e);
-		}
-		return json;
-	}
-
-	public static Object loadFromUrl(URL url) {
-		Object json = null;
-		try {
-			json = mapper.readValue(url, Object.class);
-		} catch (Exception e) {
-			logger.error("Error loading JSON", e);
-		}
-		return json;
-	}
-
-	public static boolean isSmile(ByteBuffer buffer) {
-		buffer = buffer.duplicate();
-		if (buffer.get() != 0x3A) {
-			return false;
-		}
-		if (buffer.get() != 0x29) {
-			return false;
-		}
-		if (buffer.get() != 0x0A) {
-			return false;
-		}
-		return true;
 	}
 }

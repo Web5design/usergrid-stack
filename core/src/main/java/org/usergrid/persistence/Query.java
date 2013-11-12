@@ -1086,7 +1086,7 @@ public class Query {
         Map<String, Object> result = new LinkedHashMap<String, Object>();
         Map<String, String> selects = getSelectAssignments();
         for (Map.Entry<String, String> select : selects.entrySet()) {
-          Object obj = JsonUtils.select(entity, select.getValue(), false);
+          Object obj = QueryUtils.select(entity, select.getValue(), false);
           if (obj != null) {
             include = true;
           }
@@ -1100,7 +1100,7 @@ public class Query {
         List<Object> result = new ArrayList<Object>();
         Set<String> selects = getSelectSubjects();
         for (String select : selects) {
-          Object obj = JsonUtils.select(entity, select);
+          Object obj = QueryUtils.select(entity, select);
           if (obj != null) {
             include = true;
           }

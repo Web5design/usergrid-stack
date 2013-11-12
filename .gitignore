@@ -1,8 +1,10 @@
 .idea
 .sonar-ide.properties
 .clover
+structure-pom.xml
 atlassian-ide-plugin.xml
 s101plugin.state
+s101plugin.properties
 *.DS_Store
 hector.iml
 releases

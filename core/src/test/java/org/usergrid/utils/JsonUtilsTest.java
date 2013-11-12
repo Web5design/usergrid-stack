@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
+import org.usergrid.persistence.QueryUtils;
 
 public class JsonUtilsTest {
 
@@ -54,10 +55,10 @@ public class JsonUtilsTest {
 
 		System.out.println(JsonUtils.mapToJsonString(json));
 
-		Object result = JsonUtils.select(json, "phones");
+		Object result = QueryUtils.select(json, "phones");
 		System.out.println(JsonUtils.mapToJsonString(result));
 
-		result = JsonUtils.select(json, "phones.a");
+		result = QueryUtils.select(json, "phones.a");
 		System.out.println(JsonUtils.mapToJsonString(result));
 
 	}

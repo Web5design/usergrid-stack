@@ -50,10 +50,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.usergrid.persistence.CounterResolution;
-import org.usergrid.persistence.Entity;
-import org.usergrid.persistence.Identifier;
-import org.usergrid.persistence.Results;
+import org.usergrid.persistence.*;
 import org.usergrid.persistence.Results.Level;
 import org.usergrid.utils.JsonUtils;
 
@@ -1660,8 +1657,8 @@ public class Query {
 				Map<String, Object> result = new LinkedHashMap<String, Object>();
 				Map<String, String> selects = getSelectAssignments();
 				for (Map.Entry<String, String> select : selects.entrySet()) {
-					Object obj = JsonUtils.select(entity, select.getKey(),
-							false);
+					Object obj = QueryUtils.select(entity, select.getKey(),
+                            false);
 					if (obj == null) {
 						obj = "";
 					} else {
@@ -1677,7 +1674,7 @@ public class Query {
 				List<Object> result = new ArrayList<Object>();
 				Set<String> selects = getSelectSubjects();
 				for (String select : selects) {
-					Object obj = JsonUtils.select(entity, select);
+					Object obj = QueryUtils.select(entity, select);
 					if (obj == null) {
 						obj = "";
 					} else {
