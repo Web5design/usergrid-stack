@@ -22,8 +22,11 @@ import org.usergrid.persistence.entities.User;
 import org.usergrid.persistence.exceptions.NoFullTextIndexException;
 import org.usergrid.persistence.exceptions.NoIndexException;
 import org.usergrid.persistence.exceptions.PersistenceException;
-import org.usergrid.persistence.query.ir.*;
-import org.usergrid.persistence.query.ir.result.*;
+import org.usergrid.persistence.ir.*;
+import org.usergrid.persistence.ir.result.ResultIterator;
+import org.usergrid.persistence.ir.result.ResultsLoader;
+import org.usergrid.persistence.ir.result.ResultsLoaderFactory;
+import org.usergrid.persistence.ir.result.ScanColumn;
 import org.usergrid.persistence.query.tree.*;
 
 import java.nio.ByteBuffer;

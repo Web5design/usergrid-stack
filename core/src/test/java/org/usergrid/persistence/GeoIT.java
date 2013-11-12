@@ -34,8 +34,8 @@ import org.usergrid.cassandra.Concurrent;
 import org.usergrid.persistence.geo.CollectionGeoSearch;
 import org.usergrid.persistence.geo.EntityLocationRef;
 import org.usergrid.persistence.geo.model.Point;
-import org.usergrid.persistence.query.ir.QuerySlice;
-import org.usergrid.persistence.query.ir.result.GeoIterator;
+import org.usergrid.persistence.ir.QuerySlice;
+import org.usergrid.persistence.ir.result.GeoIterator;
 import org.usergrid.utils.MapUtils;
 
 

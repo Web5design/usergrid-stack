@@ -51,9 +51,9 @@ import org.usergrid.persistence.CassandraService;
 import org.usergrid.persistence.EntityManagerImpl;
 import org.usergrid.persistence.IndexScanner;
 import org.usergrid.persistence.entities.Application;
-import org.usergrid.persistence.query.ir.result.ScanColumn;
-import org.usergrid.persistence.query.ir.result.SliceIterator;
-import org.usergrid.persistence.query.ir.result.UUIDIndexSliceParser;
+import org.usergrid.persistence.ir.result.ScanColumn;
+import org.usergrid.persistence.ir.result.SliceIterator;
+import org.usergrid.persistence.ir.result.UUIDIndexSliceParser;
 import org.usergrid.persistence.CollectionInfo;
 
 /**

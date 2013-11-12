@@ -47,10 +47,10 @@ import org.usergrid.persistence.Schema;
 import org.usergrid.persistence.CassandraService;
 import org.usergrid.persistence.EntityManagerImpl;
 import org.usergrid.persistence.IndexScanner;
-import org.usergrid.persistence.query.ir.result.ScanColumn;
-import org.usergrid.persistence.query.ir.result.ScanColumnTransformer;
-import org.usergrid.persistence.query.ir.result.SliceIterator;
-import org.usergrid.persistence.query.ir.result.UUIDIndexSliceParser;
+import org.usergrid.persistence.ir.result.ScanColumn;
+import org.usergrid.persistence.ir.result.ScanColumnTransformer;
+import org.usergrid.persistence.ir.result.SliceIterator;
+import org.usergrid.persistence.ir.result.UUIDIndexSliceParser;
 
 /**
  * This is a utility to audit all available entity ids for existing target rows

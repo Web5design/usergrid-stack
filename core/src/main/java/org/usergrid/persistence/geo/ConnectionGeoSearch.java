@@ -35,7 +35,7 @@ public class ConnectionGeoSearch extends GeoIndexSearcher {
    * (non-Javadoc)
    * 
    * @see
-   * org.usergrid.persistence.query.ir.result.GeoIterator.GeoIndexSearcher
+   * org.usergrid.persistence.ir.result.GeoIterator.GeoIndexSearcher
    * #doSearch()
    */
   @Override

@@ -34,8 +34,8 @@ import org.usergrid.persistence.geo.CollectionGeoSearch;
 import org.usergrid.persistence.geo.ConnectionGeoSearch;
 import org.usergrid.persistence.geo.EntityLocationRef;
 import org.usergrid.persistence.geo.model.Point;
-import org.usergrid.persistence.query.ir.*;
-import org.usergrid.persistence.query.ir.result.*;
+import org.usergrid.persistence.ir.*;
+import org.usergrid.persistence.ir.result.*;
 import org.usergrid.utils.IndexUtils;
 import org.usergrid.utils.MapUtils;
 
@@ -1889,7 +1889,7 @@ public class RelationManagerImpl implements RelationManager {
 
   
     /* (non-Javadoc)
-     * @see org.usergrid.persistence.query.ir.SearchVisitor#secondaryIndexScan(org.usergrid.persistence.query.ir.QueryNode, org.usergrid.persistence.query.ir.QuerySlice)
+     * @see org.usergrid.persistence.SearchVisitor#secondaryIndexScan(org.usergrid.persistence.ir.QueryNode, org.usergrid.persistence.ir.QuerySlice)
      */
     @Override
     protected IndexScanner secondaryIndexScan(QueryNode node, QuerySlice slice) throws Exception {
@@ -1942,7 +1942,7 @@ public class RelationManagerImpl implements RelationManager {
     /*
      * (non-Javadoc)
      * 
-     * @see org.usergrid.persistence.query.ir.NodeVisitor#visit(org.usergrid.
+     * @see org.usergrid.persistence.ir.NodeVisitor#visit(org.usergrid.
      * persistence.query.ir.WithinNode)
      */
     @Override
@@ -2001,7 +2001,7 @@ public class RelationManagerImpl implements RelationManager {
 
  
     /* (non-Javadoc)
-     * @see org.usergrid.persistence.query.ir.SearchVisitor#secondaryIndexScan(org.usergrid.persistence.query.ir.QueryNode, org.usergrid.persistence.query.ir.QuerySlice)
+     * @see org.usergrid.persistence.SearchVisitor#secondaryIndexScan(org.usergrid.persistence.ir.QueryNode, org.usergrid.persistence.ir.QuerySlice)
      */
     @Override
     protected IndexScanner secondaryIndexScan(QueryNode node, QuerySlice slice) throws Exception {
@@ -2029,7 +2029,7 @@ public class RelationManagerImpl implements RelationManager {
     /*
      * (non-Javadoc)
      * 
-     * @see org.usergrid.persistence.query.ir.NodeVisitor#visit(org.usergrid.
+     * @see org.usergrid.persistence.ir.NodeVisitor#visit(org.usergrid.
      * persistence.query.ir.WithinNode)
      */
     @Override

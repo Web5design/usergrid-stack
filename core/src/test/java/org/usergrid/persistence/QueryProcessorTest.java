@@ -29,12 +29,12 @@ import org.antlr.runtime.TokenRewriteStream;
 import org.junit.Test;
 import org.usergrid.cassandra.Concurrent;
 import org.usergrid.persistence.exceptions.PersistenceException;
-import org.usergrid.persistence.query.ir.AndNode;
-import org.usergrid.persistence.query.ir.NotNode;
-import org.usergrid.persistence.query.ir.OrNode;
-import org.usergrid.persistence.query.ir.QuerySlice;
-import org.usergrid.persistence.query.ir.SliceNode;
-import org.usergrid.persistence.query.ir.WithinNode;
+import org.usergrid.persistence.ir.AndNode;
+import org.usergrid.persistence.ir.NotNode;
+import org.usergrid.persistence.ir.OrNode;
+import org.usergrid.persistence.ir.QuerySlice;
+import org.usergrid.persistence.ir.SliceNode;
+import org.usergrid.persistence.ir.WithinNode;
 import org.usergrid.persistence.query.tree.QueryFilterLexer;
 import org.usergrid.persistence.query.tree.QueryFilterParser;
 
