@@ -84,8 +84,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.locking.LockManager;
 import org.usergrid.persistence.IndexBucketLocator.IndexType;
-import org.usergrid.persistence.index.IndexBucketScanner;
-import org.usergrid.persistence.index.IndexScanner;
 
 public class CassandraService {
 

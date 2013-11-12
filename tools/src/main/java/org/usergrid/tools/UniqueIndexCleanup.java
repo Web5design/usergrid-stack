@@ -49,12 +49,12 @@ import org.usergrid.persistence.*;
 import org.usergrid.persistence.IndexBucketLocator.IndexType;
 import org.usergrid.persistence.CassandraService;
 import org.usergrid.persistence.EntityManagerImpl;
-import org.usergrid.persistence.index.IndexScanner;
+import org.usergrid.persistence.IndexScanner;
 import org.usergrid.persistence.entities.Application;
 import org.usergrid.persistence.query.ir.result.ScanColumn;
 import org.usergrid.persistence.query.ir.result.SliceIterator;
 import org.usergrid.persistence.query.ir.result.UUIDIndexSliceParser;
-import org.usergrid.persistence.schema.CollectionInfo;
+import org.usergrid.persistence.CollectionInfo;
 
 /**
  * This is a utility to audit all available entity ids in the secondary index.

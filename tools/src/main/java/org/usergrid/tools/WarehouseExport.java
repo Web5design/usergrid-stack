@@ -32,7 +32,7 @@ import org.usergrid.management.OrganizationInfo;
 import org.usergrid.persistence.*;
 import org.usergrid.persistence.Results.Level;
 import org.usergrid.persistence.entities.Application;
-import org.usergrid.persistence.schema.CollectionInfo;
+import org.usergrid.persistence.CollectionInfo;
 import org.usergrid.utils.InflectionUtils;
 import java.io.File;
 import java.io.FileReader;

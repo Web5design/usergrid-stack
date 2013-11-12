@@ -28,7 +28,7 @@ import org.usergrid.persistence.Entity;
 import org.usergrid.persistence.Schema;
 import org.usergrid.persistence.exceptions.RequiredPropertyNotFoundException;
 import org.usergrid.persistence.exceptions.UnexpectedEntityTypeException;
-import org.usergrid.persistence.schema.CollectionInfo;
+import org.usergrid.persistence.CollectionInfo;
 import org.usergrid.services.exceptions.ServiceResourceNotFoundException;
 
 

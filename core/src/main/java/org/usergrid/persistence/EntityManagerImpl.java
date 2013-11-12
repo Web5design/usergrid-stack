@@ -47,7 +47,6 @@ import org.usergrid.persistence.exceptions.DuplicateUniquePropertyExistsExceptio
 import org.usergrid.persistence.exceptions.EntityNotFoundException;
 import org.usergrid.persistence.exceptions.RequiredPropertyNotFoundException;
 import org.usergrid.persistence.exceptions.UnexpectedEntityTypeException;
-import org.usergrid.persistence.schema.CollectionInfo;
 import org.usergrid.utils.ClassUtils;
 import org.usergrid.utils.CompositeUtils;
 import org.usergrid.utils.UUIDUtils;

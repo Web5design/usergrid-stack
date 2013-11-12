@@ -29,10 +29,6 @@ import org.springframework.util.Assert;
 import org.usergrid.persistence.IndexBucketLocator.IndexType;
 import org.usergrid.persistence.Results.Level;
 import org.usergrid.persistence.IndexUpdate.*;
-import org.usergrid.persistence.index.ConnectedIndexScanner;
-import org.usergrid.persistence.index.IndexBucketScanner;
-import org.usergrid.persistence.index.IndexScanner;
-import org.usergrid.persistence.index.NoOpIndexScanner;
 import org.usergrid.persistence.entities.Group;
 import org.usergrid.persistence.geo.CollectionGeoSearch;
 import org.usergrid.persistence.geo.ConnectionGeoSearch;
@@ -40,7 +36,6 @@ import org.usergrid.persistence.geo.EntityLocationRef;
 import org.usergrid.persistence.geo.model.Point;
 import org.usergrid.persistence.query.ir.*;
 import org.usergrid.persistence.query.ir.result.*;
-import org.usergrid.persistence.schema.CollectionInfo;
 import org.usergrid.utils.IndexUtils;
 import org.usergrid.utils.MapUtils;
 

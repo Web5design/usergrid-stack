@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.schema;
+package org.usergrid.persistence;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.usergrid.persistence.Schema;
 import org.usergrid.persistence.annotations.EntityCollection;
 
 public class CollectionInfo {

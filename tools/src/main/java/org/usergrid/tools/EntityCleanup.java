@@ -46,7 +46,7 @@ import org.usergrid.persistence.Results;
 import org.usergrid.persistence.Schema;
 import org.usergrid.persistence.CassandraService;
 import org.usergrid.persistence.EntityManagerImpl;
-import org.usergrid.persistence.index.IndexScanner;
+import org.usergrid.persistence.IndexScanner;
 import org.usergrid.persistence.query.ir.result.ScanColumn;
 import org.usergrid.persistence.query.ir.result.ScanColumnTransformer;
 import org.usergrid.persistence.query.ir.result.SliceIterator;

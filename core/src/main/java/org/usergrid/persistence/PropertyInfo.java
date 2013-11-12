@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.usergrid.persistence.schema;
+package org.usergrid.persistence;
 
 import org.usergrid.persistence.annotations.EntityProperty;
 

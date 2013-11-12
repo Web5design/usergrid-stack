@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.persistence.Schema;
 import org.usergrid.persistence.entities.Application;
-import org.usergrid.persistence.schema.CollectionInfo;
+import org.usergrid.persistence.CollectionInfo;
 import org.usergrid.tools.apidoc.swagger.ApiListing;
 import org.usergrid.utils.JsonUtils;
 import org.w3c.dom.Document;

@@ -30,7 +30,7 @@ import org.usergrid.persistence.IndexBucketLocator;
 import org.usergrid.persistence.IndexBucketLocator.IndexType;
 import org.usergrid.persistence.CassandraService;
 import org.usergrid.persistence.GeoIndexManager;
-import org.usergrid.persistence.index.IndexMultiBucketSetLoader;
+import org.usergrid.persistence.IndexMultiBucketSetLoader;
 import org.usergrid.persistence.geo.model.Point;
 import org.usergrid.persistence.geo.model.Tuple;
 

@@ -25,7 +25,6 @@ import org.usergrid.persistence.exceptions.PersistenceException;
 import org.usergrid.persistence.query.ir.*;
 import org.usergrid.persistence.query.ir.result.*;
 import org.usergrid.persistence.query.tree.*;
-import org.usergrid.persistence.schema.CollectionInfo;
 
 import java.nio.ByteBuffer;
 import java.util.*;

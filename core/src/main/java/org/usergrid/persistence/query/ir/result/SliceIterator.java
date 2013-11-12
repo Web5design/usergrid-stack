@@ -17,7 +17,7 @@ package org.usergrid.persistence.query.ir.result;
 
 import me.prettyprint.hector.api.beans.HColumn;
 import org.usergrid.persistence.CursorCache;
-import org.usergrid.persistence.index.IndexScanner;
+import org.usergrid.persistence.IndexScanner;
 import org.usergrid.persistence.query.ir.QuerySlice;
 
 import java.nio.ByteBuffer;
