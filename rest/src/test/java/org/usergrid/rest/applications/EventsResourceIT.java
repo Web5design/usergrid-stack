@@ -1,4 +1,4 @@
-package org.usergrid.rest.applications.events;
+package org.usergrid.rest.applications;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

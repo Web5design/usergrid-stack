@@ -69,9 +69,11 @@ import org.usergrid.persistence.Identifier;
 import org.usergrid.persistence.SimpleEntityRef;
 import org.usergrid.persistence.entities.Application;
 import org.usergrid.persistence.entities.User;
+import org.usergrid.persistence.mq.QueuePosition;
+import org.usergrid.persistence.mq.QueueQuery;
+import org.usergrid.persistence.mq.QueueResults;
 import org.usergrid.rest.AbstractContextResource;
 import org.usergrid.rest.applications.assets.AssetsResource;
-import org.usergrid.rest.applications.events.EventsResource;
 import org.usergrid.rest.applications.queues.QueueResource;
 import org.usergrid.rest.applications.users.UsersResource;
 import org.usergrid.rest.exceptions.AuthErrorInfo;
@@ -586,4 +588,34 @@ public class ApplicationResource extends ServiceResource {
 		return new JSONWithPadding(value, callback);
 	}
 
+    @Component("org.usergrid.rest.applications.ApplicationResource.EventsResource")
+    @Scope("prototype")
+    @Produces(APPLICATION_JSON)
+    public static class EventsResource extends ServiceResource {
+
+        public static final Logger logger = LoggerFactory
+                .getLogger(EventsResource.class);
+
+        String errorMsg;
+        User user;
+
+        public EventsResource() {
+        }
+
+        @Override
+        @GET
+        public JSONWithPadding executeGet(@Context UriInfo ui,
+                @QueryParam("callback") @DefaultValue("callback") String callback)
+                throws Exception {
+            QueueQuery query = QueueQuery.fromQueryParams(ui.getQueryParameters());
+            if (query == null) {
+                query = new QueueQuery();
+            }
+            query.setPosition(QueuePosition.START);
+            QueueResults results = ((ApplicationResource) parent).getQueues()
+                    .getFromQueue("/events", query);
+            return new JSONWithPadding(results, callback);
+        }
+
+    }
 }
