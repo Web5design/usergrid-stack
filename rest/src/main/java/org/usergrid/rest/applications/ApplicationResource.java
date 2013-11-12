@@ -63,7 +63,7 @@ import org.usergrid.management.exceptions.DisabledAdminUserException;
 import org.usergrid.management.exceptions.DisabledAppUserException;
 import org.usergrid.management.exceptions.UnactivatedAdminUserException;
 import org.usergrid.management.exceptions.UnactivatedAppUserException;
-import org.usergrid.mq.QueueManager;
+import org.usergrid.persistence.mq.QueueManager;
 import org.usergrid.persistence.EntityManager;
 import org.usergrid.persistence.Identifier;
 import org.usergrid.persistence.SimpleEntityRef;

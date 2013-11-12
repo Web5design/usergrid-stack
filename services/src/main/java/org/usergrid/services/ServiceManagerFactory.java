@@ -24,8 +24,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.usergrid.batch.service.SchedulerService;
 import org.usergrid.locking.LockManager;
-import org.usergrid.mq.QueueManager;
-import org.usergrid.mq.QueueManagerFactory;
+import org.usergrid.persistence.mq.QueueManager;
+import org.usergrid.persistence.mq.QueueManagerFactory;
 import org.usergrid.persistence.EntityManager;
 import org.usergrid.persistence.EntityManagerFactory;
 

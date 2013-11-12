@@ -58,6 +58,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.usergrid.persistence.entities.Application;
 import org.usergrid.persistence.exceptions.ApplicationAlreadyExistsException;
+import org.usergrid.persistence.mq.CounterUtils;
 import org.usergrid.utils.UUIDUtils;
 
 import com.google.common.cache.CacheBuilder;

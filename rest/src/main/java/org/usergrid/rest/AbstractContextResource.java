@@ -19,7 +19,6 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang.StringUtils.removeEnd;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
@@ -33,7 +32,7 @@ import net.tanesha.recaptcha.ReCaptchaFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.usergrid.management.ManagementService;
-import org.usergrid.mq.QueueManagerFactory;
+import org.usergrid.persistence.mq.QueueManagerFactory;
 import org.usergrid.persistence.EntityManagerFactory;
 import org.usergrid.rest.exceptions.RedirectionException;
 import org.usergrid.security.tokens.TokenService;

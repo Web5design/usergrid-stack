@@ -39,10 +39,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.usergrid.exception.NotImplementedException;
-import org.usergrid.mq.Message;
-import org.usergrid.mq.QueueManager;
-import org.usergrid.mq.QueueQuery;
-import org.usergrid.mq.QueueResults;
+import org.usergrid.persistence.mq.Message;
+import org.usergrid.persistence.mq.QueueManager;
+import org.usergrid.persistence.mq.QueueQuery;
+import org.usergrid.persistence.mq.QueueResults;
 import org.usergrid.rest.AbstractContextResource;
 
 import com.sun.jersey.api.json.JSONWithPadding;

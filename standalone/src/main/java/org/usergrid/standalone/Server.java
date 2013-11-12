@@ -54,7 +54,7 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.usergrid.management.ManagementService;
 import org.usergrid.management.UserInfo;
-import org.usergrid.mq.QueueManagerFactory;
+import org.usergrid.persistence.mq.QueueManagerFactory;
 import org.usergrid.persistence.EntityManagerFactory;
 import org.usergrid.rest.SwaggerServlet;
 import org.usergrid.rest.filters.ContentTypeFilter;

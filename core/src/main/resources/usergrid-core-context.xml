@@ -98,7 +98,7 @@
     </bean>
 
     <bean id="queueManagerFactory"
-          class="org.usergrid.mq.cassandra.QueueManagerFactoryImpl">
+          class="org.usergrid.persistence.mq.QueueManagerFactoryImpl">
         <constructor-arg ref="cassandraService" />
         <constructor-arg ref="counterUtils"/>
         <constructor-arg ref="lockManager"/>
@@ -121,7 +121,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="counterUtils" class="org.usergrid.persistence.CounterUtils">
+    <bean id="counterUtils" class="org.usergrid.persistence.mq.CounterUtils">
         <property name="batcher" ref="simpleBatcher"/>
         <property name="counterType" value="n"/>
     </bean>

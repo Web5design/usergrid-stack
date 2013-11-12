@@ -38,7 +38,7 @@ import me.prettyprint.hector.api.ddl.ComparatorType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.usergrid.mq.cassandra.QueuesCF;
+import org.usergrid.persistence.mq.QueuesCF;
 import org.usergrid.persistence.entities.Application;
 
 

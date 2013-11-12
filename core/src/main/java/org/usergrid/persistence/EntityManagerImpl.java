@@ -34,19 +34,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 import org.usergrid.locking.Lock;
-import org.usergrid.mq.Message;
-import org.usergrid.mq.QueueManager;
-import org.usergrid.mq.cassandra.QueueManagerFactoryImpl;
+import org.usergrid.persistence.mq.*;
+import org.usergrid.persistence.mq.QueueManagerFactoryImpl;
 import org.usergrid.persistence.IndexBucketLocator.IndexType;
 import org.usergrid.persistence.Query.CounterFilterPredicate;
 import org.usergrid.persistence.Results.Level;
-import org.usergrid.persistence.CounterUtils.AggregateCounterSelection;
+import org.usergrid.persistence.mq.CounterUtils.AggregateCounterSelection;
 import org.usergrid.persistence.cassandra.util.TraceParticipant;
 import org.usergrid.persistence.entities.*;
 import org.usergrid.persistence.exceptions.DuplicateUniquePropertyExistsException;
 import org.usergrid.persistence.exceptions.EntityNotFoundException;
 import org.usergrid.persistence.exceptions.RequiredPropertyNotFoundException;
 import org.usergrid.persistence.exceptions.UnexpectedEntityTypeException;
+import org.usergrid.persistence.mq.Message;
 import org.usergrid.utils.ClassUtils;
 import org.usergrid.utils.CompositeUtils;
 import org.usergrid.utils.UUIDUtils;
@@ -1641,7 +1641,7 @@ public class EntityManagerImpl implements EntityManager {
 					filter.getName(),
 					getUuid(getUserByIdentifier(filter.getUser())),
 					getUuid(getGroupByIdentifier(filter.getGroup())),
-					org.usergrid.mq.Queue.getQueueId(filter.getQueue()),
+					org.usergrid.persistence.mq.Queue.getQueueId(filter.getQueue()),
 					filter.getCategory());
 			selections.put(selection.getRow(resolution), selection);
 		}

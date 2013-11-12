@@ -6,7 +6,7 @@ import org.junit.runners.Suite;
 import org.usergrid.cassandra.Concurrent;
 import org.usergrid.cassandra.ConcurrentSuite;
 import org.usergrid.locking.zookeeper.ZookeeperLockManagerTest;
-import org.usergrid.mq.QueuePathsTest;
+import org.usergrid.persistence.mq.QueuePathsTest;
 import org.usergrid.persistence.*;
 import org.usergrid.persistence.QueryProcessorTest;
 import org.usergrid.persistence.SimpleIndexBucketLocatorImplTest;

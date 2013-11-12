@@ -16,7 +16,7 @@
 package org.usergrid;
 
 import org.junit.rules.TestRule;
-import org.usergrid.mq.QueueManagerFactory;
+import org.usergrid.persistence.mq.QueueManagerFactory;
 import org.usergrid.persistence.EntityManagerFactory;
 import org.usergrid.persistence.IndexBucketLocator;
 import org.usergrid.persistence.CassandraService;

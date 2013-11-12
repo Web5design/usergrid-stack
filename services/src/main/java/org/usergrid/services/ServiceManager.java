@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.usergrid.batch.service.SchedulerService;
 import org.usergrid.locking.LockManager;
-import org.usergrid.mq.QueueManager;
+import org.usergrid.persistence.mq.QueueManager;
 import org.usergrid.persistence.Entity;
 import org.usergrid.persistence.EntityManager;
 import org.usergrid.persistence.EntityRef;

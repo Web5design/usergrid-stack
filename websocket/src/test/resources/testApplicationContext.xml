@@ -103,7 +103,7 @@
 	</bean>
 
 	<bean id="queueManagerFactory"
-		class="org.usergrid.mq.cassandra.QueueManagerFactoryImpl">
+		class="org.usergrid.persistence.mq.QueueManagerFactoryImpl">
 		<constructor-arg ref="cassandraService" />
 	</bean>
 

@@ -22,7 +22,7 @@ import org.junit.runners.Suite;
 import org.usergrid.cassandra.CassandraResource;
 import org.usergrid.cassandra.Concurrent;
 import org.usergrid.cassandra.ConcurrentSuite;
-import org.usergrid.mq.MessagesIT;
+import org.usergrid.persistence.mq.MessagesIT;
 import org.usergrid.persistence.*;
 import org.usergrid.persistence.EntityManagerFactoryImplIT;
 import org.usergrid.system.UsergridSystemMonitorIT;

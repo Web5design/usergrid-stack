@@ -1,16 +1,14 @@
 package org.usergrid.rest.applications.queues;
 
-import com.google.common.collect.BiMap;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import org.codehaus.jackson.JsonNode;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.usergrid.cassandra.Concurrent;
-import org.usergrid.mq.QueuePosition;
+import org.usergrid.persistence.mq.QueuePosition;
 import org.usergrid.rest.TestContextSetup;
 import org.usergrid.rest.test.resource.app.queue.Queue;
-import org.usergrid.rest.test.resource.app.queue.Transaction;
 import org.usergrid.utils.MapUtils;
 
 import java.util.ArrayList;
