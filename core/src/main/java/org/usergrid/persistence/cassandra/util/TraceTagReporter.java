@@ -1,12 +1,10 @@
 package org.usergrid.persistence.cassandra.util;
 
-/**
- * @author zznate
- */
+
+/** @author zznate */
 public interface TraceTagReporter {
 
-    void report(TraceTag traceTag);
+    void report( TraceTag traceTag );
 
-    void reportUnattached(TimedOpTag timedOpTag);
-
+    void reportUnattached( TimedOpTag timedOpTag );
 }

@@ -1,12 +1,9 @@
 package org.usergrid.cassandra;
 
-/**
- * @author zznate
- */
+
+/** @author zznate */
 public interface DataLoader {
 
-    /**
-     * Free-form execution
-     */
+    /** Free-form execution */
     void execute();
 }

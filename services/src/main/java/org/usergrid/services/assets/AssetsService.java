@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2012 Apigee Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,6 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 package org.usergrid.services.assets;
+
 
 import java.util.List;
 
@@ -24,28 +25,33 @@ import org.usergrid.services.AbstractPathBasedColllectionService;
 import org.usergrid.services.ServiceContext;
 import org.usergrid.services.ServiceResults;
 
+
 public class AssetsService extends AbstractPathBasedColllectionService {
 
-	private static final Logger logger = LoggerFactory.getLogger(AssetsService.class);
+    private static final Logger logger = LoggerFactory.getLogger( AssetsService.class );
 
-	public AssetsService() {
-		super();
-		logger.info("/assets");
-    declareServiceCommands("data");
-	}
 
-  @Override
-  public ServiceResults getEntityCommand(ServiceContext context, List<EntityRef> refs, String command) throws Exception {
-    logger.info("handling command: {}", command);
+    public AssetsService() {
+        super();
+        logger.info( "/assets" );
+        declareServiceCommands( "data" );
+    }
 
-    ServiceResults sr = ServiceResults.genericServiceResults();
 
-    return sr;
-  }
+    @Override
+    public ServiceResults getEntityCommand( ServiceContext context, List<EntityRef> refs, String command )
+            throws Exception {
+        logger.info( "handling command: {}", command );
 
-  @Override
-  public ServiceResults getServiceCommand(ServiceContext context, String command) throws Exception {
-    logger.info("in getServiceCommand with command: {}", command);
-    return ServiceResults.genericServiceResults();
-  }
+        ServiceResults sr = ServiceResults.genericServiceResults();
+
+        return sr;
+    }
+
+
+    @Override
+    public ServiceResults getServiceCommand( ServiceContext context, String command ) throws Exception {
+        logger.info( "in getServiceCommand with command: {}", command );
+        return ServiceResults.genericServiceResults();
+    }
 }

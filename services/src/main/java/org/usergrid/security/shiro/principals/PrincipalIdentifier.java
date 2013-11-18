@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2012 Apigee Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,9 @@
 package org.usergrid.security.shiro.principals;
 
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+
+
+
 import org.usergrid.management.UserInfo;
 import org.usergrid.persistence.EntityManager;
 import org.usergrid.persistence.entities.Role;
@@ -34,32 +37,31 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.usergrid.utils.StringUtils.stringOrSubstringAfterFirst;
 import static org.usergrid.utils.StringUtils.stringOrSubstringBeforeFirst;
 
+
 public abstract class PrincipalIdentifier {
 
 
-	private AccessTokenCredentials accessTokenCredentials;
+
+  private AccessTokenCredentials accessTokenCredentials;
   private UsergridAuthorizationInfo authorizationInfo;
 
-	public UserInfo getUser() {
-		return null;
-	}
 
-	public boolean isDisabled() {
-		return false;
-	}
 
-	public boolean isActivated() {
-		return true;
-	}
+    public boolean isActivated() {
+        return true;
+    }
 
-	public AccessTokenCredentials getAccessTokenCredentials() {
-		return accessTokenCredentials;
-	}
+  public boolean isDisabled() {
+ 		return false;
+ 	}
 
-	public void setAccessTokenCredentials(
-			AccessTokenCredentials accessTokenCredentials) {
-		this.accessTokenCredentials = accessTokenCredentials;
-	}
+  public AccessTokenCredentials getAccessTokenCredentials() {
+    return accessTokenCredentials;
+  }
+
+  public void setAccessTokenCredentials(AccessTokenCredentials accessTokenCredentials) {
+    this.accessTokenCredentials = accessTokenCredentials;
+  }
 
   public UsergridAuthorizationInfo getAuthorizationInfo() {
     return authorizationInfo;
@@ -134,5 +136,6 @@ public abstract class PrincipalIdentifier {
    * @return
    */
   public abstract void populateAuthorizatioInfo(UsergridAuthorizationInfo info, UsergridRealm realm) throws Exception;
+
 
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2012 Apigee Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,107 +15,112 @@
  ******************************************************************************/
 package org.usergrid.locking.zookeeper;
 
+
 import java.io.File;
 import java.net.InetSocketAddress;
 
-import org.apache.zookeeper.server.ServerConfig;
-import org.apache.zookeeper.server.ZooKeeperServerMain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Base test class for ZooKeeper tests.
- */
+import org.apache.zookeeper.server.ServerConfig;
+import org.apache.zookeeper.server.ZooKeeperServerMain;
+
+
+/** Base test class for ZooKeeper tests. */
 public abstract class AbstractZooKeeperTest {
 
-	public static final String ZOO_KEEPER_HOST = "localhost:20181/";
+    public static final String ZOO_KEEPER_HOST = "localhost:20181/";
 
-	private static Logger LOG = LoggerFactory.getLogger( AbstractZooKeeperTest.class );
+    private static Logger LOG = LoggerFactory.getLogger( AbstractZooKeeperTest.class );
 
-	static class ZKServerMain extends ZooKeeperServerMain {
-		@Override
-		public void shutdown() {
-			super.shutdown();
-		}
-	}
 
-	protected static ZKServerMain zkServer = new ZKServerMain();
+    static class ZKServerMain extends ZooKeeperServerMain {
+        @Override
+        public void shutdown() {
+            super.shutdown();
+        }
+    }
 
-	protected static File tmpDir = new File("./zk_tmp");
 
-	protected int clientPort;
+    protected static ZKServerMain zkServer = new ZKServerMain();
 
-	@BeforeClass
-	public static void before() throws Exception {
-		// we don't call super.setUp
-		System.setProperty("zkHost", ZOO_KEEPER_HOST);
-		Thread zooThread = new Thread() {
-			@Override
-			public void run() {
-				ServerConfig config = null;
+    protected static File tmpDir = new File( "./zk_tmp" );
 
-				config = new ServerConfig() {
-					{
-						clientPortAddress = new InetSocketAddress("localhost",
-								20181);
-						dataDir = tmpDir.getAbsolutePath() + File.separator
-								+ "zookeeper/server1/data";
-						dataLogDir = dataDir;
-						// this.maxClientCnxns = 50;
-						// this.tickTime = 2000;
-					}
-				};
+    protected int clientPort;
 
-				try {
-					zkServer.runFromConfig(config);
-					LOG.info("ZOOKEEPER EXIT");
-				} catch (Throwable e) {
-					e.printStackTrace();
-					throw new RuntimeException(e);
-				}
-			}
-		};
 
-		zooThread.setDaemon(true);
-		zooThread.start();
-		Thread.sleep(500); // pause for ZooKeeper to start
+    @BeforeClass
+    public static void before() throws Exception {
+        // we don't call super.setUp
+        System.setProperty( "zkHost", ZOO_KEEPER_HOST );
+        Thread zooThread = new Thread() {
+            @Override
+            public void run() {
+                ServerConfig config = null;
 
-		buildZooKeeper();
+                config = new ServerConfig() {
+                    {
+                        clientPortAddress = new InetSocketAddress( "localhost", 20181 );
+                        dataDir = tmpDir.getAbsolutePath() + File.separator + "zookeeper/server1/data";
+                        dataLogDir = dataDir;
+                        // this.maxClientCnxns = 50;
+                        // this.tickTime = 2000;
+                    }
+                };
 
-		LOG.info("Zookeeper initialized.");
-	}
+                try {
+                    zkServer.runFromConfig( config );
+                    LOG.info( "ZOOKEEPER EXIT" );
+                }
+                catch ( Throwable e ) {
+                    e.printStackTrace();
+                    throw new RuntimeException( e );
+                }
+            }
+        };
 
-	public static void buildZooKeeper() throws Exception {
-		ZooPut zooPut = new ZooPut(ZOO_KEEPER_HOST.substring(0,
-				ZOO_KEEPER_HOST.indexOf('/')));
-		// TODO read a system property to get the app root path if
-		// needed.
-		// zooPut.makePath("/somepath");
-		zooPut.close();
-	}
+        zooThread.setDaemon( true );
+        zooThread.start();
+        Thread.sleep( 500 ); // pause for ZooKeeper to start
 
-	@AfterClass
-	public static void after() throws Exception {
-		zkServer.shutdown();
+        buildZooKeeper();
 
-		// Remove test data.
-		boolean deletedData = recurseDelete(tmpDir);
-		if (!deletedData) {
-			LOG.warn("Zk testing data was not removed properly. You need to"
-                    + "manually remove:" + tmpDir.getAbsolutePath());
-		}
-	}
+        LOG.info( "Zookeeper initialized." );
+    }
 
-	public static boolean recurseDelete(File f) {
-		if (f.isDirectory()) {
-			for (File sub : f.listFiles()) {
-				if (!recurseDelete(sub)) {
-					return false;
-				}
-			}
-		}
-		return f.delete();
-	}
+
+    public static void buildZooKeeper() throws Exception {
+        ZooPut zooPut = new ZooPut( ZOO_KEEPER_HOST.substring( 0, ZOO_KEEPER_HOST.indexOf( '/' ) ) );
+        // TODO read a system property to get the app root path if
+        // needed.
+        // zooPut.makePath("/somepath");
+        zooPut.close();
+    }
+
+
+    @AfterClass
+    public static void after() throws Exception {
+        zkServer.shutdown();
+
+        // Remove test data.
+        boolean deletedData = recurseDelete( tmpDir );
+        if ( !deletedData ) {
+            LOG.warn( "Zk testing data was not removed properly. You need to" + "manually remove:" + tmpDir
+                    .getAbsolutePath() );
+        }
+    }
+
+
+    public static boolean recurseDelete( File f ) {
+        if ( f.isDirectory() ) {
+            for ( File sub : f.listFiles() ) {
+                if ( !recurseDelete( sub ) ) {
+                    return false;
+                }
+            }
+        }
+        return f.delete();
+    }
 }

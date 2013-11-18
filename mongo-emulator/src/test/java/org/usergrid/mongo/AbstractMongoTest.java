@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2012 Apigee Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,6 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 package org.usergrid.mongo;
+
 
 import java.net.UnknownHostException;
 import java.util.Properties;
@@ -28,40 +29,33 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
-public abstract class AbstractMongoTest
-{
-	private static Logger LOG = LoggerFactory.getLogger(AbstractMongoTest.class);
 
-	static MongoServer server = null;
-	static boolean usersSetup = false;
-	protected static Properties properties;
+public abstract class AbstractMongoTest {
+    private static Logger LOG = LoggerFactory.getLogger( AbstractMongoTest.class );
 
-	protected static String access_token;
+    static MongoServer server = null;
+    static boolean usersSetup = false;
+    protected static Properties properties;
 
-	EntityManagerFactoryImpl emf;
-	ServiceManagerFactory smf;
+    protected static String access_token;
 
-
-    public AbstractMongoTest()
-    {
-		super();
-		smf = new ServiceManagerFactory(emf, properties, null, null, null);
-	}
+    EntityManagerFactoryImpl emf;
+    ServiceManagerFactory smf;
 
 
-	/**
-	 * Get a db instance for testing
-	 * @return
-	 * @throws UnknownHostException
-	 * @throws MongoException
-	 */
-	public static DB getDb() throws UnknownHostException, MongoException
-    {
-	    Mongo m = new Mongo("localhost", 27017);
-        m.setWriteConcern(WriteConcern.SAFE);
+    public AbstractMongoTest() {
+        super();
+        smf = new ServiceManagerFactory( emf, properties, null, null, null );
+    }
 
-        DB db = m.getDB("test-organization/test-app");
-        db.authenticate("test", "test".toCharArray());
+
+    /** Get a db instance for testing */
+    public static DB getDb() throws UnknownHostException, MongoException {
+        Mongo m = new Mongo( "localhost", 27017 );
+        m.setWriteConcern( WriteConcern.SAFE );
+
+        DB db = m.getDB( "test-organization/test-app" );
+        db.authenticate( "test", "test".toCharArray() );
         return db;
-	}
+    }
 }

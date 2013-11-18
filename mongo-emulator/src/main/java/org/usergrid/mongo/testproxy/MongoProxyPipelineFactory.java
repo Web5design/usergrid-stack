@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2012 Apigee Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,11 +15,13 @@
  ******************************************************************************/
 package org.usergrid.mongo.testproxy;
 
-import static org.jboss.netty.channel.Channels.pipeline;
 
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.socket.ClientSocketChannelFactory;
+
+import static org.jboss.netty.channel.Channels.pipeline;
+
 
 /**
  * @author <a href="http://www.jboss.org/netty/">The Netty Project</a>
@@ -28,24 +30,24 @@ import org.jboss.netty.channel.socket.ClientSocketChannelFactory;
  */
 public class MongoProxyPipelineFactory implements ChannelPipelineFactory {
 
-	private final ClientSocketChannelFactory cf;
-	private final String remoteHost;
-	private final int remotePort;
+    private final ClientSocketChannelFactory cf;
+    private final String remoteHost;
+    private final int remotePort;
 
-	public MongoProxyPipelineFactory(ClientSocketChannelFactory cf,
-			String remoteHost, int remotePort) {
-		this.cf = cf;
-		this.remoteHost = remoteHost;
-		this.remotePort = remotePort;
-	}
 
-	@Override
-	public ChannelPipeline getPipeline() throws Exception {
-		ChannelPipeline p = pipeline(); // Note the static import.
-		// p.addLast("encoder", new MongoMessageEncoder());
-		p.addLast("framer", new MongoMessageFrame());
-		p.addLast("handler", new MongoProxyInboundHandler(cf, remoteHost,
-				remotePort));
-		return p;
-	}
+    public MongoProxyPipelineFactory( ClientSocketChannelFactory cf, String remoteHost, int remotePort ) {
+        this.cf = cf;
+        this.remoteHost = remoteHost;
+        this.remotePort = remotePort;
+    }
+
+
+    @Override
+    public ChannelPipeline getPipeline() throws Exception {
+        ChannelPipeline p = pipeline(); // Note the static import.
+        // p.addLast("encoder", new MongoMessageEncoder());
+        p.addLast( "framer", new MongoMessageFrame() );
+        p.addLast( "handler", new MongoProxyInboundHandler( cf, remoteHost, remotePort ) );
+        return p;
+    }
 }

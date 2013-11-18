@@ -15,8 +15,12 @@
  ******************************************************************************/
 package org.usergrid.security.shiro.principals;
 
+
 import java.util.HashSet;
 import java.util.Set;
+
+
+
 import java.util.UUID;
 
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -35,6 +39,7 @@ import org.usergrid.security.shiro.credentials.AccessTokenCredentials;
 import org.usergrid.security.tokens.TokenInfo;
 
 import static org.usergrid.security.shiro.utils.SubjectUtils.getPermissionFromPath;
+
 
 public class ApplicationUserPrincipal extends UserPrincipal {
 
@@ -96,6 +101,7 @@ public class ApplicationUserPrincipal extends UserPrincipal {
     Results r = em.getCollection(new SimpleEntityRef(
         User.ENTITY_TYPE, user.getUuid()), "groups", null,
         1000, Results.Level.IDS, false);
+
     if (r != null) {
 
       final Set<String> rolenames = new HashSet<String>();
@@ -118,4 +124,5 @@ public class ApplicationUserPrincipal extends UserPrincipal {
 
 
   }
+
 }

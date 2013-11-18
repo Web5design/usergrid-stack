@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2012 Apigee Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,20 +15,25 @@
  ******************************************************************************/
 package org.usergrid.security.shiro.utils;
 
+
 import static org.usergrid.security.shiro.Realm.ROLE_ADMIN_USER;
 import static org.usergrid.security.shiro.Realm.ROLE_APPLICATION_ADMIN;
 import static org.usergrid.security.shiro.Realm.ROLE_APPLICATION_USER;
 import static org.usergrid.security.shiro.Realm.ROLE_ORGANIZATION_ADMIN;
 import static org.usergrid.security.shiro.Realm.ROLE_SERVICE_ADMIN;
 
+
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
+
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.management.ApplicationInfo;
@@ -40,9 +45,23 @@ import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 import org.usergrid.security.shiro.principals.PrincipalIdentifier;
 import org.usergrid.security.shiro.principals.UserPrincipal;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.UnavailableSecurityManagerException;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
+
 import com.google.common.collect.BiMap;
 
-public class SubjectUtils {
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.usergrid.security.shiro.Realm.ROLE_ADMIN_USER;
+import static org.usergrid.security.shiro.Realm.ROLE_APPLICATION_ADMIN;
+import static org.usergrid.security.shiro.Realm.ROLE_APPLICATION_USER;
+import static org.usergrid.security.shiro.Realm.ROLE_ORGANIZATION_ADMIN;
+import static org.usergrid.security.shiro.Realm.ROLE_SERVICE_ADMIN;
+
+
+public class SubjectUtils{
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(SubjectUtils.class);

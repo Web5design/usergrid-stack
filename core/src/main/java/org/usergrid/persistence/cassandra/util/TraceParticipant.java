@@ -1,9 +1,11 @@
 package org.usergrid.persistence.cassandra.util;
 
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 
 /**
  * Mark a method as able to participate in a trace session
@@ -15,5 +17,4 @@ import java.lang.annotation.Target;
 public @interface TraceParticipant {
 
     String name() default "";
-
 }

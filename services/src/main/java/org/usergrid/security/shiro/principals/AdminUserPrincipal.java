@@ -15,8 +15,10 @@
  ******************************************************************************/
 package org.usergrid.security.shiro.principals;
 
+
 import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
 import static org.usergrid.security.shiro.utils.SubjectUtils.getPermissionFromPath;
+
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -30,6 +32,8 @@ import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 
 import java.util.Map;
 import java.util.UUID;
+
+import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
 
 public class AdminUserPrincipal extends UserPrincipal {
 

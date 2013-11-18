@@ -15,7 +15,9 @@
  ******************************************************************************/
 package org.usergrid.security.shiro.principals;
 
+
 import java.util.Set;
+
 import java.util.UUID;
 
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -27,7 +29,9 @@ import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 
 import static org.usergrid.security.shiro.utils.SubjectUtils.getPermissionFromPath;
 
+
 public class ApplicationGuestPrincipal extends PrincipalIdentifier {
+
 
   final ApplicationInfo application;
 

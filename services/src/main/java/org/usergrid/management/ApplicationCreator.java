@@ -1,6 +1,8 @@
 package org.usergrid.management;
 
+
 import org.usergrid.management.exceptions.ApplicationCreationException;
+
 
 /**
  * Methods for marshalling application creation logic
@@ -8,7 +10,5 @@ import org.usergrid.management.exceptions.ApplicationCreationException;
  * @author zznate
  */
 public interface ApplicationCreator {
-  ApplicationInfo createSampleFor(OrganizationInfo organizationInfo)
-          throws ApplicationCreationException;
-
+    ApplicationInfo createSampleFor( OrganizationInfo organizationInfo ) throws ApplicationCreationException;
 }

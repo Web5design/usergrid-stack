@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2012 Apigee Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.usergrid.tools;
 
-import static org.usergrid.utils.StringUtils.readClasspathFileAsString;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,11 +27,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usergrid.persistence.Schema;
@@ -44,70 +38,77 @@ import org.w3c.dom.Document;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.io.FileUtils;
+
+import static org.usergrid.utils.StringUtils.readClasspathFileAsString;
+
+
 public class ApiDoc extends ToolBase {
 
-	private static final Logger logger = LoggerFactory.getLogger(ApiDoc.class);
+    private static final Logger logger = LoggerFactory.getLogger( ApiDoc.class );
 
-	@Override
-	public Options createOptions() {
 
-		Option generateWadl = OptionBuilder.create("wadl");
+    @Override
+    public Options createOptions() {
 
-		Options options = new Options();
-		options.addOption(generateWadl);
+        Option generateWadl = OptionBuilder.create( "wadl" );
 
-		return options;
-	}
+        Options options = new Options();
+        options.addOption( generateWadl );
 
-	@Override
-	public void runTool(CommandLine line) throws Exception {
-		logger.info("Generating applications docs...");
+        return options;
+    }
 
-		ApiListing listing = loadListing("applications");
-		output(listing, "applications");
 
-		logger.info("Generating management docs...");
+    @Override
+    public void runTool( CommandLine line ) throws Exception {
+        logger.info( "Generating applications docs..." );
 
-		listing = loadListing("management");
-		output(listing, "management");
+        ApiListing listing = loadListing( "applications" );
+        output( listing, "applications" );
 
-		logger.info("Done!");
-	}
+        logger.info( "Generating management docs..." );
 
-	public ApiListing loadListing(String section) {
-		Yaml yaml = new Yaml(new Constructor(ApiListing.class));
-		String yamlString = readClasspathFileAsString("/apidoc/" + section
-				+ ".yaml");
-		ApiListing listing = (ApiListing) yaml.load(yamlString);
-		return listing;
-	}
+        listing = loadListing( "management" );
+        output( listing, "management" );
 
-	public void output(ApiListing listing, String section) throws IOException,
-			TransformerException {
-		Document doc = listing.createWADLApplication();
+        logger.info( "Done!" );
+    }
 
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
-		transformerFactory.setAttribute("indent-number", 4);
-		Transformer transformer = transformerFactory.newTransformer();
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		transformer.setOutputProperty(
-				"{http://xml.apache.org/xslt}indent-amount", "4");
 
-		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(new File(section + ".wadl"));
-		transformer.transform(source, result);
+    public ApiListing loadListing( String section ) {
+        Yaml yaml = new Yaml( new Constructor( ApiListing.class ) );
+        String yamlString = readClasspathFileAsString( "/apidoc/" + section + ".yaml" );
+        ApiListing listing = ( ApiListing ) yaml.load( yamlString );
+        return listing;
+    }
 
-		File file = new File(section + ".json");
-		listing.setBasePath("${basePath}");
-		FileUtils.write(file, JsonUtils.mapToFormattedJsonString(listing));
 
-	}
+    public void output( ApiListing listing, String section ) throws IOException, TransformerException {
+        Document doc = listing.createWADLApplication();
 
-	public void addCollections(ApiListing listing) {
-		Map<String, CollectionInfo> collections = Schema.getDefaultSchema()
-				.getCollections(Application.ENTITY_TYPE);
-		collections.clear();
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setAttribute( "indent-number", 4 );
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
+        transformer.setOutputProperty( "{http://xml.apache.org/xslt}indent-amount", "4" );
 
-	}
+        DOMSource source = new DOMSource( doc );
+        StreamResult result = new StreamResult( new File( section + ".wadl" ) );
+        transformer.transform( source, result );
+
+        File file = new File( section + ".json" );
+        listing.setBasePath( "${basePath}" );
+        FileUtils.write( file, JsonUtils.mapToFormattedJsonString( listing ) );
+    }
+
+
+    public void addCollections( ApiListing listing ) {
+        Map<String, CollectionInfo> collections = Schema.getDefaultSchema().getCollections( Application.ENTITY_TYPE );
+        collections.clear();
+    }
 }

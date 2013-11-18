@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2012 Apigee Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,36 +15,12 @@
  ******************************************************************************/
 package org.usergrid.security.shiro;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
-import static org.usergrid.management.AccountCreationProps.PROPERTIES_SYSADMIN_LOGIN_ALLOWED;
-import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
-import static org.usergrid.security.shiro.utils.SubjectUtils.getPermissionFromPath;
-import static org.usergrid.utils.StringUtils.stringOrSubstringAfterFirst;
-import static org.usergrid.utils.StringUtils.stringOrSubstringBeforeFirst;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.CredentialsException;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
-import org.apache.shiro.authc.credential.CredentialsMatcher;
-import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.authz.permission.PermissionResolver;
-import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.realm.AuthorizingRealm;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,10 +57,41 @@ import org.usergrid.security.shiro.principals.PrincipalIdentifier;
 import org.usergrid.security.tokens.TokenInfo;
 import org.usergrid.security.tokens.TokenService;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.CredentialsException;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.authz.permission.PermissionResolver;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
+
 import com.google.common.collect.HashBiMap;
 
+
+
+
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.usergrid.management.AccountCreationProps.PROPERTIES_SYSADMIN_LOGIN_ALLOWED;
+import static org.usergrid.persistence.cassandra.CassandraService.MANAGEMENT_APPLICATION_ID;
+import static org.usergrid.security.shiro.utils.SubjectUtils.getPermissionFromPath;
+import static org.usergrid.utils.StringUtils.stringOrSubstringAfterFirst;
+import static org.usergrid.utils.StringUtils.stringOrSubstringBeforeFirst;
+
+
 public class Realm extends AuthorizingRealm implements UsergridRealm {
-    private static final Logger logger = LoggerFactory.getLogger(Realm.class);
+    private static final Logger logger = LoggerFactory.getLogger( Realm.class );
+
 
     public final static String ROLE_SERVICE_ADMIN = "service-admin";
     public final static String ROLE_ADMIN_USER = "admin-user";
@@ -96,59 +103,66 @@ public class Realm extends AuthorizingRealm implements UsergridRealm {
     private ManagementService management;
     private TokenService tokens;
 
-    
-    @Value("${"+PROPERTIES_SYSADMIN_LOGIN_ALLOWED+"}")
+
+    @Value( "${" + PROPERTIES_SYSADMIN_LOGIN_ALLOWED + "}" )
     private boolean superUserEnabled;
-    @Value("${"+AccountCreationProps.PROPERTIES_SYSADMIN_LOGIN_NAME+":admin}")
+    @Value( "${" + AccountCreationProps.PROPERTIES_SYSADMIN_LOGIN_NAME + ":admin}" )
     private String superUser;
 
+
     public Realm() {
-        setCredentialsMatcher(new AllowAllCredentialsMatcher());
-        setPermissionResolver(new CustomPermissionResolver());
+        setCredentialsMatcher( new AllowAllCredentialsMatcher() );
+        setPermissionResolver( new CustomPermissionResolver() );
     }
 
-    public Realm(CacheManager cacheManager) {
-        super(cacheManager);
-        setCredentialsMatcher(new AllowAllCredentialsMatcher());
-        setPermissionResolver(new CustomPermissionResolver());
+
+    public Realm( CacheManager cacheManager ) {
+        super( cacheManager );
+        setCredentialsMatcher( new AllowAllCredentialsMatcher() );
+        setPermissionResolver( new CustomPermissionResolver() );
     }
 
-    public Realm(CredentialsMatcher matcher) {
-        super(new AllowAllCredentialsMatcher());
-        setPermissionResolver(new CustomPermissionResolver());
+
+    public Realm( CredentialsMatcher matcher ) {
+        super( new AllowAllCredentialsMatcher() );
+        setPermissionResolver( new CustomPermissionResolver() );
     }
 
-    public Realm(CacheManager cacheManager, CredentialsMatcher matcher) {
-        super(cacheManager, new AllowAllCredentialsMatcher());
-        setPermissionResolver(new CustomPermissionResolver());
+
+    public Realm( CacheManager cacheManager, CredentialsMatcher matcher ) {
+        super( cacheManager, new AllowAllCredentialsMatcher() );
+        setPermissionResolver( new CustomPermissionResolver() );
     }
+
 
     @Override
-    public void setCredentialsMatcher(CredentialsMatcher credentialsMatcher) {
-        if (!(credentialsMatcher instanceof AllowAllCredentialsMatcher)) {
-            logger.debug("Replacing {} with AllowAllCredentialsMatcher", credentialsMatcher);
+    public void setCredentialsMatcher( CredentialsMatcher credentialsMatcher ) {
+        if ( !( credentialsMatcher instanceof AllowAllCredentialsMatcher ) ) {
+            logger.debug( "Replacing {} with AllowAllCredentialsMatcher", credentialsMatcher );
             credentialsMatcher = new AllowAllCredentialsMatcher();
         }
-        super.setCredentialsMatcher(credentialsMatcher);
+        super.setCredentialsMatcher( credentialsMatcher );
     }
 
+
     @Override
-    public void setPermissionResolver(PermissionResolver permissionResolver) {
-        if (!(permissionResolver instanceof CustomPermissionResolver)) {
-            logger.debug("Replacing {} with AllowAllCredentialsMatcher", permissionResolver);
+    public void setPermissionResolver( PermissionResolver permissionResolver ) {
+        if ( !( permissionResolver instanceof CustomPermissionResolver ) ) {
+            logger.debug( "Replacing {} with AllowAllCredentialsMatcher", permissionResolver );
             permissionResolver = new CustomPermissionResolver();
         }
-        super.setPermissionResolver(permissionResolver);
+        super.setPermissionResolver( permissionResolver );
     }
 
 
-    @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(
-            AuthenticationToken token) throws AuthenticationException {
-        PrincipalCredentialsToken pcToken = (PrincipalCredentialsToken) token;
 
-        if (pcToken.getCredentials() == null) {
-            throw new CredentialsException("Missing credentials");
+
+    @Override
+    protected AuthenticationInfo doGetAuthenticationInfo( AuthenticationToken token ) throws AuthenticationException {
+        PrincipalCredentialsToken pcToken = ( PrincipalCredentialsToken ) token;
+
+        if ( pcToken.getCredentials() == null ) {
+            throw new CredentialsException( "Missing credentials" );
         }
 
         boolean authenticated = false;
@@ -156,55 +170,62 @@ public class Realm extends AuthorizingRealm implements UsergridRealm {
         PrincipalIdentifier principal = pcToken.getPrincipal();
         PrincipalCredentials credentials = pcToken.getCredentials();
 
-        if (credentials instanceof ClientCredentials) {
+        if ( credentials instanceof ClientCredentials ) {
             authenticated = true;
-        } else if ((principal instanceof AdminUserPrincipal)
-                && (credentials instanceof AdminUserPassword)) {
+        }
+        else if ( ( principal instanceof AdminUserPrincipal ) && ( credentials instanceof AdminUserPassword ) ) {
             authenticated = true;
-        } else if ((principal instanceof AdminUserPrincipal)
-                && (credentials instanceof AdminUserAccessToken)) {
+        }
+        else if ( ( principal instanceof AdminUserPrincipal ) && ( credentials instanceof AdminUserAccessToken ) ) {
             authenticated = true;
-        } else if ((principal instanceof ApplicationUserPrincipal)
-                && (credentials instanceof ApplicationUserAccessToken)) {
+        }
+        else if ( ( principal instanceof ApplicationUserPrincipal )
+                && ( credentials instanceof ApplicationUserAccessToken ) ) {
             authenticated = true;
-        } else if ((principal instanceof ApplicationPrincipal)
-                && (credentials instanceof ApplicationAccessToken)) {
+        }
+        else if ( ( principal instanceof ApplicationPrincipal ) && ( credentials instanceof ApplicationAccessToken ) ) {
             authenticated = true;
-        } else if ((principal instanceof OrganizationPrincipal)
-                && (credentials instanceof OrganizationAccessToken)) {
+        }
+        else if ( ( principal instanceof OrganizationPrincipal )
+                && ( credentials instanceof OrganizationAccessToken ) ) {
             authenticated = true;
         }
 
-        if (principal != null) {
-            if (!principal.isActivated()) {
-                throw new AuthenticationException("Unactivated identity");
+        if ( principal != null ) {
+            if ( !principal.isActivated() ) {
+                throw new AuthenticationException( "Unactivated identity" );
             }
-            if (principal.isDisabled()) {
-                throw new AuthenticationException("Disabled identity");
+            if ( principal.isDisabled() ) {
+                throw new AuthenticationException( "Disabled identity" );
             }
         }
 
-        if (!authenticated) {
-            throw new AuthenticationException("Unable to authenticate");
+        if ( !authenticated ) {
+            throw new AuthenticationException( "Unable to authenticate" );
         }
-        
-        logger.debug("Authenticated: {}",  principal);
+
 
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(
                 pcToken.getPrincipal(), pcToken.getCredentials(), getName());
 
 
+        logger.debug( "Authenticated: {}", principal );
+
+
         return info;
     }
 
+
     @Override
+
     protected AuthorizationInfo doGetAuthorizationInfo(
             PrincipalCollection principals) {
         UsergridAuthorizationInfo info = new UsergridAuthorizationInfo();
 
 
-        for (PrincipalIdentifier principal : principals
-                .byType(PrincipalIdentifier.class)) {
+
+        for ( PrincipalIdentifier principal : principals.byType( PrincipalIdentifier.class ) ) {
+
 
           try {
             principal.populateAuthorizatioInfo(info, this);
@@ -214,20 +235,44 @@ public class Realm extends AuthorizingRealm implements UsergridRealm {
             throw new RuntimeException("Unable to populate authorization info", e);
           }
 
+
         }
-
-
 
         return info;
     }
 
 
 
+
+
     @Override
-    public boolean supports(AuthenticationToken token) {
+    public boolean supports( AuthenticationToken token ) {
         return token instanceof PrincipalCredentialsToken;
     }
 
+
+
+  /**
+   * Get the Usergrid authorization info for this principal collection. Will check the cache first
+   * before re-creating
+   * @param collection
+   * @return
+   */
+  public UsergridAuthorizationInfo getAuthorizationInfo(PrincipalCollection collection){
+
+    UsergridAuthorizationInfo authInfo = (UsergridAuthorizationInfo) super.getAuthorizationInfo(collection);
+
+    //now set the info into our Session.  This is a bit of a hack, but there's no way around this with the current
+    //Shiro Implementations
+
+
+    for (PrincipalIdentifier principal : collection
+        .byType(PrincipalIdentifier.class)) {
+      principal.setAuthorizationInfo(authInfo);
+    }
+
+    return authInfo;
+  }
 
   @Autowired
   public void setEntityManagerFactory(EntityManagerFactory emf) {
@@ -265,25 +310,4 @@ public class Realm extends AuthorizingRealm implements UsergridRealm {
   }
 
 
-  /**
-   * Get the Usergrid authorization info for this principal collection. Will check the cache first
-   * before re-creating
-   * @param collection
-   * @return
-   */
-  public UsergridAuthorizationInfo getAuthorizationInfo(PrincipalCollection collection){
-
-    UsergridAuthorizationInfo authInfo = (UsergridAuthorizationInfo) super.getAuthorizationInfo(collection);
-
-    //now set the info into our Session.  This is a bit of a hack, but there's no way around this with the current
-    //Shiro Implementations
-
-
-    for (PrincipalIdentifier principal : collection
-        .byType(PrincipalIdentifier.class)) {
-      principal.setAuthorizationInfo(authInfo);
-    }
-
-    return authInfo;
-  }
 }

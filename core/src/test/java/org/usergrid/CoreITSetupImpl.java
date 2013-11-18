@@ -1,6 +1,8 @@
 package org.usergrid;
 
 
+import java.util.UUID;
+
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
@@ -12,11 +14,8 @@ import org.usergrid.persistence.IndexBucketLocator;
 import org.usergrid.persistence.cassandra.CassandraService;
 import org.usergrid.utils.JsonUtils;
 
-import java.util.UUID;
 
-
-public class CoreITSetupImpl implements CoreITSetup
-{
+public class CoreITSetupImpl implements CoreITSetup {
     private static final Logger LOG = LoggerFactory.getLogger( CoreITSetupImpl.class );
 
     protected EntityManagerFactory emf;
@@ -27,34 +26,27 @@ public class CoreITSetupImpl implements CoreITSetup
     protected boolean enabled = false;
 
 
-    public CoreITSetupImpl( CassandraResource cassandraResource )
-    {
+    public CoreITSetupImpl( CassandraResource cassandraResource ) {
         this.cassandraResource = cassandraResource;
     }
 
 
     @Override
-    public Statement apply(Statement base, Description description)
-    {
+    public Statement apply( Statement base, Description description ) {
         return statement( base, description );
     }
 
 
-    private Statement statement( final Statement base, final Description description )
-    {
-        return new Statement()
-        {
+    private Statement statement( final Statement base, final Description description ) {
+        return new Statement() {
             @Override
-            public void evaluate() throws Throwable
-            {
+            public void evaluate() throws Throwable {
                 before( description );
 
-                try
-                {
+                try {
                     base.evaluate();
                 }
-                finally
-                {
+                finally {
                     after( description );
                 }
             }
@@ -67,17 +59,14 @@ public class CoreITSetupImpl implements CoreITSetup
      *
      * @throws Throwable if setup fails (which will disable {@code after}
      */
-    protected void before( Description description ) throws Throwable
-    {
+    protected void before( Description description ) throws Throwable {
         LOG.info( "Setting up for {}", description.getDisplayName() );
         initialize();
     }
 
 
-    private void initialize()
-    {
-        if ( ! enabled )
-        {
+    private void initialize() {
+        if ( !enabled ) {
             emf = cassandraResource.getBean( EntityManagerFactory.class );
             qmf = cassandraResource.getBean( QueueManagerFactory.class );
             indexBucketLocator = cassandraResource.getBean( IndexBucketLocator.class );
@@ -87,20 +76,15 @@ public class CoreITSetupImpl implements CoreITSetup
     }
 
 
-    /**
-     * Override to tear down your specific external resource.
-     */
-    protected void after( Description description )
-    {
+    /** Override to tear down your specific external resource. */
+    protected void after( Description description ) {
         LOG.info( "Tearing down for {}", description.getDisplayName() );
     }
 
 
     @Override
-    public EntityManagerFactory getEmf()
-    {
-        if ( emf == null )
-        {
+    public EntityManagerFactory getEmf() {
+        if ( emf == null ) {
             initialize();
         }
 
@@ -109,10 +93,8 @@ public class CoreITSetupImpl implements CoreITSetup
 
 
     @Override
-    public QueueManagerFactory getQmf()
-    {
-        if ( qmf == null )
-        {
+    public QueueManagerFactory getQmf() {
+        if ( qmf == null ) {
             initialize();
         }
 
@@ -121,10 +103,8 @@ public class CoreITSetupImpl implements CoreITSetup
 
 
     @Override
-    public IndexBucketLocator getIbl()
-    {
-        if ( indexBucketLocator == null )
-        {
+    public IndexBucketLocator getIbl() {
+        if ( indexBucketLocator == null ) {
             initialize();
         }
 
@@ -133,10 +113,8 @@ public class CoreITSetupImpl implements CoreITSetup
 
 
     @Override
-    public CassandraService getCassSvc()
-    {
-        if ( cassandraService == null )
-        {
+    public CassandraService getCassSvc() {
+        if ( cassandraService == null ) {
             initialize();
         }
 
@@ -145,15 +123,12 @@ public class CoreITSetupImpl implements CoreITSetup
 
 
     @Override
-    public UUID createApplication( String organizationName, String applicationName ) throws Exception
-    {
-        if ( USE_DEFAULT_APPLICATION )
-        {
+    public UUID createApplication( String organizationName, String applicationName ) throws Exception {
+        if ( USE_DEFAULT_APPLICATION ) {
             return CassandraService.DEFAULT_APPLICATION_ID;
         }
 
-        if ( emf == null )
-        {
+        if ( emf == null ) {
             emf = cassandraResource.getBean( EntityManagerFactory.class );
         }
 
@@ -162,10 +137,8 @@ public class CoreITSetupImpl implements CoreITSetup
 
 
     @Override
-    public void dump( String name, Object obj )
-    {
-        if ( obj != null && LOG.isInfoEnabled() )
-        {
+    public void dump( String name, Object obj ) {
+        if ( obj != null && LOG.isInfoEnabled() ) {
             LOG.info( name + ":\n" + JsonUtils.mapToFormattedJsonString( obj ) );
         }
     }
