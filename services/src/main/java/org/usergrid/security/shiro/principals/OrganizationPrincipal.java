@@ -17,74 +17,78 @@ package org.usergrid.security.shiro.principals;
 
 
 import java.util.Map;
-
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.usergrid.management.ApplicationInfo;
 import org.usergrid.management.OrganizationInfo;
 import org.usergrid.security.shiro.Realm;
 import org.usergrid.security.shiro.UsergridRealm;
 import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 
-/**
- * OrganizationPrincipals are usually only through OAuth They have access to a single organization
- */
 
-public class OrganizationPrincipal extends PrincipalIdentifier {
+/** OrganizationPrincipals are usually only through OAuth They have access to a single organization */
+
+public class OrganizationPrincipal extends PrincipalIdentifier
+{
 
     final OrganizationInfo organization;
 
 
-    public OrganizationPrincipal( OrganizationInfo organization ) {
+    public OrganizationPrincipal( OrganizationInfo organization )
+    {
         this.organization = organization;
     }
 
 
-    public OrganizationInfo getOrganization() {
+    public OrganizationInfo getOrganization()
+    {
         return organization;
     }
 
 
-    public UUID getOrganizationId() {
+    public UUID getOrganizationId()
+    {
         return organization.getUuid();
     }
 
 
-	@Override
-	public String toString() {
-    return new StringBuilder("org/").append(organization.getUuid().toString()).toString();
-	}
-
-  @Override
-  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, UsergridRealm realm) throws Exception {
-
-   info.addRole(Realm.ROLE_ORGANIZATION_ADMIN);
-   info.addRole(Realm.ROLE_APPLICATION_ADMIN);
-   info.addStringPermission(new StringBuilder("organizations:access:").append(organization.getUuid()).toString());
-
-    info.addOrganizationInfo(organization);
-
-
-    final Map<UUID, String> applications = realm.getManagement().getApplicationsForOrganization(organization.getUuid());
-
-    if ((applications != null) && !applications.isEmpty()) {
-
-      StringBuilder permissions = new StringBuilder("applications:admin,access,get,put,post,delete:");
-
-      for(Map.Entry<UUID, String> entry: applications.entrySet()){
-        permissions.append(entry.getKey()).append(",");
-
-        info.addApplication(new ApplicationInfo(entry.getKey(), entry.getValue()));
-
-      }
-
-      permissions.deleteCharAt(permissions.length() -1);
-
-      info.addStringPermission(permissions.toString());
-
+    @Override
+    public String toString()
+    {
+        return new StringBuilder( "org/" ).append( organization.getUuid().toString() ).toString();
     }
-  }
 
+
+    @Override
+    public void populateAuthorizatioInfo( UsergridAuthorizationInfo info, UsergridRealm realm ) throws Exception
+    {
+
+        info.addRole( Realm.ROLE_ORGANIZATION_ADMIN );
+        info.addRole( Realm.ROLE_APPLICATION_ADMIN );
+        info.addStringPermission(
+                new StringBuilder( "organizations:access:" ).append( organization.getUuid() ).toString() );
+
+        info.addOrganizationInfo( organization );
+
+
+        final Map<UUID, String> applications =
+                realm.getManagement().getApplicationsForOrganization( organization.getUuid() );
+
+        if ( ( applications != null ) && !applications.isEmpty() )
+        {
+
+            StringBuilder permissions = new StringBuilder( "applications:admin,access,get,put,post,delete:" );
+
+            for ( Map.Entry<UUID, String> entry : applications.entrySet() )
+            {
+                permissions.append( entry.getKey() ).append( "," );
+
+                info.addApplication( new ApplicationInfo( entry.getKey(), entry.getValue() ) );
+            }
+
+            permissions.deleteCharAt( permissions.length() - 1 );
+
+            info.addStringPermission( permissions.toString() );
+        }
+    }
 }

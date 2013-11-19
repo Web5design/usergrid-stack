@@ -18,48 +18,54 @@ package org.usergrid.security.shiro.principals;
 
 import java.util.UUID;
 
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.usergrid.management.ApplicationInfo;
 import org.usergrid.security.shiro.Realm;
 import org.usergrid.security.shiro.UsergridRealm;
 import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 
 
-public class ApplicationPrincipal extends PrincipalIdentifier {
+public class ApplicationPrincipal extends PrincipalIdentifier
+{
 
     final ApplicationInfo application;
 
 
-    public ApplicationPrincipal( ApplicationInfo application ) {
+    public ApplicationPrincipal( ApplicationInfo application )
+    {
         this.application = application;
     }
 
 
-    public UUID getApplicationId() {
+    public UUID getApplicationId()
+    {
         return application.getId();
     }
 
 
-    public ApplicationInfo getApplication() {
+    public ApplicationInfo getApplication()
+    {
         return application;
     }
 
 
-	@Override
-	public String toString() {
-		return new StringBuilder().append("app/").append(application.getId().toString()).toString();
-	}
+    @Override
+    public String toString()
+    {
+        return new StringBuilder().append( "app/" ).append( application.getId().toString() ).toString();
+    }
 
-  @Override
-  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, UsergridRealm realm) {
-    // ApplicationPrincipal are usually only through OAuth
-    // They have access to a single application
 
-    info.addRole(Realm.ROLE_APPLICATION_ADMIN);
+    @Override
+    public void populateAuthorizatioInfo( UsergridAuthorizationInfo info, UsergridRealm realm )
+    {
+        // ApplicationPrincipal are usually only through OAuth
+        // They have access to a single application
 
-    info.addStringPermission(new StringBuilder().append("applications:admin,access,get,put,post,delete:").append(application.getId()).toString());
+        info.addRole( Realm.ROLE_APPLICATION_ADMIN );
 
-    info.addApplication(application);
-  }
+        info.addStringPermission( new StringBuilder().append( "applications:admin,access,get,put,post,delete:" )
+                                                     .append( application.getId() ).toString() );
 
+        info.addApplication( application );
+    }
 }

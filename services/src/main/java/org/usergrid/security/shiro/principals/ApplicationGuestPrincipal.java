@@ -17,10 +17,8 @@ package org.usergrid.security.shiro.principals;
 
 
 import java.util.Set;
-
 import java.util.UUID;
 
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.usergrid.management.ApplicationInfo;
 import org.usergrid.persistence.EntityManager;
 import org.usergrid.security.shiro.Realm;
@@ -30,53 +28,63 @@ import org.usergrid.security.shiro.auth.UsergridAuthorizationInfo;
 import static org.usergrid.security.shiro.utils.SubjectUtils.getPermissionFromPath;
 
 
-public class ApplicationGuestPrincipal extends PrincipalIdentifier {
+public class ApplicationGuestPrincipal extends PrincipalIdentifier
+{
 
 
-  final ApplicationInfo application;
-
-  public ApplicationGuestPrincipal(ApplicationInfo application) {
-    this.application = application;
-  }
-
-  public UUID getApplicationId() {
-    return application.getId();
-  }
-
-  public ApplicationInfo getApplication() {
-    return application;
-  }
-
-  @Override
-  public String toString() {
-    return new StringBuilder("guestuser/").append(application.getId()).toString();
-  }
-
-  @Override
-  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, UsergridRealm realm) throws Exception {
-
-    info.addRole(Realm.ROLE_APPLICATION_USER);
+    final ApplicationInfo application;
 
 
-    final UUID applicationId = getApplicationId();
+    public ApplicationGuestPrincipal( ApplicationInfo application )
+    {
+        this.application = application;
+    }
 
-    final EntityManager em = realm.getEmf().getEntityManager(applicationId);
 
-// TODO T.N Do we even need this any more?
-//    try {
-//      String appName = (String) em.getProperty(em.getApplicationRef(), "name");
-//      applicationSet.put(applicationId, appName);
-//      application = new ApplicationInfo(applicationId, appName);
-//    } catch (Exception e) {
-//    }
+    public UUID getApplicationId()
+    {
+        return application.getId();
+    }
 
-    info.addStringPermission(getPermissionFromPath(applicationId, "access"));
 
-    Set<String> permissions = em.getRolePermissions("guest");
+    public ApplicationInfo getApplication()
+    {
+        return application;
+    }
 
-    grant(info, applicationId, permissions);
 
-    info.addApplication(application);
+    @Override
+    public String toString()
+    {
+        return new StringBuilder( "guestuser/" ).append( application.getId() ).toString();
+    }
 
-  }
+
+    @Override
+    public void populateAuthorizatioInfo( UsergridAuthorizationInfo info, UsergridRealm realm ) throws Exception
+    {
+
+        info.addRole( Realm.ROLE_APPLICATION_USER );
+
+
+        final UUID applicationId = getApplicationId();
+
+        final EntityManager em = realm.getEmf().getEntityManager( applicationId );
+
+        // TODO T.N Do we even need this any more?
+        //    try {
+        //      String appName = (String) em.getProperty(em.getApplicationRef(), "name");
+        //      applicationSet.put(applicationId, appName);
+        //      application = new ApplicationInfo(applicationId, appName);
+        //    } catch (Exception e) {
+        //    }
+
+        info.addStringPermission( getPermissionFromPath( applicationId, "access" ) );
+
+        Set<String> permissions = em.getRolePermissions( "guest" );
+
+        grant( info, applicationId, permissions );
+
+        info.addApplication( application );
+    }
 }

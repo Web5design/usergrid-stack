@@ -18,12 +18,8 @@ package org.usergrid.security.shiro.principals;
 
 import java.util.HashSet;
 import java.util.Set;
-
-
-
 import java.util.UUID;
 
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.usergrid.management.ApplicationInfo;
 import org.usergrid.management.UserInfo;
 import org.usergrid.persistence.Entity;
@@ -41,23 +37,26 @@ import org.usergrid.security.tokens.TokenInfo;
 import static org.usergrid.security.shiro.utils.SubjectUtils.getPermissionFromPath;
 
 
-public class ApplicationUserPrincipal extends UserPrincipal {
+public class ApplicationUserPrincipal extends UserPrincipal
+{
 
-  public ApplicationUserPrincipal(UUID applicationId, UserInfo user) {
-    super(applicationId, user);
-  }
-
-
-  @Override
-  public void populateAuthorizatioInfo(UsergridAuthorizationInfo info, UsergridRealm realm) throws Exception {
-
-    info.addRole(Realm.ROLE_APPLICATION_USER);
-
-//
-//    TODO T.N. I don't think we need this anymore.  A token should already be present to get this far
+    public ApplicationUserPrincipal( UUID applicationId, UserInfo user )
+    {
+        super( applicationId, user );
+    }
 
 
-    info.addStringPermission(getPermissionFromPath(applicationId, "access"));
+    @Override
+    public void populateAuthorizatioInfo( UsergridAuthorizationInfo info, UsergridRealm realm ) throws Exception
+    {
+
+        info.addRole( Realm.ROLE_APPLICATION_USER );
+
+        //
+        //    TODO T.N. I don't think we need this anymore.  A token should already be present to get this far
+
+
+        info.addStringPermission( getPermissionFromPath( applicationId, "access" ) );
 
                 /*
                  * grant(info, principal, getPermissionFromPath(applicationId,
@@ -67,62 +66,61 @@ public class ApplicationUserPrincipal extends UserPrincipal {
                  * "/users/${user}/following/user/*"));
                  */
 
-    final EntityManager em = realm.getEmf().getEntityManager(applicationId);
+        final EntityManager em = realm.getEmf().getEntityManager( applicationId );
 
 
-    final String appName = (String) em.getProperty(em.getApplicationRef(), "name");
+        final String appName = ( String ) em.getProperty( em.getApplicationRef(), "name" );
 
-    info.addApplication(new ApplicationInfo(applicationId, appName));
-
-
-    final Set<String> permissions = em.getRolePermissions("default");
-
-    grant(info, applicationId, permissions);
+        info.addApplication( new ApplicationInfo( applicationId, appName ) );
 
 
-    final Set<String> userPermissions = em.getUserPermissions(user.getUuid());
+        final Set<String> permissions = em.getRolePermissions( "default" );
 
-    grant(info, applicationId, userPermissions);
-
-
-    final AccessTokenCredentials tokenCredentials = getAccessTokenCredentials();
-
-    TokenInfo token = null;
-
-    if (tokenCredentials != null) {
-
-      token = realm.getTokens().getTokenInfo(tokenCredentials.getToken());
-    }
-
-    final Set<String> userRoleNames = em.getUserRoles(user.getUuid());
-    grantAppRoles(info, em, applicationId, token, userRoleNames);
+        grant( info, applicationId, permissions );
 
 
-    Results r = em.getCollection(new SimpleEntityRef(
-        User.ENTITY_TYPE, user.getUuid()), "groups", null,
-        1000, Results.Level.IDS, false);
+        final Set<String> userPermissions = em.getUserPermissions( user.getUuid() );
 
-    if (r != null) {
+        grant( info, applicationId, userPermissions );
 
-      final Set<String> rolenames = new HashSet<String>();
 
-      for (UUID groupId : r.getIds()) {
+        final AccessTokenCredentials tokenCredentials = getAccessTokenCredentials();
 
-        Results roleResults = em.getCollection(new SimpleEntityRef(
-            Group.ENTITY_TYPE, groupId), "roles", null,
-            1000, Results.Level.CORE_PROPERTIES, false);
+        TokenInfo token = null;
 
-        for (Entity entity : roleResults.getEntities()) {
-          rolenames.add(entity.getName());
+        if ( tokenCredentials != null )
+        {
+
+            token = realm.getTokens().getTokenInfo( tokenCredentials.getToken() );
         }
 
-      }
+        final Set<String> userRoleNames = em.getUserRoles( user.getUuid() );
+        grantAppRoles( info, em, applicationId, token, userRoleNames );
 
 
-      grantAppRoles(info, em, applicationId, token, rolenames);
+        Results r = em.getCollection( new SimpleEntityRef( User.ENTITY_TYPE, user.getUuid() ), "groups", null, 1000,
+                Results.Level.IDS, false );
+
+        if ( r != null )
+        {
+
+            final Set<String> rolenames = new HashSet<String>();
+
+            for ( UUID groupId : r.getIds() )
+            {
+
+                Results roleResults =
+                        em.getCollection( new SimpleEntityRef( Group.ENTITY_TYPE, groupId ), "roles", null, 1000,
+                                Results.Level.CORE_PROPERTIES, false );
+
+                for ( Entity entity : roleResults.getEntities() )
+                {
+                    rolenames.add( entity.getName() );
+                }
+            }
+
+
+            grantAppRoles( info, em, applicationId, token, rolenames );
+        }
     }
-
-
-  }
-
 }

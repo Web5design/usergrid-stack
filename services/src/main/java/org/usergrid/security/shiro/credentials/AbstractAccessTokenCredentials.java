@@ -16,18 +16,21 @@
 package org.usergrid.security.shiro.credentials;
 
 
-public abstract class AbstractAccessTokenCredentials implements AccessTokenCredentials {
+public abstract class AbstractAccessTokenCredentials implements AccessTokenCredentials
+{
 
     private final String token;
 
 
-    public AbstractAccessTokenCredentials( String token ) {
+    public AbstractAccessTokenCredentials( String token )
+    {
         this.token = token;
     }
 
 
     @Override
-    public String getToken() {
+    public String getToken()
+    {
         return token;
     }
 }

@@ -16,9 +16,11 @@
 package org.usergrid.security.shiro.credentials;
 
 
-public class ApplicationGuest extends AbstractClientCredentials implements ApplicationCredentials {
+public class ApplicationGuest extends AbstractClientCredentials implements ApplicationCredentials
+{
 
-    public ApplicationGuest() {
+    public ApplicationGuest()
+    {
         super( "guest", "guest" );
     }
 }

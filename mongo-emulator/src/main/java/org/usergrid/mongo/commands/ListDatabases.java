@@ -31,7 +31,7 @@ import static org.usergrid.utils.MapUtils.map;
 
 public class ListDatabases extends MongoCommand {
 
-<<<<<<< HEAD
+
 	final static double DEFAULT_SIZE = 1024 * 1024 * 1024.0;
 
 	@SuppressWarnings("unchecked")
@@ -49,21 +49,5 @@ public class ListDatabases extends MongoCommand {
 		reply.addDocument(map("databases", dbs, "totalSize", 1.0, "ok", 1.0));
 		return reply;
 	}
-=======
-    final static double DEFAULT_SIZE = 1024 * 1024 * 1024.0;
 
->>>>>>> origin/master
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public OpReply execute( MongoChannelHandler handler, ChannelHandlerContext ctx, MessageEvent e, OpQuery opQuery ) {
-        Set<String> applications = SubjectUtils.getApplications().inverse().keySet();
-        List<Map<String, Object>> dbs = new ArrayList<Map<String, Object>>();
-        for ( String ns : applications ) {
-            dbs.add( ( Map<String, Object> ) map( "name", ns, "sizeOnDisk", DEFAULT_SIZE, "empty", false ) );
-        }
-        OpReply reply = new OpReply( opQuery );
-        reply.addDocument( map( "databases", dbs, "totalSize", 1.0, "ok", 1.0 ) );
-        return reply;
-    }
 }

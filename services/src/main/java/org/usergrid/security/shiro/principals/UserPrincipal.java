@@ -21,52 +21,59 @@ import java.util.UUID;
 import org.usergrid.management.UserInfo;
 
 
-public abstract class UserPrincipal extends PrincipalIdentifier {
+public abstract class UserPrincipal extends PrincipalIdentifier
+{
 
 
-	protected final UserInfo user;
-	protected final UUID applicationId;
-
-	public UserPrincipal(UUID applicationId, UserInfo user) {
-		this.applicationId = applicationId;
-		this.user = user;
-	}
-
-	public UUID getApplicationId() {
-		return applicationId;
-	}
-
-	public UserInfo getUser() {
-		return user;
-	}
+    protected final UserInfo user;
+    protected final UUID applicationId;
 
 
-	public boolean isDisabled() {
-		if (user != null) {
-			return user.isDisabled();
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isActivated() {
-		if (user != null) {
-			return user.isActivated();
-		}
-		return true;
-	}
+    public UserPrincipal( UUID applicationId, UserInfo user )
+    {
+        this.applicationId = applicationId;
+        this.user = user;
+    }
 
 
+    public UUID getApplicationId()
+    {
+        return applicationId;
+    }
 
 
-  /**
-   * Must always return the id in the format of appid/userid for cache purposes
-   * @return
-   */
-	@Override
-	public String toString() {
-    return new StringBuilder("appuser/").append(applicationId).append("/").append(user.getUuid()).toString();
-	}
+    public UserInfo getUser()
+    {
+        return user;
+    }
 
 
+    public boolean isDisabled()
+    {
+        if ( user != null )
+        {
+            return user.isDisabled();
+        }
+        return false;
+    }
+
+
+    @Override
+    public boolean isActivated()
+    {
+        if ( user != null )
+        {
+            return user.isActivated();
+        }
+        return true;
+    }
+
+
+    /** Must always return the id in the format of appid/userid for cache purposes */
+    @Override
+    public String toString()
+    {
+        return new StringBuilder( "appuser/" ).append( applicationId ).append( "/" ).append( user.getUuid() )
+                                              .toString();
+    }
 }

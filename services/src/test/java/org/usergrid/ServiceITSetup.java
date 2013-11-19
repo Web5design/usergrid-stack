@@ -5,7 +5,9 @@ import java.util.Properties;
 
 import org.usergrid.management.ApplicationCreator;
 import org.usergrid.management.ManagementService;
+import org.usergrid.persistence.cassandra.CassandraService;
 import org.usergrid.security.providers.SignInProviderFactory;
+import org.usergrid.security.shiro.cache.CassandraCache;
 import org.usergrid.security.shiro.cache.CassandraCacheManager;
 import org.usergrid.security.tokens.TokenService;
 import org.usergrid.services.ServiceManagerFactory;
@@ -48,4 +50,5 @@ public interface ServiceITSetup extends CoreITSetup {
      * @return
      */
     CassandraCacheManager getCacheManager();
+
 }

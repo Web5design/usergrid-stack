@@ -16,6 +16,7 @@
 package org.usergrid.security.shiro.credentials;
 
 
-public interface PrincipalCredentials {
+public interface PrincipalCredentials
+{
 
 }

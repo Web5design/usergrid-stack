@@ -19,18 +19,15 @@ import org.usergrid.utils.UUIDUtils;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 
 /**
  *
  * @author: tnine
  *
  */
-public class CassandraCacheIT {
+public class CacheManagerIT extends CassandraCacheIT {
 
 
   @Rule
@@ -95,11 +92,14 @@ public class CassandraCacheIT {
 
   private void storeAndLoad(PrincipalIdentifier principalIdentifier){
     String realm = "test";
+    CassandraCacheManager manager = setup.getCacheManager();
+
+
     SimplePrincipalCollection principal = createSimplePrincipal(principalIdentifier, realm);
 
 
 
-    Cache<SimplePrincipalCollection,UsergridAuthorizationInfo> cache =  new CassandraCache(setup.getCassSvc(), "test");
+    Cache<SimplePrincipalCollection,UsergridAuthorizationInfo> cache = manager.getCache(realm);
 
     SimpleAuthorizationInfo authorizationInfo = cache.get(principal);
 
@@ -195,12 +195,13 @@ public class CassandraCacheIT {
    */
   public void realmPartitioning(PrincipalIdentifier principalIdentifier){
     String realm = "test";
+    CassandraCacheManager manager = setup.getCacheManager();
 
     SimplePrincipalCollection principal = createSimplePrincipal(principalIdentifier, realm);
 
 
 
-    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> cache =  new CassandraCache(setup.getCassSvc(), realm);
+    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> cache = manager.getCache(realm);
 
     UsergridAuthorizationInfo authorizationInfo = cache.get(principal);
 
@@ -229,7 +230,7 @@ public class CassandraCacheIT {
 
     String otherRealm = "otherrealm";
 
-    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> otherCache =  new CassandraCache(setup.getCassSvc(), otherRealm);
+    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> otherCache = manager.getCache(otherRealm);
 
 
     SimplePrincipalCollection otherPrincipal = createSimplePrincipal(principalIdentifier, otherRealm);
@@ -301,6 +302,143 @@ public class CassandraCacheIT {
 
 
 
+  @Test
+  public void serviceRevokeUserPrincipal(){
+
+    UserInfo userInfo = new UserInfo(UUIDUtils.newTimeUUID(), UUIDUtils.newTimeUUID(), "test", "test", "test@usergrid.org", true, true, false, null);
+
+    ApplicationUserPrincipal applicationUserPrincipal = new ApplicationUserPrincipal(userInfo.getApplicationId(), userInfo);
+
+    serviceRevokeWrite(applicationUserPrincipal);
+
+
+    CassandraCacheManager manager = setup.getCacheManager();
+
+    manager.invalidateUser(applicationUserPrincipal.getApplicationId(), userInfo);
+
+    serviceRevokeVerify(applicationUserPrincipal);
+
+  }
+
+  @Test
+  public void serviceRevokeAdminPrincipal(){
+
+    UserInfo userInfo = new UserInfo(UUIDUtils.newTimeUUID(), UUIDUtils.newTimeUUID(), "test", "test", "test@usergrid.org", true, true, false, null);
+
+
+    AdminUserPrincipal adminUser = new AdminUserPrincipal(userInfo) ;
+
+    serviceRevokeWrite(adminUser);
+
+
+    CassandraCacheManager manager = setup.getCacheManager();
+
+    manager.invalidateUser(adminUser.getApplicationId(), userInfo);
+
+    serviceRevokeVerify(adminUser);
+  }
+
+
+  @Test
+  public void serviceRevokeGuestPrincipal(){
+
+    ApplicationInfo appInfo = new ApplicationInfo(UUIDUtils.newTimeUUID(), "test");
+    ApplicationGuestPrincipal guest = new ApplicationGuestPrincipal(appInfo);
+
+    serviceRevokeWrite(guest);
+
+    CassandraCacheManager manager = setup.getCacheManager();
+
+    manager.invalidateGuest(appInfo);
+
+    serviceRevokeVerify(guest);
+  }
+
+
+  @Test
+  public void serviceRevokeApplicationPrincipal(){
+
+    ApplicationInfo appInfo = new ApplicationInfo(UUIDUtils.newTimeUUID(), "test");
+    ApplicationPrincipal principal = new ApplicationPrincipal(appInfo);
+
+    serviceRevokeWrite(principal);
+
+    CassandraCacheManager manager = setup.getCacheManager();
+
+    manager.invalidateApplication(appInfo);
+
+    serviceRevokeVerify(principal);
+  }
+
+  @Test
+  public void serviceRevokeOrganizationPrincipal(){
+
+    OrganizationInfo info = new OrganizationInfo(UUIDUtils.newTimeUUID(), "test");
+    OrganizationPrincipal orgPrincipal = new OrganizationPrincipal(info);
+    serviceRevokeWrite(orgPrincipal);
+
+    CassandraCacheManager manager = setup.getCacheManager();
+
+    manager.invalidateOrg(info);
+
+    serviceRevokeVerify(orgPrincipal);
+  }
+
+
+  private void serviceRevokeWrite(PrincipalIdentifier principalIdentifier){
+    String realm = "test";
+    CassandraCacheManager manager = setup.getCacheManager();
+
+
+    SimplePrincipalCollection principal = createSimplePrincipal(principalIdentifier, realm);
+
+
+
+    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> cache = manager.getCache(realm);
+
+    SimpleAuthorizationInfo authorizationInfo = cache.get(principal);
+
+    assertNull(authorizationInfo);
+
+    //now store it
+
+    UsergridAuthorizationInfo storedAuthInfo = generateAuthInfo();
+
+    /**
+     * Store it into the cache
+     */
+    UsergridAuthorizationInfo storedOnCache = cache.put(principal, storedAuthInfo);
+
+    assertEqualsInternal(storedAuthInfo, storedOnCache);
+
+
+    //now get it back from the cache
+    UsergridAuthorizationInfo returnedFromCache = cache.get(principal);
+
+    assertEqualsInternal(storedAuthInfo, returnedFromCache);
+
+
+  }
+
+  private void serviceRevokeVerify(PrincipalIdentifier principalIdentifier){
+
+    String realm = "test";
+    CassandraCacheManager manager = setup.getCacheManager();
+
+
+    SimplePrincipalCollection principal = createSimplePrincipal(principalIdentifier, realm);
+
+
+
+    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> cache = manager.getCache(realm);
+
+    SimpleAuthorizationInfo returnedFromCache = cache.get(principal);
+
+    assertNull(returnedFromCache);
+  }
+
+
+
 
 
   private UsergridAuthorizationInfo generateAuthInfo(){
@@ -334,5 +472,4 @@ public class CassandraCacheIT {
 
     return new SimplePrincipalCollection(identifier, realm);
   }
-
 }
