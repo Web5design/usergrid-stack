@@ -50,12 +50,12 @@ import com.google.common.base.Preconditions;
 import com.sun.jersey.api.json.JSONWithPadding;
 
 
-@Component( "org.usergrid.rest.management.organizations.OrganizationsResource" )
-@Scope( "prototype" )
-@Produces( {
+@Component("org.usergrid.rest.management.organizations.OrganizationsResource")
+@Scope("prototype")
+@Produces({
         MediaType.APPLICATION_JSON, "application/javascript", "application/x-javascript", "text/ecmascript",
         "application/ecmascript", "text/jscript"
-} )
+})
 public class OrganizationsResource extends AbstractContextResource {
 
     private static final Logger logger = LoggerFactory.getLogger( OrganizationsResource.class );
@@ -70,10 +70,10 @@ public class OrganizationsResource extends AbstractContextResource {
     }
 
 
-    @Path( "{organizationId: [A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}}" )
+    @Path("{organizationId: [A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}}")
     @RequireOrganizationAccess
     public OrganizationResource getOrganizationById( @Context UriInfo ui,
-                                                     @PathParam( "organizationId" ) String organizationIdStr )
+                                                     @PathParam("organizationId") String organizationIdStr )
             throws Exception {
         OrganizationInfo organization = management.getOrganizationByUuid( UUID.fromString( organizationIdStr ) );
         if ( organization == null ) {
@@ -83,10 +83,10 @@ public class OrganizationsResource extends AbstractContextResource {
     }
 
 
-    @Path( "{organizationName}" )
+    @Path("{organizationName}")
     @RequireOrganizationAccess
     public OrganizationResource getOrganizationByName( @Context UriInfo ui,
-                                                       @PathParam( "organizationName" ) String organizationName )
+                                                       @PathParam("organizationName") String organizationName )
             throws Exception {
         OrganizationInfo organization = management.getOrganizationByName( organizationName );
         if ( organization == null ) {
@@ -97,9 +97,9 @@ public class OrganizationsResource extends AbstractContextResource {
 
 
     @POST
-    @Consumes( MediaType.APPLICATION_JSON )
+    @Consumes(MediaType.APPLICATION_JSON)
     public JSONWithPadding newOrganization( @Context UriInfo ui, Map<String, Object> json,
-                                            @QueryParam( "callback" ) @DefaultValue( "" ) String callback )
+                                            @QueryParam("callback") @DefaultValue("") String callback )
             throws Exception {
         ApiResponse response = createApiResponse();
         response.setAction( "new organization" );
@@ -116,19 +116,19 @@ public class OrganizationsResource extends AbstractContextResource {
 
 
     @POST
-    @Consumes( MediaType.APPLICATION_FORM_URLENCODED )
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public JSONWithPadding newOrganizationFromForm( @Context UriInfo ui,
-                                                    @FormParam( "organization" ) String organizationNameForm,
-                                                    @QueryParam( "organization" ) String organizationNameQuery,
-                                                    @FormParam( "username" ) String usernameForm,
-                                                    @QueryParam( "username" ) String usernameQuery,
-                                                    @FormParam( "name" ) String nameForm,
-                                                    @QueryParam( "name" ) String nameQuery,
-                                                    @FormParam( "email" ) String emailForm,
-                                                    @QueryParam( "email" ) String emailQuery,
-                                                    @FormParam( "password" ) String passwordForm,
-                                                    @QueryParam( "password" ) String passwordQuery,
-                                                    @QueryParam( "callback" ) @DefaultValue( "" ) String callback )
+                                                    @FormParam("organization") String organizationNameForm,
+                                                    @QueryParam("organization") String organizationNameQuery,
+                                                    @FormParam("username") String usernameForm,
+                                                    @QueryParam("username") String usernameQuery,
+                                                    @FormParam("name") String nameForm,
+                                                    @QueryParam("name") String nameQuery,
+                                                    @FormParam("email") String emailForm,
+                                                    @QueryParam("email") String emailQuery,
+                                                    @FormParam("password") String passwordForm,
+                                                    @QueryParam("password") String passwordQuery,
+                                                    @QueryParam("callback") @DefaultValue("") String callback )
             throws Exception {
 
         String organizationName = organizationNameForm != null ? organizationNameForm : organizationNameQuery;
