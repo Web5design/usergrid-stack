@@ -70,6 +70,7 @@ import org.usergrid.security.oauth.AccessInfo;
 import org.usergrid.security.oauth.ClientCredentialsInfo;
 import org.usergrid.security.salt.SaltProvider;
 import org.usergrid.security.shiro.PrincipalCredentialsToken;
+import org.usergrid.security.shiro.cache.CacheInvalidation;
 import org.usergrid.security.shiro.credentials.ApplicationClientCredentials;
 import org.usergrid.security.shiro.credentials.OrganizationClientCredentials;
 import org.usergrid.security.shiro.principals.ApplicationPrincipal;
@@ -232,6 +233,9 @@ public class ManagementServiceImpl implements ManagementService {
 
     protected EncryptionService encryptionService;
 
+    @Autowired
+    protected CacheInvalidation cacheInvalidation;
+
 
     /** Must be constructed with a CassandraClientPool. */
     public ManagementServiceImpl() {
@@ -370,7 +374,7 @@ public class ManagementServiceImpl implements ManagementService {
     }
 
 
-    @SuppressWarnings( "serial" )
+    @SuppressWarnings("serial")
     @Override
     public void postOrganizationActivity( UUID organizationId, final UserInfo user, String verb, final EntityRef object,
                                           final String objectType, final String objectName, String title,
@@ -501,6 +505,7 @@ public class ManagementServiceImpl implements ManagementService {
             groupLock.unlock();
         }
 
+
         return new OrganizationOwnerInfo( user, organization );
     }
 
@@ -540,6 +545,11 @@ public class ManagementServiceImpl implements ManagementService {
                         + ")</a> created a new organization account named " + organizationName, null );
 
         startOrganizationActivationFlow( organization );
+
+        //we created a new org, invalidate the token cache.  We shouldn't really need to do this,
+        // but we're creating a new org on the user, so we need to clear the org cache and their cache
+        cacheInvalidation.invalidateOrg( organization );
+
 
         return organization;
     }
@@ -585,6 +595,8 @@ public class ManagementServiceImpl implements ManagementService {
                 }
             }
         }
+
+        cacheInvalidation.invalidateOrg( organizationInfo );
     }
 
 
@@ -816,6 +828,8 @@ public class ManagementServiceImpl implements ManagementService {
             this.startAdminUserActivationFlow( userInfo );
         }
 
+        cacheInvalidation.invalidateUser( MANAGEMENT_APPLICATION_ID, userInfo );
+
         return userInfo;
     }
 
@@ -910,11 +924,15 @@ public class ManagementServiceImpl implements ManagementService {
         }
         user = em.create( user );
 
-        return createAdminFrom( user, password );
+        UserInfo newAdmin = createAdminFrom( user, password );
+
+        cacheInvalidation.invalidateUser( MANAGEMENT_APPLICATION_ID, newAdmin );
+
+        return newAdmin;
     }
 
 
-    public UserInfo getUserInfo( UUID applicationId, Entity entity ) {
+    private UserInfo getUserInfo( UUID applicationId, Entity entity ) {
 
         if ( entity == null ) {
             return null;
@@ -927,12 +945,13 @@ public class ManagementServiceImpl implements ManagementService {
     }
 
 
-    public UserInfo getUserInfo( UUID applicationId, Map<String, Object> properties ) {
+    private UserInfo getUserInfo( UUID applicationId, User user ) {
 
-        if ( properties == null ) {
+        if ( user == null ) {
             return null;
         }
-        return new UserInfo( applicationId, properties );
+        return new UserInfo( applicationId, user.getUuid(), user.getUsername(), user.getName(), user.getEmail(),
+                user.getConfirmed(), user.getActivated(), user.getDisabled(), user.getDynamicProperties() );
     }
 
 
@@ -1007,16 +1026,6 @@ public class ManagementServiceImpl implements ManagementService {
     }
 
 
-    public User getAdminUserEntityByEmail( String email ) throws Exception {
-
-        if ( email == null ) {
-            return null;
-        }
-
-        return getUserEntityByIdentifier( MANAGEMENT_APPLICATION_ID, Identifier.fromEmail( email ) );
-    }
-
-
     @Override
     public UserInfo getAdminUserByEmail( String email ) throws Exception {
         if ( email == null ) {
@@ -1080,7 +1089,7 @@ public class ManagementServiceImpl implements ManagementService {
     }
 
 
-    public User findUserEntity( UUID applicationId, String identifier ) {
+    private User findUserEntity( UUID applicationId, String identifier ) {
 
         User user = null;
         if ( UUIDUtils.isUUID( identifier ) ) {
@@ -1200,6 +1209,11 @@ public class ManagementServiceImpl implements ManagementService {
         writeUserMongoPassword( MANAGEMENT_APPLICATION_ID, user, encryptionService
                 .plainTextCredentials( mongoPassword( ( String ) user.getProperty( "username" ), newPassword ),
                         user.getUuid(), MANAGEMENT_APPLICATION_ID ) );
+
+
+        UserInfo info = new UserInfo( MANAGEMENT_APPLICATION_ID, user.getUuid(), user.getUsername(), user.getName(),
+                user.getEmail(), user.getConfirmed(), user.getActivated(), user.getDisabled(), null );
+        cacheInvalidation.invalidateUser( MANAGEMENT_APPLICATION_ID, info );
     }
 
 
@@ -1559,6 +1573,10 @@ public class ManagementServiceImpl implements ManagementService {
         if ( email ) {
             sendAdminUserInvitedEmail( user, organization );
         }
+
+
+        cacheInvalidation.invalidateUser( MANAGEMENT_APPLICATION_ID, user );
+        cacheInvalidation.invalidateOrg( organization );
     }
 
 
@@ -1583,6 +1601,10 @@ public class ManagementServiceImpl implements ManagementService {
 
         em.removeFromCollection( new SimpleEntityRef( Group.ENTITY_TYPE, organizationId ), "users",
                 new SimpleEntityRef( User.ENTITY_TYPE, userId ) );
+
+        cacheInvalidation
+                .invalidateUser( MANAGEMENT_APPLICATION_ID, getAdminUserByIdentifier( Identifier.fromUUID( userId ) ) );
+        cacheInvalidation.invalidateOrg( getOrganizationByIdentifier( Identifier.fromUUID( organizationId ) ) );
     }
 
 
@@ -1630,8 +1652,14 @@ public class ManagementServiceImpl implements ManagementService {
             postOrganizationActivity( organizationId, user, "create", applicationEntity, "Application", applicationName,
                     "<a href=\"mailto:" + user.getEmail() + "\">" + user.getName() + " (" + user.getEmail()
                             + ")</a> created a new application named " + applicationName, null );
+            cacheInvalidation.invalidateUser( MANAGEMENT_APPLICATION_ID, user );
         }
-        return new ApplicationInfo( applicationId, applicationEntity.getName() );
+
+        ApplicationInfo appInfo = new ApplicationInfo( applicationId, applicationEntity.getName() );
+
+        cacheInvalidation.invalidateApplication( appInfo );
+
+        return appInfo;
     }
 
 
@@ -1705,6 +1733,12 @@ public class ManagementServiceImpl implements ManagementService {
         EntityManager em = emf.getEntityManager( MANAGEMENT_APPLICATION_ID );
         em.createConnection( new SimpleEntityRef( "group", organizationId ), "owns",
                 new SimpleEntityRef( APPLICATION_INFO, applicationId ) );
+
+
+        ApplicationInfo info = getApplicationInfo( Identifier.fromUUID( applicationId ) );
+        cacheInvalidation.invalidateApplication( info );
+        cacheInvalidation.invalidateOrg( getOrganizationByIdentifier( Identifier.fromUUID( organizationId ) ) );
+
 
         return applicationId;
     }

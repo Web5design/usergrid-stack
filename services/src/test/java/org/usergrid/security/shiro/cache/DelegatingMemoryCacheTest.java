@@ -1,8 +1,10 @@
 package org.usergrid.security.shiro.cache;
 
-import org.apache.shiro.cache.Cache;
-import org.apache.shiro.subject.SimplePrincipalCollection;
+
+import java.util.UUID;
+
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.usergrid.management.ApplicationInfo;
 import org.usergrid.management.OrganizationInfo;
 import org.usergrid.management.UserInfo;
@@ -13,237 +15,262 @@ import org.usergrid.security.shiro.principals.ApplicationUserPrincipal;
 import org.usergrid.security.shiro.principals.PrincipalIdentifier;
 import org.usergrid.utils.UUIDUtils;
 
-import java.util.UUID;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.subject.SimplePrincipalCollection;
 
 import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.same;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 
 /**
  *
  * @author: tnine
  *
  */
-public class DelegatingMemoryCacheTest {
+public class DelegatingMemoryCacheTest
+{
 
 
-  @Test
-  public void testGet() throws Exception {
+    @Test
+    public void testGet() throws Exception
+    {
 
 
-    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock(Cache.class);
+        Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock( Cache.class );
 
 
-    DelegatingMemoryCache cache = new DelegatingMemoryCache(1000, 120, "test", delegate);
+        DelegatingMemoryCache cache = new DelegatingMemoryCache( 1000, 120, "test", delegate );
 
-    SimplePrincipalCollection key = new SimplePrincipalCollection();
-    UsergridAuthorizationInfo returned = new UsergridAuthorizationInfo();
+        SimplePrincipalCollection key = new SimplePrincipalCollection();
+        UsergridAuthorizationInfo returned = new UsergridAuthorizationInfo();
 
-    when(delegate.get(key)).thenReturn(returned);
+        when( delegate.get( key ) ).thenReturn( returned );
 
-    UsergridAuthorizationInfo auth = cache.get(key);
+        UsergridAuthorizationInfo auth = cache.get( key );
 
-    assertSame(returned, auth);
+        assertSame( returned, auth );
+    }
 
 
-  }
+    @Test
+    public void testGetNullDelegate() throws Exception
+    {
 
+        Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock( Cache.class );
 
-  @Test
-  public void testGetNullDelegate() throws Exception {
 
-    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock(Cache.class);
+        DelegatingMemoryCache cache = new DelegatingMemoryCache( 1000, 120, "test", delegate );
 
+        SimplePrincipalCollection key = new SimplePrincipalCollection();
+        UsergridAuthorizationInfo returned = new UsergridAuthorizationInfo();
 
-    DelegatingMemoryCache cache = new DelegatingMemoryCache(1000, 120, "test", delegate);
+        when( delegate.get( key ) ).thenReturn( null );
 
-    SimplePrincipalCollection key = new SimplePrincipalCollection();
-    UsergridAuthorizationInfo returned = new UsergridAuthorizationInfo();
+        UsergridAuthorizationInfo auth = cache.get( key );
 
-    when(delegate.get(key)).thenReturn(null);
+        assertNull( auth );
 
-    UsergridAuthorizationInfo auth = cache.get(key);
+        //now return the value, assert it loads after a null
+        when( delegate.get( key ) ).thenReturn( returned );
 
-    assertNull(auth);
+        auth = cache.get( key );
 
-    //now return the value, assert it loads after a null
-    when(delegate.get(key)).thenReturn(returned);
+        assertSame( returned, auth );
+    }
 
-    auth = cache.get(key);
 
-    assertSame(returned, auth);
+    @Test
+    public void testPut()
+    {
 
+        Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock( Cache.class );
 
-  }
 
+        DelegatingMemoryCache cache = new DelegatingMemoryCache( 1000, 120, "test", delegate );
 
-  @Test
-  public void testPut() {
+        SimplePrincipalCollection key = new SimplePrincipalCollection();
+        UsergridAuthorizationInfo returned = new UsergridAuthorizationInfo();
 
-    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock(Cache.class);
 
+        UsergridAuthorizationInfo auth = cache.put( key, returned );
 
-    DelegatingMemoryCache cache = new DelegatingMemoryCache(1000, 120, "test", delegate);
+        verify( delegate ).put( same( key ), same( returned ) );
+    }
 
-    SimplePrincipalCollection key = new SimplePrincipalCollection();
-    UsergridAuthorizationInfo returned = new UsergridAuthorizationInfo();
 
+    @Test
+    public void testRemove() throws Exception
+    {
 
-    UsergridAuthorizationInfo auth = cache.put(key, returned);
+        Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock( Cache.class );
 
-    verify(delegate).put(same(key), same(returned));
-  }
 
-  @Test
-  public void testRemove() throws Exception {
+        DelegatingMemoryCache cache = new DelegatingMemoryCache( 1000, 120, "test", delegate );
 
-    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock(Cache.class);
+        SimplePrincipalCollection key = new SimplePrincipalCollection();
+        UsergridAuthorizationInfo returned = new UsergridAuthorizationInfo();
 
 
-    DelegatingMemoryCache cache = new DelegatingMemoryCache(1000, 120, "test", delegate);
+        cache.put( key, returned );
 
-    SimplePrincipalCollection key = new SimplePrincipalCollection();
-    UsergridAuthorizationInfo returned = new UsergridAuthorizationInfo();
+        verify( delegate ).put( same( key ), same( returned ) );
 
 
-    cache.put(key, returned);
+        cache.remove( key );
 
-    verify(delegate).put(same(key), same(returned));
+        verify( delegate ).remove( same( key ) );
 
+        UsergridAuthorizationInfo auth = cache.get( key );
 
-    cache.remove(key);
+        assertNull( auth );
+    }
 
-    verify(delegate).remove(same(key));
 
-    UsergridAuthorizationInfo auth = cache.get(key);
+    @Test
+    public void testInvalidateOrg() throws Exception
+    {
+        Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock( Cache.class );
 
-    assertNull(auth);
-  }
 
+        DelegatingMemoryCache cache = new DelegatingMemoryCache( 1000, 120, "test", delegate );
 
-  @Test
-  public void testInvalidateOrg() throws Exception {
-    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock(Cache.class);
 
+        OrganizationInfo info = new OrganizationInfo( UUIDUtils.newTimeUUID(), "test" );
 
-    DelegatingMemoryCache cache = new DelegatingMemoryCache(1000, 120, "test", delegate);
+        cache.invalidateOrg( info );
+    }
 
 
-    OrganizationInfo info = new OrganizationInfo(UUIDUtils.newTimeUUID(), "test");
+    @Test
+    public void testInvalidateApplication() throws Exception
+    {
+        Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock( Cache.class );
 
-    cache.invalidateOrg(info);
 
+        DelegatingMemoryCache cache = new DelegatingMemoryCache( 1000, 120, "test", delegate );
 
-  }
+        UsergridAuthorizationInfo authInfo = new UsergridAuthorizationInfo();
 
-  @Test
-  public void testInvalidateApplication() throws Exception {
-    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock(Cache.class);
 
+        ApplicationInfo info = new ApplicationInfo( UUIDUtils.newTimeUUID(), "org/test" );
 
-    DelegatingMemoryCache cache = new DelegatingMemoryCache(1000, 120, "test", delegate);
+        ApplicationPrincipal applicationUserPrincipal = new ApplicationPrincipal( info );
 
-    UsergridAuthorizationInfo authInfo = new UsergridAuthorizationInfo();
+        SimplePrincipalCollection shiroPrincipal = createSimplePrincipal( applicationUserPrincipal, "test" );
 
+        cache.put( shiroPrincipal, authInfo );
 
-    ApplicationInfo info = new ApplicationInfo(UUIDUtils.newTimeUUID(), "org/test");
+        verify( delegate ).put( same( shiroPrincipal ), same( authInfo ) );
 
-    ApplicationPrincipal applicationUserPrincipal = new ApplicationPrincipal(info);
+        //now invalidate it
 
-    SimplePrincipalCollection shiroPrincipal = createSimplePrincipal(applicationUserPrincipal, "test");
+        cache.invalidateApplication( info );
 
-    cache.put(shiroPrincipal, authInfo);
+        ArgumentCaptor<SimplePrincipalCollection> captor = ArgumentCaptor.forClass( SimplePrincipalCollection.class );
 
-    verify(delegate).put(same(shiroPrincipal), same(authInfo));
+        verify( delegate ).remove( captor.capture() );
 
-    //now invalidate it
+        //verify it's the same string
+        assertEquals( shiroPrincipal.toString(), captor.getValue().toString() );
 
-    cache.invalidateApplication(info);
+        //now check it's gone
+        UsergridAuthorizationInfo returnedAuthInfo = cache.get( shiroPrincipal );
 
-    verify(delegate).remove(eq(shiroPrincipal));
+        assertNull( returnedAuthInfo );
+    }
 
-    //now check it's gone
-    UsergridAuthorizationInfo returnedAuthInfo = cache.get(shiroPrincipal);
 
-    assertNull(returnedAuthInfo);
+    @Test
+    public void testInvalidateGuest() throws Exception
+    {
 
-  }
+        Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock( Cache.class );
 
-  @Test
-  public void testInvalidateGuest() throws Exception {
 
-    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock(Cache.class);
+        DelegatingMemoryCache cache = new DelegatingMemoryCache( 1000, 120, "test", delegate );
 
+        UsergridAuthorizationInfo authInfo = new UsergridAuthorizationInfo();
 
-    DelegatingMemoryCache cache = new DelegatingMemoryCache(1000, 120, "test", delegate);
 
-    UsergridAuthorizationInfo authInfo = new UsergridAuthorizationInfo();
+        ApplicationInfo info = new ApplicationInfo( UUIDUtils.newTimeUUID(), "org/test" );
 
+        ApplicationGuestPrincipal applicationGuestPrincipal = new ApplicationGuestPrincipal( info );
 
-    ApplicationInfo info = new ApplicationInfo(UUIDUtils.newTimeUUID(), "org/test");
+        SimplePrincipalCollection shiroPrincipal = createSimplePrincipal( applicationGuestPrincipal, "test" );
 
-    ApplicationGuestPrincipal applicationGuestPrincipal = new ApplicationGuestPrincipal(info);
+        cache.put( shiroPrincipal, authInfo );
 
-    SimplePrincipalCollection shiroPrincipal = createSimplePrincipal(applicationGuestPrincipal, "test");
+        verify( delegate ).put( same( shiroPrincipal ), same( authInfo ) );
 
-    cache.put(shiroPrincipal, authInfo);
+        //now invalidate it
 
-    verify(delegate).put(same(shiroPrincipal), same(authInfo));
+        cache.invalidateGuest( info );
 
-    //now invalidate it
+        ArgumentCaptor<SimplePrincipalCollection> captor = ArgumentCaptor.forClass( SimplePrincipalCollection.class );
 
-    cache.invalidateGuest( info );
+        verify( delegate ).remove( captor.capture() );
 
-    verify(delegate).remove(eq( shiroPrincipal));
+        //verify it's the same string
+        assertEquals( shiroPrincipal.toString(), captor.getValue().toString() );
 
-    //now check it's gone
-    UsergridAuthorizationInfo returnedAuthInfo = cache.get(shiroPrincipal);
+        //now check it's gone
+        UsergridAuthorizationInfo returnedAuthInfo = cache.get( shiroPrincipal );
 
-    assertNull(returnedAuthInfo);
+        assertNull( returnedAuthInfo );
+    }
 
 
-  }
+    @Test
+    public void testInvalidateUser() throws Exception
+    {
 
-  @Test
-  public void testInvalidateUser() throws Exception {
+        Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock( Cache.class );
 
-    Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate = mock(Cache.class);
 
+        DelegatingMemoryCache cache = new DelegatingMemoryCache( 1000, 120, "test", delegate );
 
-    DelegatingMemoryCache cache = new DelegatingMemoryCache(1000, 120, "test", delegate);
 
+        UUID applicationId = UUIDUtils.newTimeUUID();
+        UserInfo info =
+                new UserInfo( applicationId, UUIDUtils.newTimeUUID(), null, null, null, false, false, false, null );
 
-    UUID applicationId = UUIDUtils.newTimeUUID();
-    UserInfo info = new UserInfo(applicationId, UUIDUtils.newTimeUUID(), null, null, null, false, false, false, null);
+        UsergridAuthorizationInfo authInfo = new UsergridAuthorizationInfo();
 
-    UsergridAuthorizationInfo authInfo = new UsergridAuthorizationInfo();
 
+        ApplicationUserPrincipal applicationUserPrincipal = new ApplicationUserPrincipal( applicationId, info );
 
-    ApplicationUserPrincipal applicationUserPrincipal = new ApplicationUserPrincipal(applicationId, info);
+        SimplePrincipalCollection shiroPrincipal = createSimplePrincipal( applicationUserPrincipal, "test" );
 
-    SimplePrincipalCollection shiroPrincipal = createSimplePrincipal(applicationUserPrincipal, "test");
+        cache.put( shiroPrincipal, authInfo );
 
-    cache.put(shiroPrincipal, authInfo);
+        verify( delegate ).put( same( shiroPrincipal ), same( authInfo ) );
 
-    verify(delegate).put(same(shiroPrincipal), same(authInfo));
+        //now invalidate it
 
-    //now invalidate it
+        cache.invalidateUser( applicationId, info );
 
-    cache.invalidateUser(applicationId, info);
+        ArgumentCaptor<SimplePrincipalCollection> captor = ArgumentCaptor.forClass( SimplePrincipalCollection.class );
 
-    verify(delegate).remove(eq(shiroPrincipal));
+        verify( delegate ).remove( captor.capture() );
 
-    //now check it's gone
-    UsergridAuthorizationInfo returnedAuthInfo = cache.get(shiroPrincipal);
+        //verify it's the same string
+        assertEquals( shiroPrincipal.toString(), captor.getValue().toString() );
 
-    assertNull(returnedAuthInfo);
+        //now check it's gone
+        UsergridAuthorizationInfo returnedAuthInfo = cache.get( shiroPrincipal );
 
+        assertNull( returnedAuthInfo );
+    }
 
-  }
 
+    private SimplePrincipalCollection createSimplePrincipal( PrincipalIdentifier identifier, String realm )
+    {
 
-  private SimplePrincipalCollection createSimplePrincipal(PrincipalIdentifier identifier, String realm) {
-
-    return new SimplePrincipalCollection(identifier, realm);
-  }
+        return new SimplePrincipalCollection( identifier, realm );
+    }
 }

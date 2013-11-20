@@ -27,21 +27,11 @@ public class ExportOrg extends OrganizationInfo {
 
     private List<String> adminUserNames;
 
-<<<<<<< HEAD
-    
-    public ExportOrg(OrganizationInfo info){
-        super(info.getUuid(), info.getName());
-=======
-
-    public ExportOrg() {
-        adminUserNames = new ArrayList<String>();
-    }
 
 
     public ExportOrg( OrganizationInfo info ) {
         setName( info.getName() );
         setUuid( info.getUuid() );
->>>>>>> origin/master
         adminUserNames = new ArrayList<String>();
     }
 
@@ -49,12 +39,6 @@ public class ExportOrg extends OrganizationInfo {
     /** @return the admins */
     public List<String> getAdmins() {
         return adminUserNames;
-    }
-
-
-    /** @param admins the admins to set */
-    public void setAdmins( List<String> admins ) {
-        this.adminUserNames = admins;
     }
 
 

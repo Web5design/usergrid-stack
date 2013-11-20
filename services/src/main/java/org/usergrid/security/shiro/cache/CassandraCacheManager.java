@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.usergrid.management.ApplicationInfo;
 import org.usergrid.management.OrganizationInfo;
 import org.usergrid.management.UserInfo;
@@ -31,41 +32,46 @@ import com.google.common.cache.LoadingCache;
  * Service logic that affects permissions should invoke the CacheInvalidation interface to remove calculated permissions
  * from the caches
  */
-public class CassandraCacheManager implements CacheManager, CacheInvalidation
-{
+public class CassandraCacheManager implements CacheManager, CacheInvalidation {
 
     private static final Logger logger = LoggerFactory.getLogger( CassandraCacheManager.class );
 
+    private static final String CACHE_EXPIRATION = "shiro.local.cache.expiration";
+
+    private static final String CACHE_SIZE = "shiro.local.cache.size";
+
+    @Autowired
     private CassandraService cassandraService;
 
+    @Value( "${" + CACHE_SIZE + "}" )
+    private int localCacheMaxSize;
+
+    @Value( "${" + CACHE_EXPIRATION + "}" )
+    private int expirationInSeconds;
 
     /**
      * Cache of all realm cassandra caches.  This way we can invalidate the cache for each realm when permissions are
      * updated
      */
     private LoadingCache<String, DelegatingMemoryCache> cassandraCache =
-            CacheBuilder.newBuilder().maximumSize( 1000 ).build( new CacheLoader<String, DelegatingMemoryCache>()
-            {
+            CacheBuilder.newBuilder().maximumSize( 1000 ).build( new CacheLoader<String, DelegatingMemoryCache>() {
 
                 @Override
-                public DelegatingMemoryCache load( String name ) throws Exception
-                {
+                public DelegatingMemoryCache load( String name ) throws Exception {
                     CassandraCache cassCache = new CassandraCache( cassandraService, name );
-                    DelegatingMemoryCache cache = new DelegatingMemoryCache( 1000, 120, name, cassCache );
+                    DelegatingMemoryCache cache =
+                            new DelegatingMemoryCache( localCacheMaxSize, expirationInSeconds, name, cassCache );
                     return cache;
                 }
             } );
 
 
     @Override
-    public Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> getCache( String name ) throws CacheException
-    {
-        try
-        {
+    public Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> getCache( String name ) throws CacheException {
+        try {
             return cassandraCache.get( name );
         }
-        catch ( ExecutionException e )
-        {
+        catch ( ExecutionException e ) {
             logger.error( "Unable to access cache", e );
             throw new CacheException( "Unable to access cache", e );
         }
@@ -73,14 +79,11 @@ public class CassandraCacheManager implements CacheManager, CacheInvalidation
 
 
     @Override
-    public void invalidateOrg( final OrganizationInfo organizationInfo )
-    {
-        runOnCache( new CacheOperation()
-        {
+    public void invalidateOrg( final OrganizationInfo organizationInfo ) {
+        runOnCache( new CacheOperation() {
 
             @Override
-            public void doInCache( DelegatingMemoryCache cache )
-            {
+            public void doInCache( DelegatingMemoryCache cache ) {
                 cache.invalidateOrg( organizationInfo );
             }
         } );
@@ -88,14 +91,11 @@ public class CassandraCacheManager implements CacheManager, CacheInvalidation
 
 
     @Override
-    public void invalidateApplication( final ApplicationInfo applicationInfo )
-    {
-        runOnCache( new CacheOperation()
-        {
+    public void invalidateApplication( final ApplicationInfo applicationInfo ) {
+        runOnCache( new CacheOperation() {
 
             @Override
-            public void doInCache( DelegatingMemoryCache cache )
-            {
+            public void doInCache( DelegatingMemoryCache cache ) {
                 cache.invalidateApplication( applicationInfo );
             }
         } );
@@ -103,14 +103,11 @@ public class CassandraCacheManager implements CacheManager, CacheInvalidation
 
 
     @Override
-    public void invalidateGuest( final ApplicationInfo application )
-    {
-        runOnCache( new CacheOperation()
-        {
+    public void invalidateGuest( final ApplicationInfo application ) {
+        runOnCache( new CacheOperation() {
 
             @Override
-            public void doInCache( DelegatingMemoryCache cache )
-            {
+            public void doInCache( DelegatingMemoryCache cache ) {
                 cache.invalidateGuest( application );
             }
         } );
@@ -118,30 +115,23 @@ public class CassandraCacheManager implements CacheManager, CacheInvalidation
 
 
     @Override
-    public void invalidateUser( final UUID application, final UserInfo user )
-    {
-        runOnCache( new CacheOperation()
-        {
+    public void invalidateUser( final UUID application, final UserInfo user ) {
+        runOnCache( new CacheOperation() {
 
             @Override
-            public void doInCache( DelegatingMemoryCache cache )
-            {
+            public void doInCache( DelegatingMemoryCache cache ) {
                 cache.invalidateUser( application, user );
             }
         } );
     }
 
 
-    private void runOnCache( CacheOperation cacheOperation )
-    {
-        for ( String key : cassandraCache.asMap().keySet() )
-        {
-            try
-            {
+    private void runOnCache( CacheOperation cacheOperation ) {
+        for ( String key : cassandraCache.asMap().keySet() ) {
+            try {
                 cacheOperation.doInCache( cassandraCache.get( key ) );
             }
-            catch ( ExecutionException e )
-            {
+            catch ( ExecutionException e ) {
                 logger.error( "Unable to get cache", e );
                 throw new RuntimeException( "Unable to get cache", e );
             }
@@ -149,17 +139,34 @@ public class CassandraCacheManager implements CacheManager, CacheInvalidation
     }
 
 
-    @Autowired
-    public void setCassandraService( CassandraService cassandraService )
-    {
+    private interface CacheOperation {
+
+        /** Perform the operation in the cache */
+        public void doInCache( DelegatingMemoryCache cache );
+    }
+
+
+    public void setCassandraService( CassandraService cassandraService ) {
         this.cassandraService = cassandraService;
     }
 
 
-    private interface CacheOperation
-    {
+    public int getExpirationInSeconds() {
+        return expirationInSeconds;
+    }
 
-        /** Perform the operation in the cache */
-        public void doInCache( DelegatingMemoryCache cache );
+
+    public void setExpirationInSeconds( final int expirationInSeconds ) {
+        this.expirationInSeconds = expirationInSeconds;
+    }
+
+
+    public int getLocalCacheMaxSize() {
+        return localCacheMaxSize;
+    }
+
+
+    public void setLocalCacheMaxSize( final int localCacheMaxSize ) {
+        this.localCacheMaxSize = localCacheMaxSize;
     }
 }

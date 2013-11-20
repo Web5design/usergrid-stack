@@ -33,8 +33,7 @@ import com.google.common.cache.RemovalNotification;
  * permissions if present
  */
 public class DelegatingMemoryCache
-        implements Cache<SimplePrincipalCollection, UsergridAuthorizationInfo>, CacheInvalidation
-{
+        implements Cache<SimplePrincipalCollection, UsergridAuthorizationInfo>, CacheInvalidation {
 
 
     private static final Logger logger = LoggerFactory.getLogger( DelegatingMemoryCache.class );
@@ -47,8 +46,7 @@ public class DelegatingMemoryCache
 
 
     public DelegatingMemoryCache( int cacheSize, int expirationSeconds, String realmName,
-                                  Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate )
-    {
+                                  Cache<SimplePrincipalCollection, UsergridAuthorizationInfo> delegate ) {
 
         this.realmName = realmName;
         this.delegate = delegate;
@@ -61,21 +59,20 @@ public class DelegatingMemoryCache
 
 
     @Override
-    public UsergridAuthorizationInfo get( SimplePrincipalCollection key ) throws CacheException
-    {
+    public UsergridAuthorizationInfo get( SimplePrincipalCollection key ) throws CacheException {
 
-        UsergridAuthorizationInfo authorizationInfo = authCache.getIfPresent( key );
+        final String memCacheKey = getMemCacheKey( key );
+
+        UsergridAuthorizationInfo authorizationInfo = authCache.getIfPresent( memCacheKey );
 
         /**
          * Try to get it from the delegate
          */
-        if ( authorizationInfo == null )
-        {
+        if ( authorizationInfo == null ) {
             authorizationInfo = delegate.get( key );
 
-            if ( authorizationInfo != null )
-            {
-                authCache.put( key.toString(), authorizationInfo );
+            if ( authorizationInfo != null ) {
+                authCache.put( memCacheKey, authorizationInfo );
             }
         }
 
@@ -85,24 +82,24 @@ public class DelegatingMemoryCache
 
     @Override
     public UsergridAuthorizationInfo put( SimplePrincipalCollection key, UsergridAuthorizationInfo value )
-            throws CacheException
-    {
+            throws CacheException {
+        final String memCacheKey = getMemCacheKey( key );
+
         UsergridAuthorizationInfo authInfo = delegate.put( key, value );
 
-        authCache.put( key.toString(), value );
+        authCache.put( memCacheKey, value );
 
         return authInfo;
     }
 
 
     @Override
-    public UsergridAuthorizationInfo remove( SimplePrincipalCollection key ) throws CacheException
-    {
-        final String keyValue = key.toString();
+    public UsergridAuthorizationInfo remove( SimplePrincipalCollection key ) throws CacheException {
+        final String keyValue = getMemCacheKey( key );
+
         UsergridAuthorizationInfo localCached = authCache.getIfPresent( keyValue );
 
-        if ( localCached != null )
-        {
+        if ( localCached != null ) {
             authCache.invalidate( keyValue );
         }
 
@@ -117,37 +114,37 @@ public class DelegatingMemoryCache
     }
 
 
+    private String getMemCacheKey( SimplePrincipalCollection key ) {
+        return key.toString();
+    }
+
+
     @Override
-    public void clear() throws CacheException
-    {
+    public void clear() throws CacheException {
         delegate.clear();
     }
 
 
     @Override
-    public int size()
-    {
+    public int size() {
         return delegate.size();
     }
 
 
     @Override
-    public Set<SimplePrincipalCollection> keys()
-    {
+    public Set<SimplePrincipalCollection> keys() {
         return delegate.keys();
     }
 
 
     @Override
-    public Collection<UsergridAuthorizationInfo> values()
-    {
+    public Collection<UsergridAuthorizationInfo> values() {
         return delegate.values();
     }
 
 
     @Override
-    public void invalidateOrg( OrganizationInfo organization )
-    {
+    public void invalidateOrg( OrganizationInfo organization ) {
         final OrganizationPrincipal principal = new OrganizationPrincipal( organization );
 
 
@@ -156,8 +153,7 @@ public class DelegatingMemoryCache
 
 
     @Override
-    public void invalidateGuest( ApplicationInfo application )
-    {
+    public void invalidateGuest( ApplicationInfo application ) {
         final ApplicationGuestPrincipal principal = new ApplicationGuestPrincipal( application );
 
 
@@ -166,8 +162,7 @@ public class DelegatingMemoryCache
 
 
     @Override
-    public void invalidateUser( UUID application, UserInfo user )
-    {
+    public void invalidateUser( UUID application, UserInfo user ) {
         final ApplicationUserPrincipal principal = new ApplicationUserPrincipal( application, user );
 
         remove( getShiroPrincipal( principal ) );
@@ -175,26 +170,22 @@ public class DelegatingMemoryCache
 
 
     @Override
-    public void invalidateApplication( ApplicationInfo applicationInfo )
-    {
+    public void invalidateApplication( ApplicationInfo applicationInfo ) {
         final ApplicationPrincipal principal = new ApplicationPrincipal( applicationInfo );
 
         remove( getShiroPrincipal( principal ) );
     }
 
 
-    private SimplePrincipalCollection getShiroPrincipal( PrincipalIdentifier id )
-    {
+    private SimplePrincipalCollection getShiroPrincipal( PrincipalIdentifier id ) {
         return new SimplePrincipalCollection( id, realmName );
     }
 
 
-    private class CacheEvitionListener implements RemovalListener<String, UsergridAuthorizationInfo>
-    {
+    private class CacheEvitionListener implements RemovalListener<String, UsergridAuthorizationInfo> {
 
         @Override
-        public void onRemoval( RemovalNotification<String, UsergridAuthorizationInfo> notification )
-        {
+        public void onRemoval( RemovalNotification<String, UsergridAuthorizationInfo> notification ) {
             logger.info( "Eviction {} from the local node cache", notification.getKey().toString() );
         }
     }

@@ -26,8 +26,7 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.fail;
 
 /**
- *
- * @author: tnine
+ * Test the caching
  *
  */
 public class CassandraCacheIT {

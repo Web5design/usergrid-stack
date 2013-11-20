@@ -182,5 +182,4 @@ public class OrganizationInfo {
     public void setProperties( Map<String, Object> properties ) {
         this.properties = properties;
     }
-
 }
