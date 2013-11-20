@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.usergrid.management.ApplicationInfo;
 import org.usergrid.management.OrganizationInfo;
 import org.usergrid.persistence.cassandra.CassandraService;
@@ -41,6 +42,8 @@ import static org.usergrid.persistence.cassandra.CassandraService.SHIRO_CACHES;
 public class CassandraCache implements Cache<SimplePrincipalCollection, UsergridAuthorizationInfo>
 {
 
+    private static final String CACHE_EXPIRATION = "shiro.cache.cassandra.expiration";
+
 
     private static final UUIDSerializer UUID_SER = UUIDSerializer.get();
     private static final StringSerializer STR_SER = StringSerializer.get();
@@ -57,14 +60,15 @@ public class CassandraCache implements Cache<SimplePrincipalCollection, Usergrid
     private static final String ORGS = "orgs";
     private static final String APPS = "apps";
 
-    private static final int ONE_DAY = 60 * 60 * 24;
+    private static final int THIRTY_MINUTES = 60 * 30;
 
 
     private final CassandraService cassandra;
 
     private final String realmName;
 
-    private int ttl = ONE_DAY;
+    @Value( "${" + CACHE_EXPIRATION + "}" )
+    private int ttl = THIRTY_MINUTES;
 
 
     public CassandraCache( CassandraService cassandra, String realmName )

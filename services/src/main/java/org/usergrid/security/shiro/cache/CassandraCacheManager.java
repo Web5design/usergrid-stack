@@ -36,9 +36,9 @@ public class CassandraCacheManager implements CacheManager, CacheInvalidation {
 
     private static final Logger logger = LoggerFactory.getLogger( CassandraCacheManager.class );
 
-    private static final String CACHE_EXPIRATION = "shiro.local.cache.expiration";
+    private static final String CACHE_EXPIRATION = "shiro.cache.local.expiration";
 
-    private static final String CACHE_SIZE = "shiro.local.cache.size";
+    private static final String CACHE_SIZE = "shiro.cache.local.size";
 
     @Autowired
     private CassandraService cassandraService;
