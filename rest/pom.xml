@@ -377,6 +377,10 @@
           <artifactId>commons-logging</artifactId>
           <groupId>commons-logging</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>servlet-api</artifactId>
+          <groupId>javax.servlet</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -397,13 +401,25 @@
 
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
+      <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
+<!--    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
+    </dependency>-->
+
+    <dependency>
+      <groupId>org.glassfish.web</groupId>
+      <artifactId>jstl-impl</artifactId>
+      <version>1.2</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>servlet-api</artifactId>
+          <groupId>javax.servlet</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -521,7 +537,7 @@
       <scope>test</scope>
     </dependency>
 
-    <!--  use the external test client.  Just depend on the maven jetty plugin to launch jetty -->
+    <!--  use the external test client. Just depend on the maven jetty plugin to launch jetty -->
     <dependency>
       <groupId>com.sun.jersey.jersey-test-framework</groupId>
       <artifactId>jersey-test-framework-external</artifactId>
@@ -544,6 +560,12 @@
       <groupId>org.eclipse.jetty.aggregate</groupId>
       <artifactId>jetty-webapp</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>javax.servlet</artifactId>
+          <groupId>org.eclipse.jetty.orbit</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
